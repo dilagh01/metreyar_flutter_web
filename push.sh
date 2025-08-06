@@ -1,19 +1,37 @@
 #!/bin/bash
 
-# توکن رو اینجا بزار (توکن شما)
-TOKEN="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"
+# تنظیمات اولیه
+BRANCH="main"
+COMMIT_MSG="🚀 Initial commit via SSH"
 
-# آدرس ریموت با توکن
-REPO="https://${TOKEN}@github.com/dilagh01/metreyar_flutter_web.git"
+# بررسی وجود .git
+if [ ! -d ".git" ]; then
+  echo "📁 Initializing git repository..."
+  git init
+  git branch -m $BRANCH
+fi
 
-# تنظیم ریموت با توکن
-git remote set-url origin $REPO
-
-# اضافه کردن همه فایل‌ها
+# اضافه کردن فایل‌ها
+echo "➕ Adding files..."
 git add .
 
-# کامیت با پیام دلخواه
-git commit -m "🚀 Commit from push.sh script"
+# کامیت
+echo "📝 Committing..."
+git commit -m "$COMMIT_MSG"
 
-# پوش به برنچ main
-git push -u origin main
+# تنظیم ریموت اگر وجود ندارد
+REMOTE_URL="git@github.com:dilagh01/metreyar_flutter_web.git"
+if ! git remote | grep -q origin; then
+  echo "🌐 Setting remote origin to $REMOTE_URL"
+  git remote add origin "$REMOTE_URL"
+else
+  echo "✅ Remote origin already set."
+fi
+
+# پوش به گیت‌هاب
+echo "📤 Pushing to GitHub..."
+git push -u origin "$BRANCH"
+
+
+
+
