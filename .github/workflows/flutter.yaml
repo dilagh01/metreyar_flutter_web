@@ -1,4 +1,4 @@
-name: Flutter Setup & Deploy to GitHub Pages
+name: Flutter Setup & Deploy to GitHub Pages and Android APK
 
 on:
   push:
@@ -25,7 +25,7 @@ jobs:
 
       - name: Create minimal Flutter project if not exists
         run: |
-          mkdir -p lib web
+          mkdir -p lib web android
 
           if [ ! -f "pubspec.yaml" ]; then
             cat <<EOF > pubspec.yaml
@@ -65,8 +65,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(title: const Text('Hello Flutter Web')),
-        body: const Center(child: Text('Welcome to Flutter Web!')),
+        appBar: AppBar(title: const Text('Hello Flutter Web & Android')),
+        body: const Center(child: Text('Welcome to Flutter Web and Android!')),
       ),
     );
   }
@@ -101,3 +101,12 @@ EOF
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: build/web
+
+      - name: Build Android APK
+        run: flutter build apk --release
+
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
