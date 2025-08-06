@@ -1,34 +1,30 @@
-name: Flutter Web Build & Deploy
+name: Flutter Web Build and Deploy
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
       - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+        uses: flutter-actions/setup-flutter@v3
         with:
-          flutter-version: 'stable'
-          channel: 'stable'
+          channel: stable
 
-      - name: Enable web support
+      - name: Enable Web Support
         run: flutter config --enable-web
 
-      - name: Upgrade Flutter & dependencies
-        run: |
-          flutter upgrade
-          flutter pub get
+      - name: Install Dependencies
+        run: flutter pub get
 
-      - name: Build Flutter web
+      - name: Build Web
         run: flutter build web --release
 
       - name: Deploy to GitHub Pages
