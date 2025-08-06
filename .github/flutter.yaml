@@ -14,8 +14,7 @@ jobs:
 
     env:
       FLUTTER_CHANNEL: stable
-      FLUTTER_VERSION: 3.32.8  # می‌تونی این رو آخرین نسخه تغییر بدی
-      FLUTTER_STORAGE_BASE_URL: https://mirrors.tuna.tsinghua.edu.cn/flutter
+      FLUTTER_VERSION: latest
 
     steps:
       - name: Checkout repository
@@ -24,19 +23,19 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: ${{ env.FLUTTER_CHANNEL }}
+          flutter-version: ${{ env.FLUTTER_VERSION }}
 
-      - name: Flutter pub get
+      - name: Flutter Pub Get
         run: flutter pub get
 
       - name: Build Android APK
         run: flutter build apk --release
 
-      - name: Build iOS archive (no codesign)
+      - name: Build iOS Archive (no codesign)
         run: flutter build ios --release --no-codesign
 
-      - name: Build Web release
+      - name: Build Web Release
         run: flutter build web --release
 
       - name: Upload Android APK artifact
