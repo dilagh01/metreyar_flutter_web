@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # توکن رو اینجا بزار (توکن شما)
-TOKEN="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"
+TOKEN="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"
 
 # آدرس ریموت با توکن
 REPO="https://${TOKEN}@github.com/dilagh01/metreyar_flutter_web.git"
