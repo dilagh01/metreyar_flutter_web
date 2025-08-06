@@ -1,14 +1,17 @@
-name: Create Full Flutter App
+name: 🚀 Create & Deploy Full Flutter App
 
 on:
-  workflow_dispatch:  # اجرا به‌صورت دستی
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
-  create-flutter-app:
+  create-deploy-flutter-app:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🧾 Checkout repository
+      - name: 🔄 Checkout repository
         uses: actions/checkout@v3
 
       - name: 🛠️ Set up Flutter
@@ -18,10 +21,10 @@ jobs:
 
       - name: 🧱 Create full Flutter project
         run: |
+          rm -rf ./* .[^.]*
           flutter create --org com.example --project-name my_app --platforms android,ios,linux,macos,web,windows my_app
           cd my_app
 
-          # ساختار حرفه‌ای
           mkdir -p lib/src/screens
           mkdir -p lib/src/widgets
           mkdir -p lib/src/models
@@ -30,21 +33,29 @@ jobs:
           mkdir -p assets/icons
           mkdir -p test/widgets
 
-          # اضافه کردن asset ها در pubspec.yaml
           sed -i '/^dependencies:/a\  cupertino_icons: ^1.0.6' pubspec.yaml
           sed -i '/^flutter:/a\\ \ assets:\n\ \ \ \ - assets/images/\n\ \ \ \ - assets/icons/' pubspec.yaml
 
           flutter pub get
 
-      - name: 📤 Commit and push new Flutter project
+          cp -r . ../
+          cd ..
+          rm -rf my_app
+
+      - name: 📤 Commit and Push Flutter project
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-
-          cp -r my_app/* .
-          cp -r my_app/.* . || true
-          rm -rf my_app
-
           git add .
-          git commit -m "🚀 Full Flutter project created with all platforms and structure" || echo "No changes"
+          git commit -m "🚀 Recreated Flutter project with full structure" || echo "Nothing to commit"
           git push origin HEAD
+
+      - name: 🌐 Build Flutter web
+        run: flutter build web
+
+      - name: 🚀 Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/web
+          publish_branch: gh-pages
