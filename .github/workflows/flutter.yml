@@ -1,38 +1,58 @@
-name: Flutter CI (Linux compatible)
+name: Flutter Build All Platforms
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     env:
-      FLUTTER_VERSION: 3.32.8
+      FLUTTER_CHANNEL: stable
+      FLUTTER_VERSION: 3.32.8  # می‌تونی این رو آخرین نسخه تغییر بدی
+      FLUTTER_STORAGE_BASE_URL: https://mirrors.tuna.tsinghua.edu.cn/flutter
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
-          channel: stable
+          channel: ${{ env.FLUTTER_CHANNEL }}
 
-      - name: Install dependencies
+      - name: Flutter pub get
         run: flutter pub get
 
-      - name: Add ndkVersion to build.gradle (Linux)
-        run: |
-          sed -i.bak '/android {/a \
-          ndkVersion = "27.0.12077973"
-          ' android/app/build.gradle
+      - name: Build Android APK
+        run: flutter build apk --release
 
-      - name: Analyze
-        run: flutter analyze
+      - name: Build iOS archive (no codesign)
+        run: flutter build ios --release --no-codesign
 
-      - name: Run tests
-        run: flutter test
+      - name: Build Web release
+        run: flutter build web --release
+
+      - name: Upload Android APK artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Upload iOS archive artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ios-archive
+          path: build/ios/iphoneos/Runner.app
+
+      - name: Upload Web build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: web-build
+          path: build/web
