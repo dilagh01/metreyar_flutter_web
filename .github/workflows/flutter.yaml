@@ -21,7 +21,6 @@ jobs:
         with:
           flutter-version: '3.22.1'
           channel: stable
-          architecture: x64
 
       - name: Create minimal Flutter project if not exists
         run: |
@@ -49,43 +48,25 @@ jobs:
           fi
 
           if [ ! -f "lib/main.dart" ]; then
-            cat > lib/main.dart <<EOF
-import 'package:flutter/material.dart';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Hello Flutter Web & Android')),
-        body: const Center(child: Text('Welcome to Flutter Web and Android!')),
-      ),
-    );
-  }
-}
-EOF
-          fi
-
-          if [ ! -f "web/index.html" ]; then
-            cat > web/index.html <<EOF
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset='UTF-8'>
-  <title>Flutter Web</title>
-  <link rel='manifest' href='manifest.json'>
-</head>
-<body>
-  <script src='main.dart.js'></script>
-</body>
-</html>
-EOF
+            echo "import 'package:flutter/material.dart';" > lib/main.dart
+            echo "" >> lib/main.dart
+            echo "void main() {" >> lib/main.dart
+            echo "  runApp(const MyApp());" >> lib/main.dart
+            echo "}" >> lib/main.dart
+            echo "" >> lib/main.dart
+            echo "class MyApp extends StatelessWidget {" >> lib/main.dart
+            echo "  const MyApp({super.key});" >> lib/main.dart
+            echo "" >> lib/main.dart
+            echo "  @override" >> lib/main.dart
+            echo "  Widget build(BuildContext context) {" >> lib/main.dart
+            echo "    return MaterialApp(" >> lib/main.dart
+            echo "      home: Scaffold(" >> lib/main.dart
+            echo "        appBar: AppBar(title: const Text('Hello Flutter Web & Android'))," >> lib/main.dart
+            echo "        body: const Center(child: Text('Welcome to Flutter Web and Android!'))," >> lib/main.dart
+            echo "      )," >> lib/main.dart
+            echo "    );" >> lib/main.dart
+            echo "  }" >> lib/main.dart
+            echo "}" >> lib/main.dart
           fi
 
       - name: Get dependencies
