@@ -1,4 +1,4 @@
-name: 🚀 Create & Deploy Flutter App
+name: Flutter Web Build & Deploy
 
 on:
   push:
@@ -7,46 +7,32 @@ on:
   workflow_dispatch:
 
 jobs:
-  flutter:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🔄 Checkout
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: 🛠️ Set up Flutter
+      - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: stable
+          flutter-version: 'stable'
+          channel: 'stable'
 
-      - name: 🧱 Create new Flutter project if not exists
+      - name: Enable web support
+        run: flutter config --enable-web
+
+      - name: Upgrade Flutter & dependencies
         run: |
-          if [ ! -f "pubspec.yaml" ]; then
-            flutter create --org com.example --project-name my_app --platforms android,ios,linux,macos,web,windows .
-          fi
-          mkdir -p lib/src/screens lib/src/widgets lib/src/models lib/src/services
-          mkdir -p assets/images assets/icons test/widgets
-
-          if ! grep -q "assets/images/" pubspec.yaml; then
-            sed -i '/^flutter:/a\\ \ assets:\n\ \ \ \ - assets/images/\n\ \ \ \ - assets/icons/' pubspec.yaml
-          fi
-
+          flutter upgrade
           flutter pub get
 
-      - name: 📤 Commit and Push
-        run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git add .
-          git commit -m "🆕 Init Flutter project" || echo "No changes"
-          git push origin main
+      - name: Build Flutter web
+        run: flutter build web --release
 
-      - name: 🌐 Build Web
-        run: flutter build web
-
-      - name: 🚀 Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: build/web
-          publish_branch: gh-pages
+          publish_dir: ./build/web
