@@ -1,4 +1,4 @@
-name: Flutter Setup & Deploy to GitHub Pages
+name: Flutter Setup & Deploy
 
 on:
   push:
@@ -21,59 +21,89 @@ jobs:
         with:
           flutter-version: '3.22.1'
           channel: stable
+          architecture: x64
 
       - name: Create minimal Flutter project if not exists
         run: |
-          mkdir -p lib web
+          mkdir -p lib web android
 
           if [ ! -f "pubspec.yaml" ]; then
-            echo "name: metreyar_flutter_web" > pubspec.yaml
-            echo "description: A new Flutter project." >> pubspec.yaml
-            echo "publish_to: 'none'" >> pubspec.yaml
-            echo "version: 1.0.0+1" >> pubspec.yaml
-            echo "" >> pubspec.yaml
-            echo "environment:" >> pubspec.yaml
-            echo "  sdk: '>=3.3.0 <4.0.0'" >> pubspec.yaml
-            echo "" >> pubspec.yaml
-            echo "dependencies:" >> pubspec.yaml
-            echo "  flutter:" >> pubspec.yaml
-            echo "    sdk: flutter" >> pubspec.yaml
-            echo "" >> pubspec.yaml
-            echo "dev_dependencies:" >> pubspec.yaml
-            echo "  flutter_test:" >> pubspec.yaml
-            echo "    sdk: flutter" >> pubspec.yaml
-            echo "" >> pubspec.yaml
-            echo "flutter:" >> pubspec.yaml
-            echo "  uses-material-design: true" >> pubspec.yaml
+            cat > pubspec.yaml <<EOF
+name: metreyar_flutter_web
+description: A new Flutter project.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+EOF
           fi
 
           if [ ! -f "lib/main.dart" ]; then
-            echo "import 'package:flutter/material.dart';" > lib/main.dart
-            echo "" >> lib/main.dart
-            echo "void main() {" >> lib/main.dart
-            echo "  runApp(const MyApp());" >> lib/main.dart
-            echo "}" >> lib/main.dart
-            echo "" >> lib/main.dart
-            echo "class MyApp extends StatelessWidget {" >> lib/main.dart
-            echo "  const MyApp({super.key});" >> lib/main.dart
-            echo "" >> lib/main.dart
-            echo "  @override" >> lib/main.dart
-            echo "  Widget build(BuildContext context) {" >> lib/main.dart
-            echo "    return MaterialApp(" >> lib/main.dart
-            echo "      home: Scaffold(" >> lib/main.dart
-            echo "        appBar: AppBar(title: const Text('Hello Flutter Web & Android'))," >> lib/main.dart
-            echo "        body: const Center(child: Text('Welcome to Flutter Web and Android!'))," >> lib/main.dart
-            echo "      )," >> lib/main.dart
-            echo "    );" >> lib/main.dart
-            echo "  }" >> lib/main.dart
-            echo "}" >> lib/main.dart
+            cat > lib/main.dart <<EOF
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: const Text('Hello Flutter Web & Android')),
+        body: const Center(child: Text('Welcome to Flutter Web and Android!')),
+      ),
+    );
+  }
+}
+EOF
+          fi
+
+          if [ ! -f "web/index.html" ]; then
+            cat > web/index.html <<EOF
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Flutter Web</title>
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <script src="main.dart.js"></script>
+</body>
+</html>
+EOF
           fi
 
       - name: Get dependencies
         run: flutter pub get
 
-      - name: Build Flutter Web
+      - name: Build Web
         run: flutter build web
+
+      - name: Build Android APK
+        run: flutter build apk --release
+
+      - name: Upload Android APK artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
