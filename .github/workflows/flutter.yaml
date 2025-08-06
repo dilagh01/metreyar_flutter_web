@@ -23,13 +23,12 @@ jobs:
           channel: stable
           architecture: x64
 
-      - name: Ensure Flutter structure exists
+      - name: Ensure Flutter project structure exists
         run: |
           mkdir -p lib web
 
           if [ ! -f "pubspec.yaml" ]; then
-            cat <<EOF > pubspec.yaml
-name: metreyar_flutter_web
+            echo "name: metreyar_flutter_web
 description: A new Flutter project.
 publish_to: 'none'
 version: 1.0.0+1
@@ -47,12 +46,11 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-EOF
+" > pubspec.yaml
           fi
 
           if [ ! -f "lib/main.dart" ]; then
-            cat <<EOF > lib/main.dart
-import 'package:flutter/material.dart';
+            echo "import 'package:flutter/material.dart';
 
 void main() {
   runApp(const MyApp());
@@ -71,12 +69,11 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-EOF
+" > lib/main.dart
           fi
 
           if [ ! -f "web/index.html" ]; then
-            cat <<EOF > web/index.html
-<!DOCTYPE html>
+            echo "<!DOCTYPE html>
 <html>
 <head>
   <meta charset='UTF-8'>
@@ -87,14 +84,14 @@ EOF
   <script src='main.dart.js'></script>
 </body>
 </html>
-EOF
+" > web/index.html
           fi
 
       - name: Get dependencies
         run: flutter pub get
 
-      - name: Build web
-        run: flutter build web
+      - name: Build Flutter web
+        run: flutter build web --release
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
