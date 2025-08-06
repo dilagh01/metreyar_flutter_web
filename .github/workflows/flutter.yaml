@@ -28,7 +28,8 @@ jobs:
           mkdir -p lib web
 
           if [ ! -f "pubspec.yaml" ]; then
-            echo "name: metreyar_flutter_web
+            cat <<EOF > pubspec.yaml
+name: metreyar_flutter_web
 description: A new Flutter project.
 publish_to: 'none'
 version: 1.0.0+1
@@ -46,11 +47,12 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  " > pubspec.yaml
+EOF
           fi
 
           if [ ! -f "lib/main.dart" ]; then
-            echo "import 'package:flutter/material.dart';
+            cat <<EOF > lib/main.dart
+import 'package:flutter/material.dart';
 
 void main() {
   runApp(const MyApp());
@@ -68,11 +70,13 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
-}" > lib/main.dart
+}
+EOF
           fi
 
           if [ ! -f "web/index.html" ]; then
-            echo "<!DOCTYPE html>
+            cat <<EOF > web/index.html
+<!DOCTYPE html>
 <html>
 <head>
   <meta charset='UTF-8'>
@@ -82,7 +86,8 @@ class MyApp extends StatelessWidget {
 <body>
   <script src='main.dart.js'></script>
 </body>
-</html>" > web/index.html
+</html>
+EOF
           fi
 
       - name: Get dependencies
