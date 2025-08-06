@@ -1,0 +1,69 @@
+name: Flutter CI/CD All Platforms
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    env:
+      FLUTTER_VERSION: '3.32.8'
+      FLUTTER_CHANNEL: stable
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: ${{ env.FLUTTER_CHANNEL }}
+
+      - name: Flutter doctor
+        run: flutter doctor -v
+
+      - name: Clean project
+        run: flutter clean
+
+      - name: Enable platforms
+        run: flutter config --enable-web && flutter config --enable-ios
+
+      - name: Fetch dependencies
+        run: flutter pub get
+
+      - name: Recreate platforms (android, ios, web)
+        run: flutter create --platforms=android,ios,web .
+
+      - name: Patch gradle (Android NDK)
+        run: sed -i '/android {/a \    ndkVersion = "27.0.12077973"' android/app/build.gradle
+
+      - name: Build Android APK
+        run: flutter build apk --release
+
+      - name: Build iOS (no codesign)
+        run: flutter build ios --no-codesign
+
+      - name: Build Web
+        run: flutter build web --release
+
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Upload iOS App
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-app
+          path: build/ios/iphoneos/Runner.app
+
+      - name: Deploy Web to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: build/web
