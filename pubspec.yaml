@@ -1,0 +1,17 @@
+name: metreyar_flutter_web
+description: A Flutter project for Web and Android
+publish_to: 'none'
+
+environment:
+  sdk: ">=3.2.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
