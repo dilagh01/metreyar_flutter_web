@@ -28,29 +28,29 @@ jobs:
           mkdir -p lib web android
 
           if [ ! -f "pubspec.yaml" ]; then
-            cat <<'EOF' > pubspec.yaml
-name: metreyar_flutter_web
-description: A new Flutter project.
-publish_to: 'none'
-version: 1.0.0+1
-
-environment:
-  sdk: '>=3.3.0 <4.0.0'
-
-dependencies:
-  flutter:
-    sdk: flutter
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
-flutter:
-  uses-material-design: true
-EOF
+            echo "Creating pubspec.yaml"
+            echo "name: metreyar_flutter_web" > pubspec.yaml
+            echo "description: A new Flutter project." >> pubspec.yaml
+            echo "publish_to: 'none'" >> pubspec.yaml
+            echo "version: 1.0.0+1" >> pubspec.yaml
+            echo "" >> pubspec.yaml
+            echo "environment:" >> pubspec.yaml
+            echo "  sdk: '>=3.3.0 <4.0.0'" >> pubspec.yaml
+            echo "" >> pubspec.yaml
+            echo "dependencies:" >> pubspec.yaml
+            echo "  flutter:" >> pubspec.yaml
+            echo "    sdk: flutter" >> pubspec.yaml
+            echo "" >> pubspec.yaml
+            echo "dev_dependencies:" >> pubspec.yaml
+            echo "  flutter_test:" >> pubspec.yaml
+            echo "    sdk: flutter" >> pubspec.yaml
+            echo "" >> pubspec.yaml
+            echo "flutter:" >> pubspec.yaml
+            echo "  uses-material-design: true" >> pubspec.yaml
           fi
 
           if [ ! -f "lib/main.dart" ]; then
+            mkdir -p lib
             cat <<'EOF' > lib/main.dart
 import 'package:flutter/material.dart';
 
@@ -75,6 +75,7 @@ EOF
           fi
 
           if [ ! -f "web/index.html" ]; then
+            mkdir -p web
             cat <<'EOF' > web/index.html
 <!DOCTYPE html>
 <html>
