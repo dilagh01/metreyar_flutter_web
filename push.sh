@@ -1,25 +1,19 @@
-x#!/bin/bash
+#!/bin/bash
 
-# ⚙️ متغیرها را تغییر بده
-GITHUB_USERNAME="dilagh01"
-REPO_NAME="metreyar_flutter_web"
-TOKEN="<YOUR_TOKEN>" # توکن دائمی جایگزین کن
+# توکن رو اینجا بزار (توکن شما)
+TOKEN="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"
 
-# 📂 اگر پروژه Git نیست، init کن
-if [ ! -d ".git" ]; then
-  git init
-fi
+# آدرس ریموت با توکن
+REPO="https://${TOKEN}@github.com/dilagh01/metreyar_flutter_web.git"
 
-# 🌳 تغییر نام شاخه (در صورت نیاز)
-git branch -M main
+# تنظیم ریموت با توکن
+git remote set-url origin $REPO
 
-# 🔗 افزودن ریموت با توکن
-git remote remove origin 2> /dev/null
-git remote add origin https://${GITHUB_USERNAME}:${TOKEN}@github.com/${GITHUB_USERNAME}/${REPO_NAME}.git
-
-# 📦 افزودن همه فایل‌ها و کامیت
+# اضافه کردن همه فایل‌ها
 git add .
-git commit -m "🚀 Initial commit with Flutter project"
 
-# ⬆️ پوش به ریپوی اصلی
+# کامیت با پیام دلخواه
+git commit -m "🚀 Commit from push.sh script"
+
+# پوش به برنچ main
 git push -u origin main
