@@ -48,7 +48,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 EOF
-          fi
+ fi
 
           if [ ! -f "lib/main.dart" ]; then
             cat > lib/main.dart <<EOF
@@ -72,7 +72,7 @@ class MyApp extends StatelessWidget {
   }
 }
 EOF
-          fi
+ fi
 
           if [ ! -f "web/index.html" ]; then
             cat > web/index.html <<EOF
