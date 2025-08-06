@@ -1,4 +1,4 @@
-kname: Build and Deploy Flutter Web
+name: Build and Deploy Flutter Web
 
 on:
   push:
