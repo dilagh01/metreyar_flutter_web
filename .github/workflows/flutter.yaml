@@ -1,4 +1,4 @@
-name: Flutter Setup & Deploy
+name: Flutter Setup & Deploy to GitHub Pages
 
 on:
   push:
@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  build-and-deploy:
+  build-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,12 +23,13 @@ jobs:
           channel: stable
           architecture: x64
 
-      - name: Ensure Flutter project structure exists
+      - name: Create minimal Flutter project if not exists
         run: |
           mkdir -p lib web
 
           if [ ! -f "pubspec.yaml" ]; then
-            echo "name: metreyar_flutter_web
+            cat <<EOF > pubspec.yaml
+name: metreyar_flutter_web
 description: A new Flutter project.
 publish_to: 'none'
 version: 1.0.0+1
@@ -46,11 +47,12 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-" > pubspec.yaml
+EOF
           fi
 
           if [ ! -f "lib/main.dart" ]; then
-            echo "import 'package:flutter/material.dart';
+            cat <<EOF > lib/main.dart
+import 'package:flutter/material.dart';
 
 void main() {
   runApp(const MyApp());
@@ -69,11 +71,12 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-" > lib/main.dart
+EOF
           fi
 
           if [ ! -f "web/index.html" ]; then
-            echo "<!DOCTYPE html>
+            cat <<EOF > web/index.html
+<!DOCTYPE html>
 <html>
 <head>
   <meta charset='UTF-8'>
@@ -84,14 +87,14 @@ class MyApp extends StatelessWidget {
   <script src='main.dart.js'></script>
 </body>
 </html>
-" > web/index.html
+EOF
           fi
 
       - name: Get dependencies
         run: flutter pub get
 
-      - name: Build Flutter web
-        run: flutter build web --release
+      - name: Build web
+        run: flutter build web
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
