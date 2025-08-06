@@ -1,9 +1,8 @@
-name: Flutter Build & Deploy
+name: Flutter Setup & Deploy
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -14,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up Flutter
@@ -24,20 +23,73 @@ jobs:
           channel: stable
           architecture: x64
 
+      - name: Ensure Flutter structure exists
+        run: |
+          mkdir -p lib web
+
+          if [ ! -f "pubspec.yaml" ]; then
+            echo "name: metreyar_flutter_web
+description: A new Flutter project.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  " > pubspec.yaml
+          fi
+
+          if [ ! -f "lib/main.dart" ]; then
+            echo "import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: const Text('Hello Flutter Web')),
+        body: const Center(child: Text('Welcome to Flutter Web!')),
+      ),
+    );
+  }
+}" > lib/main.dart
+          fi
+
+          if [ ! -f "web/index.html" ]; then
+            echo "<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='UTF-8'>
+  <title>Flutter Web</title>
+  <link rel='manifest' href='manifest.json'>
+</head>
+<body>
+  <script src='main.dart.js'></script>
+</body>
+</html>" > web/index.html
+          fi
+
       - name: Get dependencies
         run: flutter pub get
 
       - name: Build web
         run: flutter build web
-
-      - name: Build Android APK
-        run: flutter build apk
-
-      - name: Upload Android APK artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: android-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
