@@ -1,57 +1,43 @@
-name: Flutter Build All Platforms
+name: Build and Deploy Flutter Web
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
-  build:
-    runs-on: macos-latest
-
-    env:
-      FLUTTER_CHANNEL: stable
-      FLUTTER_VERSION: latest
+  build-and-push:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: 📥 Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Flutter
+      - name: 💻 Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: ${{ env.FLUTTER_CHANNEL }}
-          flutter-version: ${{ env.FLUTTER_VERSION }}
+          flutter-version: "stable"
 
-      - name: Flutter Pub Get
+      - name: 🧪 Install dependencies
         run: flutter pub get
 
-      - name: Build Android APK
-        run: flutter build apk --release
+      - name: 🏗️ Build Flutter Web
+        run: flutter build web
 
-      - name: Build iOS Archive (no codesign)
-        run: flutter build ios --release --no-codesign
+      - name: 🔐 Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.CI_SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
 
-      - name: Build Web Release
-        run: flutter build web --release
-
-      - name: Upload Android APK artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: android-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
-
-      - name: Upload iOS archive artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: ios-archive
-          path: build/ios/iphoneos/Runner.app
-
-      - name: Upload Web build artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: web-build
-          path: build/web
+      - name: 🚀 Push to repo (web build)
+        run: |
+          git config --global user.email "ci@github.com"
+          git config --global user.name "GitHub CI"
+          git clone git@github.com:dilagh01/metreyar_flutter_web.git deploy_repo
+          cd deploy_repo
+          rm -rf *
+          cp -r ../build/web/* .
+          git add .
+          git commit -m "🚀 Auto-deploy Flutter Web on $(date)" || echo "Nothing to commit"
+          git push origin main
