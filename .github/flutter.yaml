@@ -1,43 +1,50 @@
-name: Build and Deploy Flutter Web
+name: Create Full Flutter App
 
 on:
-  push:
-    branches: [ main ]
+  workflow_dispatch:  # اجرا به‌صورت دستی
 
 jobs:
-  build-and-push:
+  create-flutter-app:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout code
+      - name: 🧾 Checkout repository
         uses: actions/checkout@v3
 
-      - name: 💻 Set up Flutter
+      - name: 🛠️ Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "stable"
+          flutter-version: stable
 
-      - name: 🧪 Install dependencies
-        run: flutter pub get
-
-      - name: 🏗️ Build Flutter Web
-        run: flutter build web
-
-      - name: 🔐 Setup SSH key
+      - name: 🧱 Create full Flutter project
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.CI_SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          flutter create --org com.example --project-name my_app --platforms android,ios,linux,macos,web,windows my_app
+          cd my_app
 
-      - name: 🚀 Push to repo (web build)
+          # ساختار حرفه‌ای
+          mkdir -p lib/src/screens
+          mkdir -p lib/src/widgets
+          mkdir -p lib/src/models
+          mkdir -p lib/src/services
+          mkdir -p assets/images
+          mkdir -p assets/icons
+          mkdir -p test/widgets
+
+          # اضافه کردن asset ها در pubspec.yaml
+          sed -i '/^dependencies:/a\  cupertino_icons: ^1.0.6' pubspec.yaml
+          sed -i '/^flutter:/a\\ \ assets:\n\ \ \ \ - assets/images/\n\ \ \ \ - assets/icons/' pubspec.yaml
+
+          flutter pub get
+
+      - name: 📤 Commit and push new Flutter project
         run: |
-          git config --global user.email "ci@github.com"
-          git config --global user.name "GitHub CI"
-          git clone git@github.com:dilagh01/metreyar_flutter_web.git deploy_repo
-          cd deploy_repo
-          rm -rf *
-          cp -r ../build/web/* .
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+
+          cp -r my_app/* .
+          cp -r my_app/.* . || true
+          rm -rf my_app
+
           git add .
-          git commit -m "🚀 Auto-deploy Flutter Web on $(date)" || echo "Nothing to commit"
-          git push origin main
+          git commit -m "🚀 Full Flutter project created with all platforms and structure" || echo "No changes"
+          git push origin HEAD
