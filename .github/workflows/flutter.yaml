@@ -50,8 +50,8 @@ flutter:
 EOF
  fi
 
-          if [ ! -f "lib/main.dart" ]; then
-            cat > lib/main.dart <<EOF
+if [ ! -f "lib/main.dart" ]; then
+  cat > lib/main.dart <<EOF
 import 'package:flutter/material.dart';
 
 void main() {
@@ -65,15 +65,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(title: const Text('Hello Flutter Web & Android')),
-        body: const Center(child: Text('Welcome to Flutter Web and Android!')),
+        appBar: AppBar(title: const Text('Hello Flutter Web')),
+        body: const Center(child: Text('Welcome to Flutter Web!')),
       ),
     );
   }
 }
 EOF
- fi
-
+fi
           if [ ! -f "web/index.html" ]; then
             cat > web/index.html <<EOF
 <!DOCTYPE html>
