@@ -64563,7 +64563,7 @@ var $async$$1=A.X(function(b,c){if(b===1)return A.T(c,r)
 while(true)switch(s){case 0:p=A.bX(B.zD.ga3O(q.b))
 o=t.N
 s=2
-return A.a0(A.axh(A.fX("https://dilagh01.onrender.com/api/ocr"),A.aC(["image_base64",B.b.gM(p.split(","))],o,o)),$async$$1)
+return A.a0(A.axh(A.fX("https://dilagh01.onrender.com/api/ocr/base64"),A.aC(["image_base64",B.b.gM(p.split(","))],o,o)),$async$$1)
 case 2:n=c
 o=q.a
 if(n.b===200)o.aF(new A.a6A(o,n))
