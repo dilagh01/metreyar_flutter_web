@@ -1,4 +1,4 @@
-name: Flutter Setup, Commit & Deploy to GitHub Pages
+name: Flutter Build & Deploy to GitHub Pages
 
 on:
   push:
@@ -14,40 +14,28 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Set up Flutter
+      - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.1'
           channel: stable
 
-      # - name: Clean previous Flutter project files
-      #   run: |
-      #     rm -rf android ios linux macos windows lib test web build pubspec.yaml pubspec.lock .flutter-plugins .flutter-plugins-dependencies
-
-      - name: Create new Flutter project (full structure)
-        run: flutter create .
-
-      - name: Commit generated Flutter project files
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "Create Flutter project files" || echo "No changes to commit"
-          git push
-
-      - name: Get dependencies
+      - name: Install dependencies
         run: flutter pub get
 
-      - name: Enable web support
-        run: flutter config --enable-web
+      - name: Build Flutter Web (PWA enabled)
+        run: flutter build web --release --base-href /metreyar_flutter_web/
 
-      - name: Build Flutter Web
-        run: flutter build web --release
+      - name: Patch service worker for 404 fix
+        run: |
+          SW_FILE="build/web/flutter_service_worker.js"
+          if [ -f "$SW_FILE" ]; then
+            sed -i 's|return new Response(null, {status: 404});|return fetch(event.request);|' "$SW_FILE"
+          fi
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: build/web
+          publish_dir: ./build/web
