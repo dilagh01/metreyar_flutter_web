@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:metreyar_flutter_web/ocr.dart';
 
 void main() {
   runApp(const MyApp());
