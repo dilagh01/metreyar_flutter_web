@@ -22,72 +22,21 @@ jobs:
           flutter-version: '3.22.1'
           channel: stable
 
-      - name: Create minimal Flutter project if not exists
+      - name: Clean previous Flutter project files
         run: |
-          mkdir -p lib web
+          rm -rf android ios linux macos windows lib test web build pubspec.yaml pubspec.lock
 
-          if [ ! -f "pubspec.yaml" ]; then
-            echo "name: metreyar_flutter_web" > pubspec.yaml
-            echo "description: A new Flutter project." >> pubspec.yaml
-            echo "publish_to: 'none'" >> pubspec.yaml
-            echo "version: 1.0.0+1" >> pubspec.yaml
-            echo "" >> pubspec.yaml
-            echo "environment:" >> pubspec.yaml
-            echo "  sdk: '>=3.3.0 <4.0.0'" >> pubspec.yaml
-            echo "" >> pubspec.yaml
-            echo "dependencies:" >> pubspec.yaml
-            echo "  flutter:" >> pubspec.yaml
-            echo "    sdk: flutter" >> pubspec.yaml
-            echo "" >> pubspec.yaml
-            echo "dev_dependencies:" >> pubspec.yaml
-            echo "  flutter_test:" >> pubspec.yaml
-            echo "    sdk: flutter" >> pubspec.yaml
-            echo "" >> pubspec.yaml
-            echo "flutter:" >> pubspec.yaml
-            echo "  uses-material-design: true" >> pubspec.yaml
-          fi
-
-          if [ ! -f "lib/main.dart" ]; then
-            echo "import 'package:flutter/material.dart';" > lib/main.dart
-            echo "" >> lib/main.dart
-            echo "void main() {" >> lib/main.dart
-            echo "  runApp(const MyApp());" >> lib/main.dart
-            echo "}" >> lib/main.dart
-            echo "" >> lib/main.dart
-            echo "class MyApp extends StatelessWidget {" >> lib/main.dart
-            echo "  const MyApp({super.key});" >> lib/main.dart
-            echo "" >> lib/main.dart
-            echo "  @override" >> lib/main.dart
-            echo "  Widget build(BuildContext context) {" >> lib/main.dart
-            echo "    return MaterialApp(" >> lib/main.dart
-            echo "      home: Scaffold(" >> lib/main.dart
-            echo "        appBar: AppBar(title: const Text('Hello Flutter Web & Android'))," >> lib/main.dart
-            echo "        body: const Center(child: Text('Welcome to Flutter Web and Android!'))," >> lib/main.dart
-            echo "      )," >> lib/main.dart
-            echo "    );" >> lib/main.dart
-            echo "  }" >> lib/main.dart
-            echo "}" >> lib/main.dart
-          fi
-
-          if [ ! -f "web/index.html" ]; then
-            echo "<!DOCTYPE html>" > web/index.html
-            echo "<html>" >> web/index.html
-            echo "<head>" >> web/index.html
-            echo "  <meta charset='UTF-8'>" >> web/index.html
-            echo "  <title>Flutter Web</title>" >> web/index.html
-            echo "  <link rel='manifest' href='manifest.json'>" >> web/index.html
-            echo "</head>" >> web/index.html
-            echo "<body>" >> web/index.html
-            echo "  <script src='main.dart.js'></script>" >> web/index.html
-            echo "</body>" >> web/index.html
-            echo "</html>" >> web/index.html
-          fi
+      - name: Create new Flutter project (full structure)
+        run: flutter create .
 
       - name: Get dependencies
         run: flutter pub get
 
+      - name: Enable web support
+        run: flutter config --enable-web
+
       - name: Build Flutter Web
-        run: flutter build web
+        run: flutter build web --release
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
