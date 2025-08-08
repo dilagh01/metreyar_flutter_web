@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:metreyar_flutter_web/pages/ocr.dart';
+import 'package:flutter/material.dart';
+import 'pages/ocr.dart';
+
+void main() {
+  runApp(MaterialApp(
+    home: OCRPage(),
+  ));
+}
 
 void main() {
   runApp(const MyApp());
