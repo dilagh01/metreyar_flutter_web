@@ -28,13 +28,18 @@ class _OCRPageState extends State<OCRPage> {
 
         final url = Uri.parse('https://dilagh01.onrender.com/ocr/base64');
 
-        final response = await http.post(url, body: {
-          'image_base64': base64Image.split(',').last,
-        });
+        final response = await http.post(
+          url,
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode({
+            "image": base64Image.split(',').last, // فقط رشته Base64
+          }),
+        );
 
         if (response.statusCode == 200) {
+          final data = jsonDecode(response.body);
           setState(() {
-            extractedText = response.body;
+            extractedText = data["text"] ?? "متنی یافت نشد";
           });
         } else {
           setState(() {
@@ -55,10 +60,14 @@ class _OCRPageState extends State<OCRPage> {
           children: [
             ElevatedButton(
               onPressed: _pickImageAndSendToServer,
-              child: Text('Select Image & Extract Text'),
+              child: Text('انتخاب تصویر و استخراج متن'),
             ),
             SizedBox(height: 20),
-            Expanded(child: SingleChildScrollView(child: Text(extractedText))),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Text(extractedText),
+              ),
+            ),
           ],
         ),
       ),
