@@ -26,7 +26,7 @@ class _OCRPageState extends State<OCRPage> {
       reader.onLoadEnd.listen((event) async {
         final base64Image = reader.result as String;
 
-        final url = Uri.parse('https://dilagh01.onrender.com/ocr/base64');
+        final url = Uri.parse('https://metreyar.onrender.com/ocr/base64');
 
         final response = await http.post(
           url,
