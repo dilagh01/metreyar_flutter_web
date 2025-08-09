@@ -64544,7 +64544,7 @@ $1(a){return this.Lv(a)},
 Lv(a){var s=0,r=A.W(t.H),q=this,p,o,n,m,l
 var $async$$1=A.X(function(b,c){if(b===1)return A.T(c,r)
 while(true)switch(s){case 0:p=A.bX(B.zD.ga3P(q.b))
-o=A.fX("https://dilagh01.onrender.com/ocr/base64")
+o=A.fX("https://metreyar.onrender.com/ocr/base64")
 n=t.N
 m=A.aB(["Content-Type","application/json"],n,n)
 s=2
