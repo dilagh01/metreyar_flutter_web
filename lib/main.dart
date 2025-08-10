@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'pages/ocr.dart';
+import 'pages/ocr_web.dart';
 
 void main() {
   runApp(const MyApp());

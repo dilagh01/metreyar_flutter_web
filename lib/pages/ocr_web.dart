@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:html' as html;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
+import 'dart:async'; 
 class OCRHighlightPage extends StatefulWidget {
   @override
   _OCRHighlightPageState createState() => _OCRHighlightPageState();
