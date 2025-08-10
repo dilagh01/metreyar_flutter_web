@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: OCRHighlightapage(), // صفحه اصلی OCRPage
+      home: OCRHighlightaPage(), // صفحه اصلی OCRPage
     );
   }
 }
