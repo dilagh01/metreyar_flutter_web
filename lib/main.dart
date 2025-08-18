@@ -1,23 +1,30 @@
 import 'package:flutter/material.dart';
-import 'pages/ocr_web.dart';
+import 'package:go_router/go_router.dart';
+import 'screens/home_page.dart';
+import 'screens/price_list_page.dart';
+import 'screens/estimation_page.dart';
+import 'screens/reports_page.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final GoRouter _router = GoRouter(
+    routes: [
+      GoRoute(path: '/', builder: (context, state) => HomePage()),
+      GoRoute(path: '/price-list', builder: (context, state) => PriceListPage()),
+      GoRoute(path: '/estimation', builder: (context, state) => EstimationPage()),
+      GoRoute(path: '/reports', builder: (context, state) => ReportsPage()),
+    ],
+  );
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false, // حذف برچسب debug
-      title: 'OCR App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: OCRHighlightPage(), // صفحه اصلی OCRPage
+    return MaterialApp.router(
+      title: 'TADKAR Demo',
+      routerConfig: _router,
+      theme: ThemeData(primarySwatch: Colors.blue),
     );
   }
 }
