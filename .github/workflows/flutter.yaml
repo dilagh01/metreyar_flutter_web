@@ -1,43 +1,57 @@
-name: Flutter Setup, Build & Deploy to GitHub Pages
+name: Flutter Multi-Platform Build & Deploy
 
 on:
   push:
-    branches: [main]
-  workflow_dispatch:
-
-permissions:
-  contents: write
+    branches:
+      - main
 
 jobs:
-  build-deploy:
+  build-android-web:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. بررسی و گرفتن آخرین نسخه کد
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Set up Flutter
+      # 2. نصب Flutter نسخه مشخص
+      - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.1'
+          flutter-version: '3.24.5'
           channel: stable
 
-      - name: Clean previous Flutter project files (platform & build folders only)
-        run: |
-          rm -rf android ios linux macos windows build pubspec.lock .flutter-plugins .flutter-plugins-dependencies
-
+      # 3. دریافت وابستگی‌ها
       - name: Get dependencies
         run: flutter pub get
 
+      # 4. اطمینان از فعال بودن وب
       - name: Enable web support
         run: flutter config --enable-web
 
-      - name: Build Flutter Web with base href
-        run: flutter build web --release --base-href "/metreyar_flutter_web/"
+      # 5. ساخت اندروید APK
+      - name: Build Android APK
+        run: flutter build apk --release
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      # 6. ساخت اندروید AppBundle
+      - name: Build Android AppBundle
+        run: flutter build appbundle --release
+
+      # 7. ساخت وب با مسیر base-href مناسب
+      - name: Build Flutter Web
+        run: flutter build web --base-href "/metreyar/"
+
+      # 8. آپلود خروجی‌ها برای دانلود
+      - name: Upload build outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: flutter-builds-android-web
+          path: build/**
+
+      # 9. انتشار وب روی GitHub Pages
+      - name: Deploy Web to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: build/web
-          publish_branch: gh-pages
+          # branch: gh-pages # در صورت نیاز به branch خاص
