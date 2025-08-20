@@ -3,14 +3,14 @@ name: Flutter Multi-Platform Build & Deploy
 on:
   push:
     branches:
-      - main
+      - main   # وقتی روی main تغییرات push بشه، اجرا میشه
 
 jobs:
   build-android-web:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. بررسی و گرفتن آخرین نسخه کد
+      # 1. گرفتن سورس کد
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -21,11 +21,11 @@ jobs:
           flutter-version: '3.24.5'
           channel: stable
 
-      # 3. دریافت وابستگی‌ها
+      # 3. دریافت پکیج‌ها
       - name: Get dependencies
         run: flutter pub get
 
-      # 4. اطمینان از فعال بودن وب
+      # 4. فعال کردن وب
       - name: Enable web support
         run: flutter config --enable-web
 
@@ -37,21 +37,23 @@ jobs:
       - name: Build Android AppBundle
         run: flutter build appbundle --release
 
-      # 7. ساخت وب با مسیر base-href مناسب
+      # 7. ساخت نسخه وب با base-href درست
       - name: Build Flutter Web
-        run: flutter build web --base-href "/metreyar/"
+        run: flutter build web --base-href "/metreyar_flutter_web/"
 
-      # 8. آپلود خروجی‌ها برای دانلود
+      # 8. آپلود خروجی‌ها (قابل دانلود از بخش Actions)
       - name: Upload build outputs
         uses: actions/upload-artifact@v4
         with:
           name: flutter-builds-android-web
           path: build/**
 
-      # 9. انتشار وب روی GitHub Pages
+      # 9. انتشار روی GitHub Pages
       - name: Deploy Web to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
           publish_dir: build/web
-          # branch: gh-pages # در صورت نیاز به branch خاص
+          keep_files: false
+          enable_jekyll: false
