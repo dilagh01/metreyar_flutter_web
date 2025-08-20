@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'screens/home_screen.dart';
-import 'screens/price_list_screen.dart';
-import 'screens/report_screen.dart';
+import 'package:go_router/go_router.dart';
+import 'screens.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,71 +11,93 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    final GoRouter router = GoRouter(
+      initialLocation: '/',
+      routes: [
+        ShellRoute(
+          builder: (context, state, child) => Layout(child: child),
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (context, state) => const HomeScreen(),
+            ),
+            GoRoute(
+              path: '/pricelist',
+              builder: (context, state) => const PriceListScreen(),
+            ),
+            GoRoute(
+              path: '/report',
+              builder: (context, state) => const ReportScreen(),
+            ),
+          ],
+        ),
+      ],
+    );
+
+    return MaterialApp.router(
+      title: 'Homkar',
       debugShowCheckedModeBanner: false,
-      title: 'Homkar App',
-      home: const MainScaffold(),
+      routerConfig: router,
     );
   }
 }
 
-class MainScaffold extends StatefulWidget {
-  const MainScaffold({super.key});
+/// Layout با BottomNavigationBar
+class Layout extends StatefulWidget {
+  final Widget child;
+  const Layout({super.key, required this.child});
 
   @override
-  State<MainScaffold> createState() => _MainScaffoldState();
+  State<Layout> createState() => _LayoutState();
 }
 
-class _MainScaffoldState extends State<MainScaffold> {
-  int _selectedIndex = 0;
+class _LayoutState extends State<Layout> {
+  int _getIndex(BuildContext context) {
+    final location = GoRouterState.of(context).uri.toString();
+    if (location.startsWith('/pricelist')) return 1;
+    if (location.startsWith('/report')) return 2;
+    return 0; // home
+  }
 
-  final List<Widget> _screens = [
-    const HomeScreen(),
-    const PriceListScreen(),
-    const ReportScreen(),
-  ];
+  void _onTap(BuildContext context, int index) {
+    switch (index) {
+      case 0:
+        context.go('/');
+        break;
+      case 1:
+        context.go('/pricelist');
+        break;
+      case 2:
+        context.go('/report');
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    bool isDesktop = MediaQuery.of(context).size.width > 800;
+    final index = _getIndex(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Homkar App')),
-      drawer: isDesktop ? null : Drawer(child: _buildSidebar()),
-      body: Row(
-        children: [
-          if (isDesktop) SizedBox(width: 250, child: _buildSidebar()),
-          Expanded(child: _screens[_selectedIndex]),
+      appBar: AppBar(title: const Text("Homkar")),
+      body: widget.child,
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: index,
+        onTap: (i) => _onTap(context, i),
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: "Home",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.list),
+            label: "Price List",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bar_chart),
+            label: "Report",
+          ),
         ],
       ),
-    );
-  }
-
-  Widget _buildSidebar() {
-    return ListView(
-      children: [
-        const DrawerHeader(
-          child: Center(
-            child: Text('Homkar', style: TextStyle(fontSize: 24)),
-          ),
-        ),
-        _buildMenuItem('Home', 0, Icons.home),
-        _buildMenuItem('Price List', 1, Icons.list_alt),
-        _buildMenuItem('Report', 2, Icons.bar_chart),
-      ],
-    );
-  }
-
-  Widget _buildMenuItem(String title, int index, IconData icon) {
-    bool selected = _selectedIndex == index;
-    return ListTile(
-      leading: Icon(icon, color: selected ? Colors.blue : null),
-      title: Text(title, style: TextStyle(color: selected ? Colors.blue : null)),
-      selected: selected,
-      onTap: () {
-        setState(() => _selectedIndex = index);
-        if (MediaQuery.of(context).size.width <= 800) Navigator.pop(context);
-      },
     );
   }
 }
