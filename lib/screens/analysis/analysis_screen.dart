@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-class MeteringScreen extends StatelessWidget {
-  const MeteringScreen({super.key});
+class AnalysisScreen extends StatelessWidget {
+  const AnalysisScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("متره و برآورد")),
+      appBar: AppBar(title: const Text("تحلیل و آنالیز")),
       body: const Center(
-        child: Text("اینجا فرم و جدول متره قرار می‌گیره"),
+        child: Text("اینجا نتایج تحلیل نشون داده میشه"),
       ),
     );
   }
