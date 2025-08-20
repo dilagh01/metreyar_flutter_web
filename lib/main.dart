@@ -1,103 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'screens.dart';
+
+// Screens
+import 'screens/dashboard/dashboard_screen.dart';
+import 'screens/metering/metering_screen.dart';
+import 'screens/analysis/analysis_screen.dart';
+import 'screens/contracts/contracts_screen.dart';
+import 'screens/projects/projects_screen.dart';
+import 'screens/workflow/workflow_screen.dart';
+import 'screens/settings/settings_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MetreyarApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MetreyarApp extends StatelessWidget {
+  const MetreyarApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final GoRouter router = GoRouter(
-      initialLocation: '/',
+    final router = GoRouter(
       routes: [
-        ShellRoute(
-          builder: (context, state, child) => Layout(child: child),
-          routes: [
-            GoRoute(
-              path: '/',
-              builder: (context, state) => const HomeScreen(),
-            ),
-            GoRoute(
-              path: '/pricelist',
-              builder: (context, state) => const PriceListScreen(),
-            ),
-            GoRoute(
-              path: '/report',
-              builder: (context, state) => const ReportScreen(),
-            ),
-          ],
-        ),
+        GoRoute(path: '/', builder: (c, s) => const DashboardScreen()),
+        GoRoute(path: '/metering', builder: (c, s) => const MeteringScreen()),
+        GoRoute(path: '/analysis', builder: (c, s) => const AnalysisScreen()),
+        GoRoute(path: '/contracts', builder: (c, s) => const ContractsScreen()),
+        GoRoute(path: '/projects', builder: (c, s) => const ProjectsScreen()),
+        GoRoute(path: '/workflow', builder: (c, s) => const WorkflowScreen()),
+        GoRoute(path: '/settings', builder: (c, s) => const SettingsScreen()),
       ],
     );
 
     return MaterialApp.router(
-      title: 'Homkar',
+      title: 'Metreyar',
       debugShowCheckedModeBanner: false,
-      routerConfig: router,
-    );
-  }
-}
-
-/// Layout با BottomNavigationBar
-class Layout extends StatefulWidget {
-  final Widget child;
-  const Layout({super.key, required this.child});
-
-  @override
-  State<Layout> createState() => _LayoutState();
-}
-
-class _LayoutState extends State<Layout> {
-  int _getIndex(BuildContext context) {
-    final location = GoRouterState.of(context).uri.toString();
-    if (location.startsWith('/pricelist')) return 1;
-    if (location.startsWith('/report')) return 2;
-    return 0; // home
-  }
-
-  void _onTap(BuildContext context, int index) {
-    switch (index) {
-      case 0:
-        context.go('/');
-        break;
-      case 1:
-        context.go('/pricelist');
-        break;
-      case 2:
-        context.go('/report');
-        break;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final index = _getIndex(context);
-
-    return Scaffold(
-      appBar: AppBar(title: const Text("Homkar")),
-      body: widget.child,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: index,
-        onTap: (i) => _onTap(context, i),
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Home",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list),
-            label: "Price List",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart),
-            label: "Report",
-          ),
-        ],
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        useMaterial3: true,
       ),
+      routerConfig: router,
     );
   }
 }
