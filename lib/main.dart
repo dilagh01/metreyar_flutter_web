@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'widgets/chart_widget.dart';
-import 'widgets/data_table_widget.dart';
+import 'screens/home_screen.dart';
+import 'screens/price_list_screen.dart';
+import 'screens/report_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -8,10 +9,12 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      title: 'Homkar App',
       home: const MainScaffold(),
     );
   }
@@ -28,9 +31,9 @@ class _MainScaffoldState extends State<MainScaffold> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
-    HomeScreen(),
-    PriceListScreen(),
-    ReportScreen(),
+    const HomeScreen(),
+    const PriceListScreen(),
+    const ReportScreen(),
   ];
 
   @override
@@ -75,52 +78,5 @@ class _MainScaffoldState extends State<MainScaffold> {
         if (MediaQuery.of(context).size.width <= 800) Navigator.pop(context);
       },
     );
-  }
-}
-
-// Screens
-class HomeScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: [
-          const Text('Home / Sample Chart'),
-          SizedBox(
-            height: 300,
-            child: ChartWidget(
-              barData: [
-                BarChartGroupData(x: 0, barRods: [BarChartRodData(toY: 5)]),
-                BarChartGroupData(x: 1, barRods: [BarChartRodData(toY: 3)]),
-                BarChartGroupData(x: 2, barRods: [BarChartRodData(toY: 7)]),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class PriceListScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: const [
-          Text('Price List'),
-          DataTableWidget(),
-        ],
-      ),
-    );
-  }
-}
-
-class ReportScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text('Report Content'));
   }
 }

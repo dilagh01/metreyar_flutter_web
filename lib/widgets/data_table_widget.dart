@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 
 class DataTableWidget extends StatelessWidget {
-  final List<Map<String, String>> data = List.generate(10, (index) {
-    return {
-      "ردیف": "${index + 1}",
-      "شرح": "فعالیت نمونه ${index + 1}",
-      "مقدار": "${(index + 1) * 10}",
-      "واحد": "مترمربع",
-      "قیمت": "${(index + 1) * 100000}"
-    };
-  });
+  const DataTableWidget({super.key});
+
+  final List<Map<String, String>> data = const [
+    {"ردیف": "1", "شرح": "فعالیت نمونه 1", "مقدار": "10", "واحد": "مترمربع", "قیمت": "100000"},
+    {"ردیف": "2", "شرح": "فعالیت نمونه 2", "مقدار": "20", "واحد": "مترمربع", "قیمت": "200000"},
+    {"ردیف": "3", "شرح": "فعالیت نمونه 3", "مقدار": "30", "واحد": "مترمربع", "قیمت": "300000"},
+  ];
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: DataTable(
-        columns: [
+        columns: const [
           DataColumn(label: Text("ردیف")),
           DataColumn(label: Text("شرح")),
           DataColumn(label: Text("مقدار")),
