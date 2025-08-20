@@ -1,59 +1,45 @@
-name: Flutter Multi-Platform Build & Deploy
+name: Flutter Web SPA Build & Deploy
 
 on:
   push:
     branches:
-      - main   # وقتی روی main تغییرات push بشه، اجرا میشه
+      - main
 
 jobs:
-  build-android-web:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. گرفتن سورس کد
+      # 1. Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. نصب Flutter نسخه مشخص
+      # 2. Setup Flutter
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.24.5'
           channel: stable
 
-      # 3. دریافت پکیج‌ها
+      # 3. Get dependencies
       - name: Get dependencies
         run: flutter pub get
 
-      # 4. فعال کردن وب
-      - name: Enable web support
+      # 4. Enable web
+      - name: Enable web
         run: flutter config --enable-web
 
-      # 5. ساخت اندروید APK
-      - name: Build Android APK
-        run: flutter build apk --release
-
-      # 6. ساخت اندروید AppBundle
-      - name: Build Android AppBundle
-        run: flutter build appbundle --release
-
-      # 7. ساخت نسخه وب با base-href درست
+      # 5. Build Flutter Web with base href /
       - name: Build Flutter Web
-        run: flutter build web --base-href "/metreyar_flutter_web/"
+        run: flutter build web --base-href /
 
-      # 8. آپلود خروجی‌ها (قابل دانلود از بخش Actions)
-      - name: Upload build outputs
-        uses: actions/upload-artifact@v4
-        with:
-          name: flutter-builds-android-web
-          path: build/**
+      # 6. Copy index.html to 404.html for SPA routing
+      - name: Create 404.html
+        run: cp build/web/index.html build/web/404.html
 
-      # 9. انتشار روی GitHub Pages
-      - name: Deploy Web to GitHub Pages
+      # 7. Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
           publish_dir: build/web
-          keep_files: false
-          enable_jekyll: false
