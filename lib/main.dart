@@ -1,14 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-// Screens
-import 'screens/dashboard/dashboard_screen.dart';
-import 'screens/metering/metering_screen.dart';
-import 'screens/analysis/analysis_screen.dart';
-import 'screens/contracts/contracts_screen.dart';
-import 'screens/projects/projects_screen.dart';
-import 'screens/workflow/workflow_screen.dart';
-import 'screens/settings/settings_screen.dart';
+import 'screens.dart'; // همه صفحات رو از اینجا می‌گیریم
 
 void main() {
   runApp(const MetreyarApp());
@@ -19,26 +12,34 @@ class MetreyarApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final router = GoRouter(
-      routes: [
-        GoRoute(path: '/', builder: (c, s) => const DashboardScreen()),
-        GoRoute(path: '/metering', builder: (c, s) => const MeteringScreen()),
-        GoRoute(path: '/analysis', builder: (c, s) => const AnalysisScreen()),
-        GoRoute(path: '/contracts', builder: (c, s) => const ContractsScreen()),
-        GoRoute(path: '/projects', builder: (c, s) => const ProjectsScreen()),
-        GoRoute(path: '/workflow', builder: (c, s) => const WorkflowScreen()),
-        GoRoute(path: '/settings', builder: (c, s) => const SettingsScreen()),
-      ],
-    );
-
     return MaterialApp.router(
-      title: 'Metreyar',
       debugShowCheckedModeBanner: false,
+      title: 'Metreyar',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        useMaterial3: true,
       ),
-      routerConfig: router,
+      routerConfig: _router,
     );
   }
 }
+
+final GoRouter _router = GoRouter(
+  initialLocation: '/',
+  routes: [
+    GoRoute(path: '/', builder: (context, state) => const HomeScreen()),
+
+    // --- ماژول‌ها
+    GoRoute(path: '/dashboard', builder: (context, state) => const DashboardScreen()),
+    GoRoute(path: '/projects', builder: (context, state) => const ProjectsModuleScreen()),
+    GoRoute(path: '/metering', builder: (context, state) => const MeteringScreen()),
+    GoRoute(path: '/analysis', builder: (context, state) => const AnalysisScreen()),
+    GoRoute(path: '/contracts', builder: (context, state) => const ContractsScreen()),
+    GoRoute(path: '/settings', builder: (context, state) => const SettingsScreen()),
+    GoRoute(path: '/workflow', builder: (context, state) => const WorkflowScreen()),
+
+    // --- صفحات فرعی
+    GoRoute(path: '/reports', builder: (context, state) => const ReportScreen()),
+    GoRoute(path: '/price-list', builder: (context, state) => const PriceListScreen()),
+    GoRoute(path: '/projects-old', builder: (context, state) => const ProjectsScreen()),
+  ],
+);

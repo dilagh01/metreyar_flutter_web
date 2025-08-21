@@ -1,34 +1,16 @@
-import 'package:flutter/material.dart';
+// 📌 این فایل فقط ایمپورت‌ها رو جمع می‌کنه
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+// screens
+export 'screens/home_screen.dart';
+export 'screens/projects_screen.dart';
+export 'screens/report_screen.dart';
+export 'screens/price_list_screen.dart';
 
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text('🏠 Home Page', style: TextStyle(fontSize: 28)),
-    );
-  }
-}
-
-class PriceListScreen extends StatelessWidget {
-  const PriceListScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text('💰 Price List Page', style: TextStyle(fontSize: 28)),
-    );
-  }
-}
-
-class ReportScreen extends StatelessWidget {
-  const ReportScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text('📊 Report Page', style: TextStyle(fontSize: 28)),
-    );
-  }
-}
+// modules
+export 'screens/dashboard/dashboard_screen.dart';
+export 'screens/projects/projects_screen.dart' show ProjectsScreen as ProjectsModuleScreen;
+export 'screens/metering/metering_screen.dart';
+export 'screens/analysis/analysis_screen.dart';
+export 'screens/contracts/contracts_screen.dart';
+export 'screens/settings/settings_screen.dart';
+export 'screens/workflow/workflow_screen.dart';
