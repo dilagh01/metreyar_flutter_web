@@ -1,15 +1,14 @@
-import 'package:flutter/material.dart';
 
 class FeatureCard extends StatelessWidget {
   final String title;
   final String description;
-  final IconData icon;
+  final IconData? icon; // 👈 اختیاری شد
 
   const FeatureCard({
     super.key,
     required this.title,
     required this.description,
-    required this.icon,
+    this.icon, // 👈 دیگه required نیست
   });
 
   @override
@@ -25,7 +24,8 @@ class FeatureCard extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 40, color: Theme.of(context).primaryColor),
+            if (icon != null) // 👈 فقط وقتی آیکون هست نشون بده
+              Icon(icon, size: 40, color: Theme.of(context).primaryColor),
             const SizedBox(height: 12),
             Text(
               title,
@@ -44,3 +44,4 @@ class FeatureCard extends StatelessWidget {
     );
   }
 }
+
