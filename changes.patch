@@ -1,19 +1,8 @@
-diff --git a/lib/main.dart b/lib/main.dart
-index 3f2e1a1..e2e4b11 100644
---- a/lib/main.dart
-+++ b/lib/main.dart
-@@ -6,7 +6,7 @@
- // جلوگیری از تداخل اسم
--import 'screens/projects/projects_screen.dart' as projects_module;
-+import 'screens/projects_screen.dart' as projects_module;
- 
- import 'screens.dart';
- 
 diff --git a/lib/screens/screens.dart b/lib/screens/screens.dart
-index 1111111..2222222 100644
+index e69de29..a123456 100644
 --- a/lib/screens/screens.dart
 +++ b/lib/screens/screens.dart
-@@ -1,11 +1,16 @@
+@@
 -export 'screens/home_screen.dart';
 -export 'screens/projects/projects_screen.dart';
 -export 'screens/metering/metering_screen.dart';
