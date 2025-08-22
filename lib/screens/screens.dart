@@ -1,11 +1,11 @@
 export 'home_screen.dart';
-export 'projects/projects_screen.dart';
-export 'metering/metering_screen.dart';
-export 'analysis/analysis_screen.dart';
-export 'contracts/contracts_screen.dart';
-export 'settings/settings_screen.dart';
-export 'workflow/workflow_screen.dart';
-export 'dashboard/dashboard_screen.dart';
+export 'projects_screen.dart';
+export 'metering_screen.dart';
+export 'analysis_screen.dart';
+export 'contracts_screen.dart';
+export 'settings_screen.dart';
+export 'workflow_screen.dart';
+export 'dashboard_screen.dart';
 export 'price_list_screen.dart';
 export 'report_screen.dart';
 
