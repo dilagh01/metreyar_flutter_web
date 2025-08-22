@@ -1,36 +1,45 @@
-name: Flutter Web SPA Build & Deploy
+name: Flutter Web Build & Deploy
 
 on:
   push:
     branches:
-      - main
-  workflow_dispatch:
+      - main  # شاخه‌ای که میخوای deploy بشه
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.24.0'
-          channel: stable
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.24.0'  # نسخه‌ای که پروژه استفاده می‌کنه
 
-      - name: Get Dependencies
-        run: flutter pub get
+    - name: Install dependencies
+      run: flutter pub get
 
-      - name: Enable web
-        run: flutter config --enable-web
+    - name: Enable Web
+      run: flutter config --enable-web
 
-      - name: Build Flutter Web
-        run: flutter build web --base-href / --verbose
+    - name: Clean previous builds
+      run: flutter clean
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/web
+    - name: Build Flutter Web
+      run: |
+        # ساخت Web با base-href مناسب
+        sed -i 's|<base href="/">|<base href="/"/>|' web/index.html
+        flutter build web --release --base-href /
+      env:
+        FLUTTER_BASE_HREF: "/"
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v6
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: build/web
+        user_name: GitHub Actions
+        user_email: actions@github.com
+        keep_files: false
