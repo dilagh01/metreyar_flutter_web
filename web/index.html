@@ -2,25 +2,19 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <base href="/"> 
-    <title>Metreyar Flutter Web</title>
-    <meta name="description" content="Flutter Web App">
+    <meta name="description" content="Metreyar Flutter Web App">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- 👇 این خط الزامی است برای Flutter Web build -->
+    
+    <!-- مهم برای Flutter Web -->
     <base href="/">
+    
+    <title>Metreyar Flutter Web</title>
 
-    <link rel="manifest" href="manifest.json">
+    <!-- فونت‌ها و favicon در صورت نیاز -->
     <link rel="icon" type="image/png" href="favicon.png">
   </head>
   <body>
-    <script src="flutter.js"></script>
-    <script>
-      window.addEventListener('load', function(ev) {
-        if (typeof flutterMain === 'function') {
-          flutterMain();
-        }
-      });
-    </script>
+    <!-- Flutter Web App در اینجا لود می‌شود -->
+    <script src="main.dart.js" type="application/javascript"></script>
   </body>
 </html>
