@@ -1,32 +1,21 @@
-diff --git a/lib/screens/screens.dart b/lib/screens/screens.dart
-index e69de29..a123456 100644
---- a/lib/screens/screens.dart
-+++ b/lib/screens/screens.dart
-@@
--export 'screens/home_screen.dart';
--export 'screens/projects/projects_screen.dart';
--export 'screens/metering/metering_screen.dart';
--export 'screens/analysis/analysis_screen.dart';
--export 'screens/contracts/contracts_screen.dart';
--export 'screens/settings/settings_screen.dart';
--export 'screens/workflow/workflow_screen.dart';
--export 'screens/dashboard/dashboard_screen.dart';
--export 'screens/price_list_screen.dart';
--export 'screens/report_screen.dart';
-+export 'home_screen.dart';
-+export 'projects_screen.dart';
-+export 'metering_screen.dart';
-+export 'analysis_screen.dart';
-+export 'contracts_screen.dart';
-+export 'settings_screen.dart';
-+export 'workflow_screen.dart';
-+export 'dashboard_screen.dart';
-+export 'price_list_screen.dart';
-+export 'report_screen.dart';
+diff --git a/.github/workflows/flutter.yaml b/.github/workflows/flutter.yaml
+index e69de29..a3c5f22 100644
+--- a/.github/workflows/flutter.yaml
++++ b/.github/workflows/flutter.yaml
+@@ -28,7 +28,13 @@ jobs:
+       - name: Enable web
+         run: flutter config --enable-web
+ 
+-      - name: Build Flutter Web
+-        run: flutter build web --release
++      - name: Build Flutter Web
++        run: |
++          set -o pipefail
++          flutter build web --release -v 2>&1 | tee build_log.txt
 +
-+// features
-+export 'features_screen.dart';
-+
-+// widgets
-+export '../widgets/footer.dart';
-+export '../widgets/nav_bar.dart';
++      - name: Upload build logs on failure
++        if: failure()
++        uses: actions/upload-artifact@v4
++        with:
++          name: flutter-web-build-log
++          path: build_log.txt

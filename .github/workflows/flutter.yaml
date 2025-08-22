@@ -4,42 +4,33 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout repository
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      # 2. Setup Flutter
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5'
+          flutter-version: '3.24.0'
           channel: stable
 
-      # 3. Get dependencies
-      - name: Get dependencies
+      - name: Get Dependencies
         run: flutter pub get
 
-      # 4. Enable web
       - name: Enable web
         run: flutter config --enable-web
 
-      # 5. Build Flutter Web with base href /
       - name: Build Flutter Web
-        run: flutter build web --base-href /
+        run: flutter build web --base-href / --verbose
 
-      # 6. Copy index.html to 404.html for SPA routing
-      - name: Create 404.html
-        run: cp build/web/index.html build/web/404.html
-
-      # 7. Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+        uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: build/web
+          publish_dir: ./build/web
