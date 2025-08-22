@@ -1,31 +1,62 @@
 import 'package:flutter/material.dart';
-import 'screens/screens.dart';
 import 'package:go_router/go_router.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+// صفحه Features
+class FeaturesScreen extends StatelessWidget {
+  const FeaturesScreen({super.key}); // سازنده const
 
   @override
   Widget build(BuildContext context) {
-    final router = GoRouter(
-      routes: [
-        GoRoute(path: '/', builder: (context, state) => const HomeScreen()),
-        GoRoute(path: '/features', builder: (context, state) => const FeaturesScreen()),
-        GoRoute(path: '/price-list', builder: (context, state) => const PriceListScreen()),
-        GoRoute(path: '/analysis', builder: (context, state) => const AnalysisScreen()),
-        GoRoute(path: '/contracts', builder: (context, state) => const ContractsScreen()),
-        GoRoute(path: '/workflow', builder: (context, state) => const WorkflowScreen()),
-        GoRoute(path: '/dashboard', builder: (context, state) => const DashboardScreen()),
-        GoRoute(path: '/report', builder: (context, state) => const ReportScreen()),
-        GoRoute(path: '/projects', builder: (context, state) => const ProjectsScreen()),
-      ],
+    return Scaffold(
+      appBar: AppBar(title: const Text('Features')),
+      body: const Center(child: Text('Features Screen')),
     );
+  }
+}
 
+// صفحه Home
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Home')),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () => context.go('/features'),
+          child: const Text('Go to Features'),
+        ),
+      ),
+    );
+  }
+}
+
+void main() {
+  final GoRouter _router = GoRouter(
+    routes: [
+      GoRoute(
+        path: '/',
+        builder: (context, state) => const HomeScreen(),
+      ),
+      GoRoute(
+        path: '/features',
+        builder: (context, state) => const FeaturesScreen(),
+      ),
+    ],
+  );
+
+  runApp(MyApp(router: _router));
+}
+
+class MyApp extends StatelessWidget {
+  final GoRouter router;
+  const MyApp({super.key, required this.router});
+
+  @override
+  Widget build(BuildContext context) {
     return MaterialApp.router(
+      title: 'Metreyar Flutter Web',
       routerConfig: router,
       debugShowCheckedModeBanner: false,
     );
