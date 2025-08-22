@@ -1,47 +1,42 @@
 import 'package:flutter/material.dart';
-import '../widgets/nav_bar.dart';
-import '../widgets/footer.dart';
 import '../widgets/feature_card.dart';
 
 class FeaturesScreen extends StatelessWidget {
-  const FeaturesScreen({super.key});
-
-  final List<Map<String, String>> features = const [
+  final List<Map<String, dynamic>> features = [
     {
-      'title': 'کاربری ساده و آسان',
-      'description': 'User Friendly و نصب سریع روی Windows بدون سخت افزار خاص.'
+      'title': 'ویژگی 1',
+      'description': 'توضیحات ویژگی 1',
+      'icon': Icons.star,
     },
     {
-      'title': 'فهرست بها',
-      'description': 'فهرستهای سال 1370 تا 1388 و به روز رسانی فهرستهای آینده.'
+      'title': 'ویژگی 2',
+      'description': 'توضیحات ویژگی 2',
+      'icon': Icons.favorite,
     },
-    {
-      'title': 'ضرایب و آنالیز بها',
-      'description': 'اعمال ضریب روی ردیف، فصل، رشته و پروژه به طور دلخواه.'
-    },
-    // بقیه ویژگی‌ها را همینجا اضافه کنید
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: NavBar(),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            for (var feature in features)
-              FeatureCard(
-                title: feature['title']!,
-                description: feature['description']!,
-              ),
-            const SizedBox(height: 50),
-            const Footer(),
-          ],
+      appBar: AppBar(title: const Text('Features')),
+      body: GridView.builder(
+        padding: const EdgeInsets.all(16),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          mainAxisSpacing: 16,
+          crossAxisSpacing: 16,
+          childAspectRatio: 1,
         ),
+        itemCount: features.length,
+        itemBuilder: (context, index) {
+          final feature = features[index];
+          return FeatureCard(
+            title: feature['title']!,
+            description: feature['description']!,
+            icon: feature['icon']!,
+          );
+        },
       ),
     );
   }
 }
-
-
