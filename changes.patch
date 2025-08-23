@@ -1,102 +1,37 @@
 diff --git a/lib/main.dart b/lib/main.dart
-index abc1234..def5678 100644
+index abc123..def456 100644
 --- a/lib/main.dart
 +++ b/lib/main.dart
 @@
--import 'package:flutter/material.dart';
--import 'package:go_router/go_router.dart';
--
--// صفحات
--import 'screens/home_screen.dart';
--import 'screens/projects_screen.dart';
--import 'screens/metering_screen.dart';
--import 'screens/analysis_screen.dart';
--import 'screens/contracts_screen.dart';
--import 'screens/settings_screen.dart';
--import 'screens/workflow_screen.dart';
--import 'screens/dashboard_screen.dart';
--import 'screens/price_list_screen.dart';
--import 'screens/report_screen.dart';
--import 'screens/features_screen.dart';
--
--void main() {
--  runApp(MyApp());
--}
--
--class MyApp extends StatelessWidget {
--  MyApp({super.key});
--
--  final _router = GoRouter(
--    routes: [
--      GoRoute(path: '/', builder: (context, state) => HomeScreen()),
--      GoRoute(path: '/projects', builder: (context, state) => ProjectsScreen()),
--      GoRoute(path: '/metering', builder: (context, state) => MeteringScreen()),
--      GoRoute(path: '/analysis', builder: (context, state) => AnalysisScreen()),
--      GoRoute(path: '/contracts', builder: (context, state) => ContractsScreen()),
--      GoRoute(path: '/settings', builder: (context, state) => SettingsScreen()),
--      GoRoute(path: '/workflow', builder: (context, state) => WorkflowScreen()),
--      GoRoute(path: '/dashboard', builder: (context, state) => DashboardScreen()),
--      GoRoute(path: '/price-list', builder: (context, state) => PriceListScreen()),
--      GoRoute(path: '/report', builder: (context, state) => ReportScreen()),
--      GoRoute(path: '/features', builder: (context, state) => FeaturesScreen()),
--    ],
--  );
--
--  @override
--  Widget build(BuildContext context) {
--    return MaterialApp.router(
--      title: 'Metreyar Flutter Web',
--      theme: ThemeData(
--        primarySwatch: Colors.blue,
--      ),
--      routerConfig: _router,
--    );
--  }
--}
-+import 'package:flutter/material.dart';
-+import 'package:go_router/go_router.dart';
-+
-+import 'screens/home_screen.dart';
-+import 'screens/projects_screen.dart';
-+import 'screens/metering_screen.dart';
-+import 'screens/analysis_screen.dart';
-+import 'screens/contracts_screen.dart';
-+import 'screens/settings_screen.dart';
-+import 'screens/workflow_screen.dart';
-+import 'screens/dashboard_screen.dart';
-+import 'screens/price_list_screen.dart';
-+import 'screens/report_screen.dart';
-+import 'screens/features_screen.dart';
-+
-+void main() {
-+  runApp(MyApp());
-+}
-+
-+class MyApp extends StatelessWidget {
-+  MyApp({super.key});
-+
-+  final _router = GoRouter(
-+    routes: [
-+      GoRoute(path: '/', builder: (context, state) => HomeScreen()),
-+      GoRoute(path: '/projects', builder: (context, state) => ProjectsScreen()),
-+      GoRoute(path: '/metering', builder: (context, state) => MeteringScreen()),
-+      GoRoute(path: '/analysis', builder: (context, state) => AnalysisScreen()),
-+      GoRoute(path: '/contracts', builder: (context, state) => ContractsScreen()),
-+      GoRoute(path: '/settings', builder: (context, state) => SettingsScreen()),
-+      GoRoute(path: '/workflow', builder: (context, state) => WorkflowScreen()),
-+      GoRoute(path: '/dashboard', builder: (context, state) => DashboardScreen()),
-+      GoRoute(path: '/price-list', builder: (context, state) => PriceListScreen()),
-+      GoRoute(path: '/report', builder: (context, state) => ReportScreen()),
-+      GoRoute(path: '/features', builder: (context, state) => FeaturesScreen()),
-+    ],
-+  );
-+
-+  @override
-+  Widget build(BuildContext context) {
-+    return MaterialApp.router(
-+      title: 'Metreyar Flutter Web',
-+      theme: ThemeData(primarySwatch: Colors.blue),
-+      routerConfig: _router,
-+    );
-+  }
-+}
+- GoRoute(path: '/features', builder: (c, s) => const FeaturesScreen()),
++ GoRoute(path: '/features', builder: (c, s) => FeaturesScreen()),
+@@
+- GoRoute(path: '/home', builder: (c, s) => const HomeScreen()),
++ GoRoute(path: '/home', builder: (c, s) => HomeScreen()),
+@@
+- GoRoute(path: '/projects', builder: (c, s) => const ProjectsScreen()),
++ GoRoute(path: '/projects', builder: (c, s) => ProjectsScreen()),
+@@
+- GoRoute(path: '/metering', builder: (c, s) => const MeteringScreen()),
++ GoRoute(path: '/metering', builder: (c, s) => MeteringScreen()),
+@@
+- GoRoute(path: '/analysis', builder: (c, s) => const AnalysisScreen()),
++ GoRoute(path: '/analysis', builder: (c, s) => AnalysisScreen()),
+@@
+- GoRoute(path: '/contracts', builder: (c, s) => const ContractsScreen()),
++ GoRoute(path: '/contracts', builder: (c, s) => ContractsScreen()),
+@@
+- GoRoute(path: '/settings', builder: (c, s) => const SettingsScreen()),
++ GoRoute(path: '/settings', builder: (c, s) => SettingsScreen()),
+@@
+- GoRoute(path: '/workflow', builder: (c, s) => const WorkflowScreen()),
++ GoRoute(path: '/workflow', builder: (c, s) => WorkflowScreen()),
+@@
+- GoRoute(path: '/dashboard', builder: (c, s) => const DashboardScreen()),
++ GoRoute(path: '/dashboard', builder: (c, s) => DashboardScreen()),
+@@
+- GoRoute(path: '/price_list', builder: (c, s) => const PriceListScreen()),
++ GoRoute(path: '/price_list', builder: (c, s) => PriceListScreen()),
+@@
+- GoRoute(path: '/report', builder: (c, s) => const ReportScreen()),
++ GoRoute(path: '/report', builder: (c, s) => ReportScreen()),
