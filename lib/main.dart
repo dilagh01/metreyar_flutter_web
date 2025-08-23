@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+// import screens
+import 'screens/screens.dart'; // فایل بارل توی screens
+
 void main() {
   runApp(MyApp());
 }
@@ -8,7 +11,6 @@ void main() {
 class MyApp extends StatelessWidget {
   MyApp({super.key});
 
-  // تعریف GoRouter
   final GoRouter _router = GoRouter(
     routes: [
       GoRoute(
@@ -16,12 +18,45 @@ class MyApp extends StatelessWidget {
         builder: (context, state) => HomeScreen(),
       ),
       GoRoute(
-        path: '/features',
-        builder: (context, state) => FeaturesScreen(),
+        path: '/projects',
+        builder: (context, state) => ProjectsScreen(),
       ),
       GoRoute(
-        path: '/about',
-        builder: (context, state) => AboutScreen(),
+        path: '/metering',
+        builder: (context, state) => MeteringScreen(),
+      ),
+      GoRoute(
+        path: '/analysis',
+        builder: (context, state) => AnalysisScreen(),
+      ),
+      GoRoute(
+        path: '/contracts',
+        builder: (context, state) => ContractsScreen(),
+      ),
+      GoRoute(
+        path: '/settings',
+        builder: (context, state) => SettingsScreen(),
+      ),
+      GoRoute(
+        path: '/workflow',
+        builder: (context, state) => WorkflowScreen(),
+      ),
+      GoRoute(
+        path: '/dashboard',
+        builder: (context, state) => DashboardScreen(),
+      ),
+      GoRoute(
+        path: '/price-list',
+        builder: (context, state) => PriceListScreen(),
+      ),
+      GoRoute(
+        path: '/report',
+        builder: (context, state) => ReportScreen(),
+      ),
+      // features
+      GoRoute(
+        path: '/features',
+        builder: (context, state) => FeaturesScreen(),
       ),
     ],
   );
@@ -29,66 +64,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Flutter Web Demo',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      title: 'Metreyar Flutter Web',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
       routerConfig: _router,
-    );
-  }
-}
-
-// --- صفحات نمونه ---
-
-class HomeScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('خانه')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('صفحه خانه'),
-            ElevatedButton(
-              onPressed: () => context.go('/features'),
-              child: Text('رفتن به Features'),
-            ),
-            ElevatedButton(
-              onPressed: () => context.go('/about'),
-              child: Text('رفتن به About'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class FeaturesScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Features')),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () => context.go('/'),
-          child: Text('بازگشت به خانه'),
-        ),
-      ),
-    );
-  }
-}
-
-class AboutScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('About')),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () => context.go('/'),
-          child: Text('بازگشت به خانه'),
-        ),
-      ),
     );
   }
 }
