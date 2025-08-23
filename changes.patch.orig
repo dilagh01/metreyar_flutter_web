@@ -1,0 +1,26 @@
+diff --git a/changes.patch b/changes.patch
+index 0d6f0e6..e69de29 100644
+--- a/changes.patch
++++ b/changes.patch
+@@ -1,21 +0,0 @@
+-diff --git a/.github/workflows/flutter.yaml b/.github/workflows/flutter.yaml
+-index e69de29..a3c5f22 100644
+---- a/.github/workflows/flutter.yaml
+-+++ b/.github/workflows/flutter.yaml
+-@@ -28,7 +28,13 @@ jobs:
+-       - name: Enable web
+-         run: flutter config --enable-web
+- 
+--      - name: Build Flutter Web
+--        run: flutter build web --release
+-+      - name: Build Flutter Web
+-+        run: |
+-+          set -o pipefail
+-+          flutter build web --release -v 2>&1 | tee build_log.txt
+-+
+-+      - name: Upload build logs on failure
+-+        if: failure()
+-+        uses: actions/upload-artifact@v4
+-+        with:
+-+          name: flutter-web-build-log
+-+          path: build_log.txt
