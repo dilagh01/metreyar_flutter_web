@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-// import barrel file
-import 'screens/screens.dart'; // همه اسکرین‌ها + navbar + footer
-
 void main() {
   runApp(MyApp());
 }
@@ -11,46 +8,86 @@ void main() {
 class MyApp extends StatelessWidget {
   MyApp({super.key});
 
+  // تعریف GoRouter
   final GoRouter _router = GoRouter(
     routes: [
-      GoRoute(path: '/', builder: (context, state) => const PageWrapper(child: HomeScreen())),
-      GoRoute(path: '/projects', builder: (context, state) => const PageWrapper(child: ProjectsScreen())),
-      GoRoute(path: '/metering', builder: (context, state) => const PageWrapper(child: MeteringScreen())),
-      GoRoute(path: '/analysis', builder: (context, state) => const PageWrapper(child: AnalysisScreen())),
-      GoRoute(path: '/contracts', builder: (context, state) => const PageWrapper(child: ContractsScreen())),
-      GoRoute(path: '/settings', builder: (context, state) => const PageWrapper(child: SettingsScreen())),
-      GoRoute(path: '/workflow', builder: (context, state) => const PageWrapper(child: WorkflowScreen())),
-      GoRoute(path: '/dashboard', builder: (context, state) => const PageWrapper(child: DashboardScreen())),
-      GoRoute(path: '/price-list', builder: (context, state) => const PageWrapper(child: PriceListScreen())),
-      GoRoute(path: '/report', builder: (context, state) => const PageWrapper(child: ReportScreen())),
-      GoRoute(path: '/features', builder: (context, state) => const PageWrapper(child: FeaturesScreen())),
+      GoRoute(
+        path: '/',
+        builder: (context, state) => HomeScreen(),
+      ),
+      GoRoute(
+        path: '/features',
+        builder: (context, state) => FeaturesScreen(),
+      ),
+      GoRoute(
+        path: '/about',
+        builder: (context, state) => AboutScreen(),
+      ),
     ],
   );
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Metreyar Flutter Web',
+      title: 'Flutter Web Demo',
       theme: ThemeData(primarySwatch: Colors.blue),
       routerConfig: _router,
     );
   }
 }
 
-/// این ویجت وظیفه داره همه صفحات رو با NavBar و Footer بپیچه
-class PageWrapper extends StatelessWidget {
-  final Widget child;
-  const PageWrapper({super.key, required this.child});
+// --- صفحات نمونه ---
 
+class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          const NavBar(),
-          Expanded(child: child),
-          const Footer(),
-        ],
+      appBar: AppBar(title: Text('خانه')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('صفحه خانه'),
+            ElevatedButton(
+              onPressed: () => context.go('/features'),
+              child: Text('رفتن به Features'),
+            ),
+            ElevatedButton(
+              onPressed: () => context.go('/about'),
+              child: Text('رفتن به About'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class FeaturesScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Features')),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () => context.go('/'),
+          child: Text('بازگشت به خانه'),
+        ),
+      ),
+    );
+  }
+}
+
+class AboutScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('About')),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () => context.go('/'),
+          child: Text('بازگشت به خانه'),
+        ),
       ),
     );
   }
