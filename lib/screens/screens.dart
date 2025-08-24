@@ -8,10 +8,12 @@ export 'settings_screen.dart';
 export 'workflow_screen.dart';
 export 'dashboard_screen.dart';
 export 'price_list_screen.dart';
+export 'price_list_page.dart';
 export 'report_screen.dart';
 
 // Features
 export 'features_screen.dart';
+export 'feature_card.dart'; // اگر FeatureScreen حذف شده، فقط FeatureCard بماند
 
 // Widgets
 export '../widgets/footer.dart';
@@ -29,8 +31,10 @@ import 'settings_screen.dart';
 import 'workflow_screen.dart';
 import 'dashboard_screen.dart';
 import 'price_list_screen.dart';
+import 'price_list_page.dart';
 import 'report_screen.dart';
 import 'features_screen.dart';
+import 'feature_card.dart';
 
 class AppPage {
   final String title;
@@ -51,6 +55,8 @@ final List<AppPage> appPages = [
   AppPage(title: "تنظیمات", icon: Icons.settings, page: const SettingsScreen()),
   AppPage(title: "جریان‌کار", icon: Icons.timeline, page: const WorkflowScreen()),
   AppPage(title: "لیست قیمت", icon: Icons.list_alt, page: const PriceListScreen()),
+  AppPage(title: "صفحه لیست قیمت", icon: Icons.list, page: const PriceListPage()),
   AppPage(title: "گزارش", icon: Icons.bar_chart, page: const ReportScreen()),
   AppPage(title: "ویژگی‌ها", icon: Icons.star, page: const FeaturesScreen()),
+  AppPage(title: "ویژگی کارت", icon: Icons.credit_card, page: const FeatureCardScreen()),
 ];
