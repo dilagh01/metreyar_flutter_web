@@ -1,36 +1,8 @@
 import 'package:flutter/material.dart';
-import 'home_screen.dart';
-import 'projects_screen.dart';
-import 'metering_screen.dart';
-import 'analysis_screen.dart';
-import 'contracts_screen.dart';
-import 'settings_screen.dart';
-import 'workflow_screen.dart';
-import 'dashboard_screen.dart';
-import 'price_list_screen.dart';
-import 'price_list_page.dart';
-import 'report_screen.dart';
-import 'features_screen.dart';
-import 'feature_card.dart';
+import 'package:metreyar_flutter_web/screens/features_screen.dart';
+import 'package:metreyar_flutter_web/screens/price_list_screen.dart';
+// سایر صفحه‌ها را همینجا import کنید
 
-// تعریف Map صفحات
-final Map<String, Widget Function()> pagesMap = {
-  "داشبورد": () => const DashboardScreen(),
-  "خانه": () => const HomeScreen(),
-  "پروژه‌ها": () => const ProjectsScreen(),
-  "متره": () => const MeteringScreen(),
-  "تحلیل": () => const AnalysisScreen(),
-  "قراردادها": () => const ContractsScreen(),
-  "تنظیمات": () => const SettingsScreen(),
-  "جریان‌کار": () => const WorkflowScreen(),
-  "لیست قیمت": () => const PriceListScreen(),
-  "صفحه لیست قیمت": () => const PriceListPage(),
-  "گزارش": () => const ReportScreen(),
-  "ویژگی‌ها": () => const FeaturesScreen(),
-  "ویژگی کارت": () => const FeatureCardScreen(),
-};
-
-// ساخت لیست AppPage پویا از Map
 class AppPage {
   final String title;
   final IconData icon;
@@ -39,50 +11,57 @@ class AppPage {
   AppPage({required this.title, required this.icon, required this.page});
 }
 
-// 📌 ساخت لیست پویا از Map
-final List<AppPage> appPages = pagesMap.entries.map((entry) {
-  IconData icon;
-  switch (entry.key) {
-    case "داشبورد":
-      icon = Icons.dashboard;
-      break;
-    case "خانه":
-      icon = Icons.home;
-      break;
-    case "پروژه‌ها":
-      icon = Icons.work;
-      break;
-    case "متره":
-      icon = Icons.calculate;
-      break;
-    case "تحلیل":
-      icon = Icons.analytics;
-      break;
-    case "قراردادها":
-      icon = Icons.description;
-      break;
-    case "تنظیمات":
-      icon = Icons.settings;
-      break;
-    case "جریان‌کار":
-      icon = Icons.timeline;
-      break;
-    case "لیست قیمت":
-    case "صفحه لیست قیمت":
-      icon = Icons.list_alt;
-      break;
-    case "گزارش":
-      icon = Icons.bar_chart;
-      break;
-    case "ویژگی‌ها":
-      icon = Icons.star;
-      break;
-    case "ویژگی کارت":
-      icon = Icons.credit_card;
-      break;
-    default:
-      icon = Icons.pages;
-  }
+class ScreensGrid extends StatelessWidget {
+  ScreensGrid({super.key});
 
-  return AppPage(title: entry.key, icon: icon, page: entry.value());
-}).toList();
+  final List<AppPage> pages = [
+    AppPage(title: "صفحه لیست قیمت", icon: Icons.list, page: PriceListPage()),
+    AppPage(title: "ویژگی‌ها", icon: Icons.star, page: FeaturesScreen()),
+    // بقیه صفحات را اینجا اضافه کنید
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Metreyar Web')),
+      body: GridView.builder(
+        padding: const EdgeInsets.all(16),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3, // تعداد ستون‌ها
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
+          childAspectRatio: 1.2,
+        ),
+        itemCount: pages.length,
+        itemBuilder: (context, index) {
+          final page = pages[index];
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => page.page),
+              );
+            },
+            child: Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(page.icon, size: 50, color: Colors.blue),
+                  const SizedBox(height: 12),
+                  Text(page.title,
+                      style:
+                          const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
