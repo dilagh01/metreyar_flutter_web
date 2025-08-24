@@ -15,8 +15,8 @@ class ScreensGrid extends StatelessWidget {
   ScreensGrid({super.key});
 
   final List<AppPage> pages = [
-    AppPage(title: "صفحه لیست قیمت", icon: Icons.list, page: PriceListPage()),
-    AppPage(title: "ویژگی‌ها", icon: Icons.star, page: FeaturesScreen()),
+   # AppPage(title: "صفحه لیست قیمت", icon: Icons.list, page: PriceListPage()),
+    #AppPage(title: "ویژگی‌ها", icon: Icons.star, page: FeaturesScreen()),
     // بقیه صفحات را اینجا اضافه کنید
   ];
 
