@@ -1,4 +1,3 @@
-
 class RowItem {
   final String title;
   final String value;
