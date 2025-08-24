@@ -1,33 +1,35 @@
-// lib/widgets/metreyar_table.dart
 import 'package:flutter/material.dart';
 import '../models/row_item.dart';
+import '../models/project.dart';
+import '../widgets/metreyar_table.dart';
 
-class MetreyarTable extends StatelessWidget {
-  final List<RowItem> rows;
+class HomeScreen extends StatelessWidget {
+  HomeScreen({super.key});
 
-  const MetreyarTable({required this.rows, super.key});
+  final List<RowItem> rows = [
+    RowItem(title: 'سیمان', value: 5000),
+    RowItem(title: 'ماسه', value: 3000),
+  ];
+
+  final Project project = Project(
+    name: 'پروژه نمونه',
+    createdAt: DateTime.now(),
+  );
 
   @override
   Widget build(BuildContext context) {
-    return DataTable(
-      columns: const [
-        DataColumn(label: Text('ردیف')),
-        DataColumn(label: Text('شرح')),
-        DataColumn(label: Text('مقدار')),
-        DataColumn(label: Text('بهای واحد')),
-        DataColumn(label: Text('جمع')),
-      ],
-      rows: rows.map((row) {
-        return DataRow(
-          cells: [
-            DataCell(Text((rows.indexOf(row) + 1).toString())),
-            DataCell(Text(row.description)),
-            DataCell(Text(row.quantity.toString())),
-            DataCell(Text(row.unitPrice.toString())),
-            DataCell(Text(row.total.toString())),
+    return Scaffold(
+      appBar: AppBar(title: Text('خانه')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Text('پروژه: ${project.name}'),
+            const SizedBox(height: 20),
+            MetreyarTable(rows: rows), // جدول با title و value
           ],
-        );
-      }).toList(),
+        ),
+      ),
     );
   }
 }

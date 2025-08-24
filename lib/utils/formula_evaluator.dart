@@ -1,4 +1,3 @@
-// lib/utils/formula_evaluator.dart
 import '../models/row_item.dart';
 
 class FormulaEvaluator {
