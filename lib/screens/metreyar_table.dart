@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/row_item.dart';
+import 'row_item.dart';
 
 class MetreyarTable extends StatelessWidget {
   final List<RowItem> rows;
@@ -8,21 +8,24 @@ class MetreyarTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DataTable(
-      columns: const [
-        DataColumn(label: Text('عنوان')),
-        DataColumn(label: Text('مقدار')),
-      ],
-      rows: rows
-          .map(
-            (row) => DataRow(
-              cells: [
-                DataCell(Text(row.title)),
-                DataCell(Text(row.value.toString())),
-              ],
-            ),
-          )
-          .toList(),
+    return Table(
+      border: TableBorder.all(),
+      columnWidths: const {
+        0: FlexColumnWidth(2),
+        1: FlexColumnWidth(1),
+      },
+      children: rows.map((row) => TableRow(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(row.title, style: const TextStyle(fontWeight: FontWeight.bold)),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(row.value.toString()),
+          ),
+        ],
+      )).toList(),
     );
   }
 }
