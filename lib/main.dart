@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/screens.dart';
+import 'screens/screens_list.dart'; // برای ScreensGrid
 
 void main() {
   runApp(const MyApp());
@@ -12,9 +12,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Metreyar Web',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: ScreensGrid(), // صفحه اصلی کارت‌ها
+      title: 'Dynamic Screens App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const ScreensGrid(), // صفحه داشبورد
     );
   }
 }

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
-class PriceListPage extends StatelessWidget {
+class PriceListScreen extends StatelessWidget {
+  const PriceListScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("صفحه لیست قیمت")),
-      body: Center(child: Text("محتوای صفحه لیست قیمت")),
+      appBar: AppBar(title: const Text("لیست قیمت")),
+      body: const Center(child: Text("صفحه لیست قیمت")),
     );
   }
 }
