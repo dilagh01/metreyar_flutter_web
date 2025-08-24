@@ -1,37 +1,27 @@
 diff --git a/lib/main.dart b/lib/main.dart
-index abc123..def456 100644
+index e69de29..a123456 100644
 --- a/lib/main.dart
 +++ b/lib/main.dart
-@@
-- GoRoute(path: '/features', builder: (c, s) => const FeaturesScreen()),
-+ GoRoute(path: '/features', builder: (c, s) => FeaturesScreen()),
-@@
-- GoRoute(path: '/home', builder: (c, s) => const HomeScreen()),
-+ GoRoute(path: '/home', builder: (c, s) => HomeScreen()),
-@@
-- GoRoute(path: '/projects', builder: (c, s) => const ProjectsScreen()),
-+ GoRoute(path: '/projects', builder: (c, s) => ProjectsScreen()),
-@@
-- GoRoute(path: '/metering', builder: (c, s) => const MeteringScreen()),
-+ GoRoute(path: '/metering', builder: (c, s) => MeteringScreen()),
-@@
-- GoRoute(path: '/analysis', builder: (c, s) => const AnalysisScreen()),
-+ GoRoute(path: '/analysis', builder: (c, s) => AnalysisScreen()),
-@@
-- GoRoute(path: '/contracts', builder: (c, s) => const ContractsScreen()),
-+ GoRoute(path: '/contracts', builder: (c, s) => ContractsScreen()),
-@@
-- GoRoute(path: '/settings', builder: (c, s) => const SettingsScreen()),
-+ GoRoute(path: '/settings', builder: (c, s) => SettingsScreen()),
-@@
-- GoRoute(path: '/workflow', builder: (c, s) => const WorkflowScreen()),
-+ GoRoute(path: '/workflow', builder: (c, s) => WorkflowScreen()),
-@@
-- GoRoute(path: '/dashboard', builder: (c, s) => const DashboardScreen()),
-+ GoRoute(path: '/dashboard', builder: (c, s) => DashboardScreen()),
-@@
-- GoRoute(path: '/price_list', builder: (c, s) => const PriceListScreen()),
-+ GoRoute(path: '/price_list', builder: (c, s) => PriceListScreen()),
-@@
-- GoRoute(path: '/report', builder: (c, s) => const ReportScreen()),
-+ GoRoute(path: '/report', builder: (c, s) => ReportScreen()),
+@@ void main() {
+-        '/': (context) => const HomeScreen(),
+-        '/projects': (context) => const ProjectsScreen(),
+-        '/metering': (context) => const MeteringScreen(),
+-        '/analysis': (context) => const AnalysisScreen(),
+-        '/contracts': (context) => const ContractsScreen(),
+-        '/settings': (context) => const SettingsScreen(),
+-        '/workflow': (context) => const WorkflowScreen(),
+-        '/dashboard': (context) => const DashboardScreen(),
+-        '/price-list': (context) => const PriceListScreen(),
+-        '/report': (context) => const ReportScreen(),
+-        '/features': (context) => const FeaturesScreen(),
++        '/': (context) => HomeScreen(),
++        '/projects': (context) => ProjectsScreen(),
++        '/metering': (context) => MeteringScreen(),
++        '/analysis': (context) => AnalysisScreen(),
++        '/contracts': (context) => ContractsScreen(),
++        '/settings': (context) => SettingsScreen(),
++        '/workflow': (context) => WorkflowScreen(),
++        '/dashboard': (context) => DashboardScreen(),
++        '/price-list': (context) => PriceListScreen(),
++        '/report': (context) => ReportScreen(),
++        '/features': (context) => FeaturesScreen(),
