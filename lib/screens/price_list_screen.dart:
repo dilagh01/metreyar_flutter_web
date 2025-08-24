@@ -4,8 +4,7 @@ class PriceListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("صفحه لیست قیمت")),
-      body: Center(child: Text("محتوای صفحه لیست قیمت")),
+      body: Center(child: Text("صفحه لیست قیمت")),
     );
   }
 }
