@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
-import '../widgets/metreyar_table.dart';
-import '../widgets/row_item.dart';
+import '../widgets/sidebar.dart';
 
 class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
-
-  final List<RowItem> rows = [
-    RowItem(title: 'سیمان', value: 5000),
-    RowItem(title: 'ماسه', value: 3000),
-    RowItem(title: 'آهن', value: 7000),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('صفحه اصلی')),
+      appBar: AppBar(title: Text("خانه")),
+      drawer: SideBar(
+        onItemTap: (route) {
+          Navigator.pushNamed(context, route);
+        },
+      ),
       body: Center(
-        child: MetreyarTable(rows: rows),
+        child: Text("به متره یار خوش آمدید"),
       ),
     );
   }

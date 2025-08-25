@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
+import '../widgets/sidebar.dart';
 
 class ReportScreen extends StatelessWidget {
-  const ReportScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Report Content', style: TextStyle(fontSize: 18)),
+    return Scaffold(
+      appBar: AppBar(title: Text("گزارش‌ها")),
+      drawer: SideBar(
+        onItemTap: (route) {
+          Navigator.pushNamed(context, route);
+        },
+      ),
+      body: Center(
+        child: Text("صفحه گزارش‌ها"),
+      ),
     );
   }
 }
