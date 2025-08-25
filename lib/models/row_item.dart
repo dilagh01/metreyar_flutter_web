@@ -1,5 +1,13 @@
 class RowItem {
-  final String title;
-  final int value; // عددی
-  RowItem({required this.title, required this.value});
+  String description;
+  double quantity;
+  double unitPrice;
+
+  RowItem({
+    required this.description,
+    required this.quantity,
+    required this.unitPrice,
+  });
+
+  double get total => quantity * unitPrice;
 }
