@@ -41,3 +41,16 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Flutter/Dart
+.metadata
+pubspec.lock
+
+# Keys
+keystore.jks
+keystore.jks.base64.txt
+
+# Patches and diffs
+*.patch
+*.diff
+sensitive.txt
