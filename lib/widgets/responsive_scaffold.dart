@@ -1,37 +1,43 @@
 import 'package:flutter/material.dart';
 import 'sidebar.dart';
-import 'header.dart';
 
 class ResponsiveScaffold extends StatelessWidget {
   final Widget body;
-  const ResponsiveScaffold({required this.body, Key? key}) : super(key: key);
+
+  const ResponsiveScaffold({Key? key, required this.body}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
-    if (screenWidth > 800) {
-      return Scaffold(
-        body: Row(
-          children: [
-            Sidebar(),
-            Expanded(
-              child: Column(
-                children: [
-                  Header(),
-                  Expanded(child: body),
-                ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth > 800) {
+          // دسکتاپ
+          return Row(
+            children: [
+              SizedBox(
+                width: 250,
+                child: SideBar(
+                  onItemTap: (route) {
+                    Navigator.pushNamed(context, route);
+                  },
+                ),
               ),
+              Expanded(child: body),
+            ],
+          );
+        } else {
+          // موبایل/تبلت
+          return Scaffold(
+            appBar: AppBar(title: Text("متره یار")),
+            drawer: SideBar(
+              onItemTap: (route) {
+                Navigator.pushNamed(context, route);
+              },
             ),
-          ],
-        ),
-      );
-    } else {
-      return Scaffold(
-        appBar: AppBar(title: Text("TADKAR")),
-        drawer: Sidebar(),
-        body: body,
-      );
-    }
+            body: body,
+          );
+        }
+      },
+    );
   }
 }
