@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import '../widgets/sidebar.dart';
 
-class FeaturesScreen extends StatelessWidget {
-  const FeaturesScreen({super.key});
-
+class FeatureScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('ویژگی‌ها')),
-      body: const Center(child: Text('صفحه ویژگی‌های تدکار')),
+      appBar: AppBar(title: Text("ویژگی خاص")),
+      drawer: SideBar(onItemTap: (route) {
+        Navigator.pushNamed(context, route);
+      }),
+      body: Center(child: Text("صفحه ویژگی خاص")),
     );
   }
 }
