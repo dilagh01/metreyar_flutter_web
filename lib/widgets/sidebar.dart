@@ -1,19 +1,50 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
-class Sidebar extends StatelessWidget {
+class SideBar extends StatelessWidget {
+  final Function(String route) onItemTap;
+
+  SideBar({required this.onItemTap});
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
+        padding: EdgeInsets.zero,
         children: [
-          DrawerHeader(child: Text("TADKAR", style: TextStyle(fontSize: 24))),
-          ListTile(title: Text("داشبورد"), onTap: () => context.go('/')),
-          ListTile(title: Text("فهرست بها"), onTap: () => context.go('/price-list')),
-          ListTile(title: Text("متره و برآورد"), onTap: () => context.go('/estimation')),
-          ListTile(title: Text("گزارش‌ها"), onTap: () => context.go('/reports')),
+          DrawerHeader(
+            decoration: BoxDecoration(color: Colors.indigo),
+            child: Text(
+              'Metreyar',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+              ),
+            ),
+          ),
+          _buildItem(Icons.home, "خانه", '/', context),
+          _buildItem(Icons.business, "پروژه‌ها", '/projects', context),
+          _buildItem(Icons.article, "قراردادها", '/contracts', context),
+          _buildItem(Icons.dashboard, "داشبورد", '/dashboard', context),
+          _buildItem(Icons.extension, "ویژگی‌ها", '/features', context),
+          _buildItem(Icons.star, "ویژگی خاص", '/feature', context),
+          _buildItem(Icons.straighten, "متره", '/metering', context),
+          _buildItem(Icons.list, "فهرست بها", '/price_list', context),
+          _buildItem(Icons.bar_chart, "گزارشات", '/report', context),
+          _buildItem(Icons.settings, "تنظیمات", '/settings', context),
+          _buildItem(Icons.work, "جریان کار", '/workflow', context),
         ],
       ),
+    );
+  }
+
+  Widget _buildItem(IconData icon, String title, String route, BuildContext context) {
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(title),
+      onTap: () {
+        Navigator.pop(context); // بستن منو
+        onItemTap(route); // رفتن به صفحه
+      },
     );
   }
 }

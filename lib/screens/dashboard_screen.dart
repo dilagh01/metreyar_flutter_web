@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import '../widgets/sidebar.dart';
 
 class DashboardScreen extends StatelessWidget {
-  const DashboardScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("داشبورد مدیریتی")),
-      body: const Center(
-        child: Text("اینجا داشبورد مدیریتی نشون داده میشه"),
-      ),
+      appBar: AppBar(title: Text("داشبورد")),
+      drawer: SideBar(onItemTap: (route) {
+        Navigator.pushNamed(context, route);
+      }),
+      body: Center(child: Text("صفحه داشبورد")),
     );
   }
 }

@@ -1,129 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
-// صفحات نمونه
+// screens
 import 'screens/home_screen.dart';
 import 'screens/projects_screen.dart';
-import 'screens/analysis_screen.dart';
 import 'screens/contracts_screen.dart';
+import 'screens/dashboard_screen.dart';
+import 'screens/features_screen.dart';
+import 'screens/feature_screen.dart';
+import 'screens/metering_screen.dart';
+import 'screens/price_list_screen.dart';
+import 'screens/report_screen.dart';
 import 'screens/settings_screen.dart';
+import 'screens/workflow_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(MetreyarApp());
 }
 
-class MyApp extends StatelessWidget {
-  MyApp({super.key});
-
-  // تعریف مسیرها با GoRouter
-  final GoRouter _router = GoRouter(
-    routes: [
-      GoRoute(
-        path: '/',
-        builder: (context, state) => HomeScreen(),
-      ),
-      GoRoute(
-        path: '/projects',
-        builder: (context, state) => ProjectsScreen(),
-      ),
-      GoRoute(
-        path: '/analysis',
-        builder: (context, state) => AnalysisScreen(),
-      ),
-      GoRoute(
-        path: '/contracts',
-        builder: (context, state) => ContractsScreen(),
-      ),
-      GoRoute(
-        path: '/settings',
-        builder: (context, state) => SettingsScreen(),
-      ),
-    ],
-  );
-
+class MetreyarApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Metreyar Flutter Web',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      routerConfig: _router,
-    );
-  }
-}
-
-// نمونه صفحات ساده (در فایل های جداگانه screens/*.dart ایجاد شود)
-// مثلا screens/home_screen.dart:
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Home')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('صفحه اصلی'),
-            ElevatedButton(
-              onPressed: () => context.go('/projects'),
-              child: Text('برو به Projects'),
-            ),
-          ],
-        ),
+    return MaterialApp(
+      title: 'Metreyar',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.indigo,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-    );
-  }
-}
-
-// screens/projects_screen.dart:
-class ProjectsScreen extends StatelessWidget {
-  const ProjectsScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Projects')),
-      body: Center(child: Text('صفحه Projects')),
-    );
-  }
-}
-
-// screens/analysis_screen.dart:
-class AnalysisScreen extends StatelessWidget {
-  const AnalysisScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Analysis')),
-      body: Center(child: Text('صفحه Analysis')),
-    );
-  }
-}
-
-// screens/contracts_screen.dart:
-class ContractsScreen extends StatelessWidget {
-  const ContractsScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Contracts')),
-      body: Center(child: Text('صفحه Contracts')),
-    );
-  }
-}
-
-// screens/settings_screen.dart:
-class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Settings')),
-      body: Center(child: Text('صفحه Settings')),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => HomeScreen(),
+        '/projects': (context) => ProjectsScreen(),
+        '/contracts': (context) => ContractsScreen(),
+        '/dashboard': (context) => DashboardScreen(),
+        '/features': (context) => FeaturesScreen(),
+        '/feature': (context) => FeatureScreen(),
+        '/metering': (context) => MeteringScreen(),
+        '/price_list': (context) => PriceListScreen(),
+        '/report': (context) => ReportScreen(),
+        '/settings': (context) => SettingsScreen(),
+        '/workflow': (context) => WorkflowScreen(),
+      },
     );
   }
 }
