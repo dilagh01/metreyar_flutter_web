@@ -4,21 +4,18 @@ import 'package:go_router/go_router.dart';
 class NavBar extends StatelessWidget implements PreferredSizeWidget {
   const NavBar({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    final menuItems = [
-      {'title': 'خانه', 'route': '/'},
-      {'title': 'پروژه‌ها', 'route': '/projects'},
-      {'title': 'آنالیز', 'route': '/analysis'},
-      {'title': 'صورت وضعیت', 'route': '/report'},
-      {'title': 'فهرست بها', 'route': '/price-list'},
-      {'title': 'کنترل کارگاه', 'route': '/metering'},
-      {'title': 'قراردادها', 'route': '/contracts'},
-      {'title': 'تنظیمات', 'route': '/settings'},
-      {'title': 'داشبورد', 'route': '/dashboard'},
-      {'title': 'Workflow', 'route': '/workflow'},
-    ];
-
+final menuItems = [
+  {'title': 'خانه', 'route': '/'}, // مسیر اصلی خانه
+  {'title': 'پروژه‌ها', 'route': '/projects'},
+  {'title': 'آنالیز', 'route': '/analysis'},
+  {'title': 'صورت وضعیت', 'route': '/report'},
+  {'title': 'فهرست بها', 'route': '/price-list'},
+  {'title': 'کنترل کارگاه', 'route': '/metering'},
+  {'title': 'قراردادها', 'route': '/contracts'},
+  {'title': 'تنظیمات', 'route': '/settings'},
+  {'title': 'داشبورد', 'route': '/dashboard'},
+  {'title': 'Workflow', 'route': '/workflow'},
+];
     return AppBar(
       title: const Text('نرم افزار متره یار'),
       backgroundColor: Colors.blue.shade800,
