@@ -16,23 +16,23 @@ class SideBar extends StatelessWidget {
           ),
           ListTile(
             title: Text("خانه"),
-            onTap: ("/") => onItemTap("/home"),
+            onTap: () => onItemTap("/home"),
           ),
           ListTile(
             title: Text("قراردادها"),
-            onTap: ("/") => onItemTap("/contracts"),
+            onTap: () => onItemTap("/contracts"),
           ),
           ListTile(
             title: Text("داشبورد"),
-            onTap: ("/") => onItemTap("/dashboard"),
+            onTap: () => onItemTap("/dashboard"),
           ),
           ListTile(
             title: Text("گزارش‌ها"),
-            onTap: ("/") => onItemTap("/report"),
+            onTap: () => onItemTap("/report"),
           ),
           ListTile(
             title: Text("تنظیمات"),
-            onTap: ("/") => onItemTap("/settings"),
+            onTap: () => onItemTap("/settings"),
           ),
         ],
       ),
