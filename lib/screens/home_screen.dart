@@ -1,32 +1,19 @@
 import 'package:flutter/material.dart';
-import '../widgets/metreyar_table.dart'; // ← مسیر اصلاح شد
+import 'metreyar_table.dart';
+import '../widgets/row_item.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  HomeScreen({super.key});
+
+  final List<RowItem> tableRows = [
+    RowItem(index: 1, item: 'سیمان', unit: 'کیسه', quantity: 20, price: 2000000),
+    RowItem(index: 2, item: 'میلگرد', unit: 'کیلوگرم', quantity: 150, price: 15000000),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    final List<DataRow> tableRows = [
-      DataRow(cells: [
-        DataCell(Text('1')),
-        DataCell(Text('سیمان')),
-        DataCell(Text('کیسه')),
-        DataCell(Text('20')),
-        DataCell(Text('2,000,000')),
-      ]),
-      DataRow(cells: [
-        DataCell(Text('2')),
-        DataCell(Text('میلگرد')),
-        DataCell(Text('کیلوگرم')),
-        DataCell(Text('150')),
-        DataCell(Text('15,000,000')),
-      ]),
-    ];
-
     return Scaffold(
-      appBar: AppBar(title: const Text('صفحه اصلی')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: Center(
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: MetreyarTable(rows: tableRows),
