@@ -20,11 +20,11 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
     ];
 
     return AppBar(
-      title: const Text('نرم افزار تدکار'),
+      title: const Text('نرم افزار متره یار'),
       backgroundColor: Colors.blue.shade800,
       actions: menuItems.map((item) {
         return TextButton(
-          onPressed: () => GoRouter.of(context).go(item['route']!),
+          onPressed: () => context.go(item['route']!),
           child: Text(
             item['title']!,
             style: const TextStyle(color: Colors.white),
