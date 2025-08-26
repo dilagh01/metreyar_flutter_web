@@ -22432,8 +22432,8 @@ s.ay$!==$&&A.ac()
 s.ay$=m
 n=m}s.S0(new A.z4(p,k,o,n,l))
 s.EV()},
-axj(){var s=null,r=A.b([A.fN(new A.a1E(),"/"),A.fN(new A.a1F(),"/projects"),A.fN(new A.a1G(),"/contracts"),A.fN(new A.a1I(),"/dashboard"),A.fN(new A.a1J(),"/analysis"),A.fN(new A.a1K(),"/features"),A.fN(new A.a1L(),"/feature"),A.fN(new A.a1M(),"/metering"),A.fN(new A.a1N(),"/price-list"),A.fN(new A.a1O(),"/report"),A.fN(new A.a1P(),"/settings"),A.fN(new A.a1H(),"/workflow")],t.yo)
-return new A.GF(A.awz(!1,s,s,s,s,s,s,s,s,!1,s,!0,s,!1,new A.KJ(new A.a5a(r,A.aEm(),5))),s)},
+axj(){var s=null,r=A.b([A.fN(new A.a1E(),"/home"),A.fN(new A.a1F(),"/projects"),A.fN(new A.a1G(),"/contracts"),A.fN(new A.a1I(),"/dashboard"),A.fN(new A.a1J(),"/analysis"),A.fN(new A.a1K(),"/features"),A.fN(new A.a1L(),"/feature"),A.fN(new A.a1M(),"/metering"),A.fN(new A.a1N(),"/price-list"),A.fN(new A.a1O(),"/report"),A.fN(new A.a1P(),"/settings"),A.fN(new A.a1H(),"/workflow")],t.yo)
+return new A.GF(A.awz(!1,s,s,s,s,"/home",s,s,s,!1,s,!0,s,!1,new A.KJ(new A.a5a(r,A.aEm(),5))),s)},
 GF:function GF(a,b){this.c=a
 this.a=b},
 a1E:function a1E(){},
@@ -72368,7 +72368,8 @@ Zw(a){var s,r
 $.M.toString
 s=A.dM($.at().gvs())
 r=(s.gD3()?A.Cb(null,"/",s.grh()):s).k(0)
-return r}}
+if(r==="/")return a
+else return r}}
 A.Yf.prototype={
 $2(a,b){return new A.kS(this.a,b,null)},
 $S:480}
