@@ -9,10 +9,19 @@ class HomeScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('داشبورد پروژه‌ها', style: Theme.of(context).textTheme.headline5),
-            SizedBox(height: 20),
-            MetreyarTable(), // جدول نمونه
+            Text(
+              '📊 داشبورد پروژه‌ها',
+              style: Theme.of(context).textTheme.headline5,
+            ),
+            const SizedBox(height: 20),
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: MetreyarTable(),
+              ),
+            ),
           ],
         ),
       ),
