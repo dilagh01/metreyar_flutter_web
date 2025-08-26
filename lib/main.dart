@@ -13,7 +13,7 @@ import 'screens/price_list_screen.dart';
 import 'screens/report_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/workflow_screen.dart';
-import 'screens/analysis_screen.dart'; // یادت نره بسازی
+import 'screens/analysis_screen.dart';
 
 void main() {
   runApp(MetreyarApp());
@@ -23,8 +23,9 @@ class MetreyarApp extends StatelessWidget {
   MetreyarApp({super.key});
 
   final GoRouter _router = GoRouter(
+    initialLocation: '/home', // مسیر پیش‌فرض
     routes: [
-      GoRoute(path: '/', builder: (context, state) => HomeScreen()),
+      GoRoute(path: '/home', builder: (context, state) => HomeScreen()),
       GoRoute(path: '/projects', builder: (context, state) => ProjectsScreen()),
       GoRoute(path: '/contracts', builder: (context, state) => ContractsScreen()),
       GoRoute(path: '/dashboard', builder: (context, state) => DashboardScreen()),
