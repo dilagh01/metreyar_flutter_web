@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'metreyar_table.dart';
+import '../widgets/metreyar_table.dart'; // ← مسیر اصلاح شد
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // داده‌ها رو می‌تونیم داینامیک بسازیم
     final List<DataRow> tableRows = [
       DataRow(cells: [
         DataCell(Text('1')),
@@ -22,7 +21,6 @@ class HomeScreen extends StatelessWidget {
         DataCell(Text('150')),
         DataCell(Text('15,000,000')),
       ]),
-      // می‌تونی اینجا داده‌های بیشتری اضافه کنی
     ];
 
     return Scaffold(
