@@ -24,18 +24,18 @@ class MetreyarApp extends StatelessWidget {
 
   final GoRouter _router = GoRouter(
     routes: [
-      GoRoute(path: '/', builder: (context, state) => const HomeScreen()),
-      GoRoute(path: '/projects', builder: (context, state) => const ProjectsScreen()),
-      GoRoute(path: '/contracts', builder: (context, state) => const ContractsScreen()),
-      GoRoute(path: '/dashboard', builder: (context, state) => const DashboardScreen()),
-      GoRoute(path: '/analysis', builder: (context, state) => const AnalysisScreen()),
-      GoRoute(path: '/features', builder: (context, state) => const FeaturesScreen()),
-      GoRoute(path: '/feature', builder: (context, state) => const FeatureScreen()),
-      GoRoute(path: '/metering', builder: (context, state) => const MeteringScreen()),
-      GoRoute(path: '/price-list', builder: (context, state) => const PriceListScreen()),
-      GoRoute(path: '/report', builder: (context, state) => const ReportScreen()),
-      GoRoute(path: '/settings', builder: (context, state) => const SettingsScreen()),
-      GoRoute(path: '/workflow', builder: (context, state) => const WorkflowScreen()),
+      GoRoute(path: '/', builder: (context, state) => HomeScreen()),
+      GoRoute(path: '/projects', builder: (context, state) => ProjectsScreen()),
+      GoRoute(path: '/contracts', builder: (context, state) => ContractsScreen()),
+      GoRoute(path: '/dashboard', builder: (context, state) => DashboardScreen()),
+      GoRoute(path: '/analysis', builder: (context, state) => AnalysisScreen()),
+      GoRoute(path: '/features', builder: (context, state) => FeaturesScreen()),
+      GoRoute(path: '/feature', builder: (context, state) => FeatureScreen()),
+      GoRoute(path: '/metering', builder: (context, state) => MeteringScreen()),
+      GoRoute(path: '/price-list', builder: (context, state) => PriceListScreen()),
+      GoRoute(path: '/report', builder: (context, state) => ReportScreen()),
+      GoRoute(path: '/settings', builder: (context, state) => SettingsScreen()),
+      GoRoute(path: '/workflow', builder: (context, state) => WorkflowScreen()),
     ],
   );
 
