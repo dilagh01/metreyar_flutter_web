@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 class MetreyarTable extends StatelessWidget {
+  final List<DataRow> rows;
+
+  const MetreyarTable({super.key, required this.rows});
+
   @override
   Widget build(BuildContext context) {
     return DataTable(
@@ -11,29 +15,10 @@ class MetreyarTable extends StatelessWidget {
         DataColumn(label: Text('مقدار')),
         DataColumn(label: Text('قیمت')),
       ],
-      rows: const [
-        DataRow(cells: [
-          DataCell(Text('1')),
-          DataCell(Text('سیمان')),
-          DataCell(Text('کیسه')),
-          DataCell(Text('20')),
-          DataCell(Text('2,000,000')),
-        ]),
-        DataRow(cells: [
-          DataCell(Text('2')),
-          DataCell(Text('میلگرد')),
-          DataCell(Text('کیلوگرم')),
-          DataCell(Text('150')),
-          DataCell(Text('15,000,000')),
-        ]),
-        DataRow(cells: [
-          DataCell(Text('3')),
-          DataCell(Text('آجر')),
-          DataCell(Text('عدد')),
-          DataCell(Text('500')),
-          DataCell(Text('5,000,000')),
-        ]),
-      ],
+      rows: rows,
     );
   }
 }
+
+
+
