@@ -34,6 +34,10 @@ class SideBar extends StatelessWidget {
             title: Text("تنظیمات"),
             onTap: () => onItemTap("/settings"),
           ),
+          ListTile(
+            title: Text("   ^f   ^l ^e    "),
+            onTap: () => onItemTap("/stimation"),
+          ),
         ],
       ),
     );
