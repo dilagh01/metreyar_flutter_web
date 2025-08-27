@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/sidebar.dart';
 import '../widgets/estimation_table.dart';
 
-class EestimationScreen extends StatelessWidget {
+class EstimationScreen extends StatelessWidget {
   const EstimationScreen({super.key});
 
   @override
