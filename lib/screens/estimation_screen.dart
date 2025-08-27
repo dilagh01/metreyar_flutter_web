@@ -24,7 +24,7 @@ class EstimationScreen extends StatelessWidget {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16),
-            Expanded(child: SingleChildScrollView(child: EestimationTable())),
+            Expanded(child: SingleChildScrollView(child: EstimationTable())),
           ],
         ),
       ),
