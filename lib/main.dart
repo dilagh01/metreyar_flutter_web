@@ -12,6 +12,7 @@ import 'screens/price_list_screen.dart';
 import 'screens/report_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/analysis_screen.dart';
+import 'screens/workflow_screen.dart';
 
 void main() {
   runApp(MetreyarApp());
