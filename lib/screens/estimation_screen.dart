@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:data_table_2/data_table_2.dart';
-import 'package:metreyar_flutter_web/widgets/estimation_table.dart';
 
 class EstimationScreen extends StatelessWidget {
   const EstimationScreen({super.key});
@@ -9,9 +8,19 @@ class EstimationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("برآورد")),
-      body: const Center(child: Text("Estimation Screen")),
+      body: const Padding(
+        padding: EdgeInsets.all(16.0),
+        child: EstimationTable(),
+      ),
     );
   }
+}
+
+class EstimationTable extends StatefulWidget {
+  const EstimationTable({super.key});
+
+  @override
+  _EstimationTableState createState() => _EstimationTableState();
 }
 
 class _EstimationTableState extends State<EstimationTable> {
@@ -50,59 +59,63 @@ class _EstimationTableState extends State<EstimationTable> {
     return Column(
       children: [
         Expanded(
-          child: DataTable2(
-            columnSpacing: 12,
-            horizontalMargin: 12,
-            minWidth: 800, // برای اسکرول افقی
-            columns: const [
-              DataColumn(label: Text("ردیف")),
-              DataColumn(label: Text("شرح آیتم")),
-              DataColumn(label: Text("واحد")),
-              DataColumn(label: Text("مقدار")),
-              DataColumn(label: Text("بهای واحد")),
-              DataColumn(label: Text("بهای کل")),
-              DataColumn(label: Text("حذف")),
-            ],
-            rows: List.generate(_items.length, (index) {
-              final item = _items[index];
-              final total = (item["qty"] as int) * (item["price"] as int);
-              return DataRow(
-                cells: [
-                  DataCell(Text("${index + 1}")),
-                  DataCell(Text(item["desc"])),
-                  DataCell(Text(item["unit"])),
-                  DataCell(
-                    TextFormField(
-                      initialValue: item["qty"].toString(),
-                      keyboardType: TextInputType.number,
-                      onChanged: (val) {
-                        setState(() {
-                          item["qty"] = int.tryParse(val) ?? item["qty"];
-                        });
-                      },
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable2(
+              columnSpacing: 12,
+              horizontalMargin: 12,
+              minWidth: 800,
+              columns: const [
+                DataColumn(label: Text("ردیف")),
+                DataColumn(label: Text("شرح آیتم")),
+                DataColumn(label: Text("واحد")),
+                DataColumn(label: Text("مقدار")),
+                DataColumn(label: Text("بهای واحد")),
+                DataColumn(label: Text("بهای کل")),
+                DataColumn(label: Text("حذف")),
+              ],
+              rows: List.generate(_items.length, (index) {
+                final item = _items[index];
+                final total = (item["qty"] as int) * (item["price"] as int);
+                return DataRow(
+                  cells: [
+                    DataCell(Text("${index + 1}")),
+                    DataCell(Text(item["desc"])),
+                    DataCell(Text(item["unit"])),
+                    DataCell(
+                      TextFormField(
+                        initialValue: item["qty"].toString(),
+                        keyboardType: TextInputType.number,
+                        onChanged: (val) {
+                          setState(() {
+                            item["qty"] = int.tryParse(val) ?? item["qty"];
+                          });
+                        },
+                      ),
                     ),
-                  ),
-                  DataCell(
-                    TextFormField(
-                      initialValue: item["price"].toString(),
-                      keyboardType: TextInputType.number,
-                      onChanged: (val) {
-                        setState(() {
-                          item["price"] = int.tryParse(val) ?? item["price"];
-                        });
-                      },
+                    DataCell(
+                      TextFormField(
+                        initialValue: item["price"].toString(),
+                        keyboardType: TextInputType.number,
+                        onChanged: (val) {
+                          setState(() {
+                            item["price"] = int.tryParse(val) ?? item["price"];
+                          });
+                        },
+                      ),
                     ),
-                  ),
-                  DataCell(Text("$total")),
-                  DataCell(
-                    IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red.withAlpha(128),
-                      onPressed: () => _removeItem(index),
+                    DataCell(Text("$total")),
+                    DataCell(
+                      IconButton(
+                        icon: Icon(Icons.delete,
+                            color: Colors.red.withAlpha(128)),
+                        onPressed: () => _removeItem(index),
+                      ),
                     ),
-                  ),
-                ],
-              );
-            }),
+                  ],
+                );
+              }),
+            ),
           ),
         ),
         const SizedBox(height: 10),
