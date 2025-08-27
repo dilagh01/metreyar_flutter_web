@@ -30,12 +30,17 @@ class _EstimationTableState extends State<EstimationTable> {
     });
   }
 
+  int get _grandTotal {
+    return _items.fold(0, (sum, item) => sum + (item["qty"] * item["price"]));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Expanded(
           child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal, // برای اسکرول افقی
             child: DataTable(
               border: TableBorder.all(color: Colors.grey.shade400),
               columns: const [
@@ -55,8 +60,28 @@ class _EstimationTableState extends State<EstimationTable> {
                     DataCell(Text("${index + 1}")),
                     DataCell(Text(item["desc"])),
                     DataCell(Text(item["unit"])),
-                    DataCell(Text("${item["qty"]}")),
-                    DataCell(Text("${item["price"]}")),
+                    DataCell(
+                      TextFormField(
+                        initialValue: item["qty"].toString(),
+                        keyboardType: TextInputType.number,
+                        onChanged: (val) {
+                          setState(() {
+                            item["qty"] = int.tryParse(val) ?? item["qty"];
+                          });
+                        },
+                      ),
+                    ),
+                    DataCell(
+                      TextFormField(
+                        initialValue: item["price"].toString(),
+                        keyboardType: TextInputType.number,
+                        onChanged: (val) {
+                          setState(() {
+                            item["price"] = int.tryParse(val) ?? item["price"];
+                          });
+                        },
+                      ),
+                    ),
                     DataCell(Text("$total")),
                     DataCell(
                       IconButton(
@@ -74,6 +99,11 @@ class _EstimationTableState extends State<EstimationTable> {
         ElevatedButton(
           onPressed: _addItem,
           child: const Text("افزودن آیتم جدید"),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          "جمع کل: $_grandTotal ریال",
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ],
     );
