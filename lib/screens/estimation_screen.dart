@@ -1,7 +1,7 @@
 // lib/screens/eestimation_screen.dart
 import 'package:flutter/material.dart';
 import '../widgets/sidebar.dart';
-import '../widgets/eestimation_table.dart';
+import '../widgets/estimation_table.dart';
 
 class EestimationScreen extends StatelessWidget {
   const EestimationScreen({super.key});
