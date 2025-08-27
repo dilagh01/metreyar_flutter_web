@@ -29,7 +29,7 @@ class MetreyarApp extends StatelessWidget {
       GoRoute(path: '/dashboard', builder: (context, state) => DashboardScreen()),
       GoRoute(path: '/analysis', builder: (context, state) => AnalysisScreen()),
       GoRoute(path: '/features', builder: (context, state) => FeaturesScreen()),
-      GoRoute(path: '/stimation', builder: (context, state) => MeteringScreen()),
+      GoRoute(path: '/estimation', builder: (context, state) => MeteringScreen()),
       GoRoute(path: '/price-list', builder: (context, state) => PriceListScreen()),
       GoRoute(path: '/report', builder: (context, state) => ReportScreen()),
       GoRoute(path: '/settings', builder: (context, state) => SettingsScreen()),
