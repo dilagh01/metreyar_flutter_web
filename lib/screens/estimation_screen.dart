@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:data_table_2/data_table_2.dart';
-import 'package:flutter/material.dart';
+import 'package:metreyar_flutter_web/widgets/estimation_table.dart';
 
 class EstimationScreen extends StatelessWidget {
   const EstimationScreen({super.key});
@@ -96,7 +96,7 @@ class _EstimationTableState extends State<EstimationTable> {
                   DataCell(Text("$total")),
                   DataCell(
                     IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
+                      icon: const Icon(Icons.delete, color: Colors.red.withAlpha(128),
                       onPressed: () => _removeItem(index),
                     ),
                   ),
