@@ -10,7 +10,7 @@ final menuItems = [
   {'title': 'آنالیز', 'route': '/analysis'},
   {'title': 'صورت وضعیت', 'route': '/report'},
   {'title': 'فهرست بها', 'route': '/price-list'},
-  {'title': 'کنترل کارگاه', 'route': '/estimation'},
+  {'title': 'کنترل کارگاه', 'route': '/eestimation'},
   {'title': 'قراردادها', 'route': '/contracts'},
   {'title': 'تنظیمات', 'route': '/settings'},
   {'title': 'داشبورد', 'route': '/dashboard'},

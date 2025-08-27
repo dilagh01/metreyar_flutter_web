@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class EstimationForm extends StatefulWidget {
+class EestimationForm extends StatefulWidget {
   @override
-  _EstimationFormState createState() => _EstimationFormState();
+  _EestimationFormState createState() => _EestimationFormState();
 }
 
-class _EstimationFormState extends State<EstimationForm> {
+class _EestimationFormState extends State<EestimationForm> {
   final _formKey = GlobalKey<FormState>();
   String description = "";
   double quantity = 0;

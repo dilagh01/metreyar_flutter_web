@@ -7,7 +7,7 @@ import 'screens/projects_screen.dart';
 import 'screens/contracts_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/features_screen.dart';
-import 'screens/estimation_screen.dart';
+import 'screens/eestimation_screen.dart';
 import 'screens/price_list_screen.dart';
 import 'screens/report_screen.dart';
 import 'screens/settings_screen.dart';
@@ -29,7 +29,7 @@ class MetreyarApp extends StatelessWidget {
       GoRoute(path: '/dashboard', builder: (context, state) => DashboardScreen()),
       GoRoute(path: '/analysis', builder: (context, state) => AnalysisScreen()),
       GoRoute(path: '/features', builder: (context, state) => FeaturesScreen()),
-      GoRoute(path: '/estimation', builder: (context, state) => MeteringScreen()),
+      GoRoute(path: '/eestimation', builder: (context, state) => MeteringScreen()),
       GoRoute(path: '/price-list', builder: (context, state) => PriceListScreen()),
       GoRoute(path: '/report', builder: (context, state) => ReportScreen()),
       GoRoute(path: '/settings', builder: (context, state) => SettingsScreen()),

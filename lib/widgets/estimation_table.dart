@@ -1,14 +1,14 @@
-// lib/widgets/estimation_table.dart
+// lib/widgets/eestimation_table.dart
 import 'package:flutter/material.dart';
 
-class EstimationTable extends StatefulWidget {
-  const EstimationTable({super.key});
+class EestimationTable extends StatefulWidget {
+  const EestimationTable({super.key});
 
   @override
-  State<EstimationTable> createState() => _EstimationTableState();
+  State<EestimationTable> createState() => _EestimationTableState();
 }
 
-class _EstimationTableState extends State<EstimationTable> {
+class _EestimationTableState extends State<EestimationTable> {
   final List<Map<String, dynamic>> _items = [
     {"desc": "آجر فشاری", "unit": "متر مکعب", "qty": 10, "price": 500000},
     {"desc": "سیمان", "unit": "کیلوگرم", "qty": 200, "price": 3000},
