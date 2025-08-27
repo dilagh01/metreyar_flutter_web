@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:data_table_2/data_table_2.dart';
-import '../widgets/estimation_table.dart';
+import 'package:flutter/material.dart';
 
-class EstimationTable extends StatefulWidget {
-  const EstimationTable({super.key});
+class EstimationScreen extends StatelessWidget {
+  const EstimationScreen({super.key});
 
   @override
-  State<EstimationTable> createState() => _EstimationTableState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("برآورد")),
+      body: const Center(child: Text("Estimation Screen")),
+    );
+  }
 }
 
 class _EstimationTableState extends State<EstimationTable> {
