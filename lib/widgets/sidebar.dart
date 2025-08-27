@@ -36,7 +36,7 @@ class SideBar extends StatelessWidget {
           ),
           ListTile(
             title: Text("   ^f   ^l ^e    "),
-            onTap: () => onItemTap("/stimation"),
+            onTap: () => onItemTap("/estimation"),
           ),
         ],
       ),
