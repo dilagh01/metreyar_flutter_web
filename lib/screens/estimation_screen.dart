@@ -3,7 +3,7 @@ import '../widgets/sidebar.dart';
 import '../widgets/estimation_table.dart';
 
 class EestimationScreen extends StatelessWidget {
-  const EestimationScreen({super.key});
+  const EstimationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
