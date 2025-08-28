@@ -19,7 +19,7 @@ void main() {
 }
 
 class MetreyarApp extends StatelessWidget {
-  const MetreyarApp({super.key});
+   MetreyarApp({super.key});
 
   final GoRouter _router = GoRouter(
     initialLocation: '/home',
