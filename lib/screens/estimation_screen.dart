@@ -8,359 +8,385 @@ class EstimationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("متره و برآورد"),
+        title: const Text("متره و برآورد - نسخه اکسل"),
         backgroundColor: Colors.blue[700],
       ),
       body: const Padding(
-        padding: EdgeInsets.all(16.0),
-        child: EstimationTable(),
+        padding: EdgeInsets.all(8.0),
+        child: ExcelStyleEstimationTable(),
       ),
     );
   }
 }
 
-class EstimationGroup {
-  String title;
-  List<EstimationItem> items;
-  bool isExpanded;
-
-  EstimationGroup({
-    required this.title,
-    required this.items,
-    this.isExpanded = true,
-  });
-}
-
-class EstimationItem {
-  String description;
-  String unit;
-  double quantity;
-  double unitPrice;
-  String? code; // کد فهرست بها
-
-  EstimationItem({
-    required this.description,
-    required this.unit,
-    required this.quantity,
-    required this.unitPrice,
-    this.code,
-  });
-
-  double get totalPrice => quantity * unitPrice;
-}
-
-class EstimationTable extends StatefulWidget {
-  const EstimationTable({super.key});
+class ExcelStyleEstimationTable extends StatefulWidget {
+  const ExcelStyleEstimationTable({super.key});
 
   @override
-  _EstimationTableState createState() => _EstimationTableState();
+  _ExcelStyleEstimationTableState createState() => _ExcelStyleEstimationTableState();
 }
 
-class _EstimationTableState extends State<EstimationTable> {
-  final List<EstimationGroup> _groups = [
-    EstimationGroup(
-      title: "فونداسیون و زمین",
-      items: [
-        EstimationItem(
-          description: "خاکبرداری با ماشین",
-          unit: "متر مکعب",
-          quantity: 100,
-          unitPrice: 15000,
-          code: "010101",
-        ),
-        EstimationItem(
-          description: "خاکریزی و تراکم",
-          unit: "متر مکعب",
-          quantity: 80,
-          unitPrice: 25000,
-          code: "010102",
-        ),
-      ],
+class _ExcelStyleEstimationTableState extends State<ExcelStyleEstimationTable> {
+  final List<EstimationItem> _items = [
+    EstimationItem(
+      rowNumber: 1,
+      code: "010101",
+      description: "خاکبرداری با ماشین",
+      unit: "متر مکعب",
+      quantity: 100,
+      unitPrice: 15000,
     ),
-    EstimationGroup(
-      title: "اسکلت فلزی",
-      items: [
-        EstimationItem(
-          description: "تیرآهن IPE 18",
-          unit: "کیلوگرم",
-          quantity: 500,
-          unitPrice: 45000,
-          code: "020101",
-        ),
-        EstimationItem(
-          description: "ورق سیاه 10mm",
-          unit: "کیلوگرم",
-          quantity: 200,
-          unitPrice: 55000,
-          code: "020102",
-        ),
-      ],
+    EstimationItem(
+      rowNumber: 2,
+      code: "010102",
+      description: "خاکریزی و تراکم",
+      unit: "متر مکعب",
+      quantity: 80,
+      unitPrice: 25000,
     ),
-    EstimationGroup(
-      title: "نازک کاری",
-      items: [
-        EstimationItem(
-          description: "آجرکاری 20cm",
-          unit: "متر مربع",
-          quantity: 150,
-          unitPrice: 120000,
-          code: "030101",
-        ),
-        EstimationItem(
-          description: "سیمان کاری دیوار",
-          unit: "متر مربع",
-          quantity: 200,
-          unitPrice: 80000,
-          code: "030102",
-        ),
-      ],
+    EstimationItem(
+      rowNumber: 3,
+      code: "020101",
+      description: "تیرآهن IPE 18",
+      unit: "کیلوگرم",
+      quantity: 500,
+      unitPrice: 45000,
     ),
   ];
 
-  void _addGroup() {
+  final ScrollController _horizontalScrollController = ScrollController();
+  final ScrollController _verticalScrollController = ScrollController();
+
+  void _addItem() {
     setState(() {
-      _groups.add(EstimationGroup(
-        title: "گروه جدید",
-        items: [
-          EstimationItem(
-            description: "آیتم جدید",
-            unit: "عدد",
-            quantity: 1,
-            unitPrice: 1000,
-          )
-        ],
+      _items.add(EstimationItem(
+        rowNumber: _items.length + 1,
+        code: "000000",
+        description: "آیتم جدید",
+        unit: "عدد",
+        quantity: 1,
+        unitPrice: 1000,
       ));
     });
   }
 
-  void _addItemToGroup(int groupIndex) {
+  void _removeItem(int index) {
     setState(() {
-      _groups[groupIndex].items.add(EstimationItem(
-            description: "آیتم جدید",
-            unit: "عدد",
-            quantity: 1,
-            unitPrice: 1000,
-          ));
+      _items.removeAt(index);
+      // به روز رسانی شماره ردیف‌ها
+      for (int i = index; i < _items.length; i++) {
+        _items[i].rowNumber = i + 1;
+      }
     });
   }
 
-  void _removeGroup(int groupIndex) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("حذف گروه"),
-          content: const Text("آیا از حذف این گروه و تمامی آیتم‌های آن اطمینان دارید؟"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text("لغو"),
-            ),
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  _groups.removeAt(groupIndex);
-                });
-                Navigator.of(context).pop();
-              },
-              child: const Text("حذف", style: TextStyle(color: Colors.red)),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _removeItem(int groupIndex, int itemIndex) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("حذف آیتم"),
-          content: const Text("آیا از حذف این آیتم اطمینان دارید؟"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text("لغو"),
-            ),
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  _groups[groupIndex].items.removeAt(itemIndex);
-                });
-                Navigator.of(context).pop();
-              },
-              child: const Text("حذف", style: TextStyle(color: Colors.red)),
-            ),
-          ],
-        );
-      },
-    );
+  void _insertItem(int index) {
+    setState(() {
+      _items.insert(index, EstimationItem(
+        rowNumber: index + 1,
+        code: "000000",
+        description: "آیتم جدید",
+        unit: "عدد",
+        quantity: 1,
+        unitPrice: 1000,
+      ));
+      // به روز رسانی شماره ردیف‌ها
+      for (int i = index + 1; i < _items.length; i++) {
+        _items[i].rowNumber = i + 1;
+      }
+    });
   }
 
   double get _grandTotal {
-    return _groups.fold(0.0, (sum, group) {
-      return sum + group.items.fold(0.0, (groupSum, item) => groupSum + item.totalPrice);
-    });
+    return _items.fold(0.0, (sum, item) => sum + item.totalPrice);
   }
 
   String _formatNumber(double number) {
     return number.toStringAsFixed(0).replaceAllMapped(
-          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-          (Match m) => '${m[1]},',
-        );
+      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+      (Match m) => '${m[1]},',
+    );
   }
 
-  Widget _buildGroupTable(EstimationGroup group, int groupIndex) {
-    final double groupTotal = group.items.fold(0.0, (sum, item) => sum + item.totalPrice);
-
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      child: ExpansionTile(
-        initiallyExpanded: group.isExpanded,
-        onExpansionChanged: (expanded) {
-          setState(() {
-            group.isExpanded = expanded;
-          });
-        },
-        leading: IconButton(
-          icon: const Icon(Icons.delete, color: Colors.red),
-          onPressed: () => _removeGroup(groupIndex),
-        ),
-        title: Row(
-          children: [
-            Text(
-              group.title,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            const Spacer(),
-            Text(
-              "جمع گروه: ${_formatNumber(groupTotal)} ریال",
-              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
-            ),
-          ],
-        ),
+  Widget _buildExcelHeader() {
+    return Container(
+      height: 40,
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        border: Border.all(color: Colors.grey[400]!),
+      ),
+      child: Row(
         children: [
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: DataTable2(
-              columnSpacing: 12,
-              horizontalMargin: 12,
-              minWidth: 1000,
-              columns: const [
-                DataColumn(label: Text("ردیف", style: TextStyle(fontWeight: FontWeight.bold))),
-                DataColumn(label: Text("کد فهرست", style: TextStyle(fontWeight: FontWeight.bold))),
-                DataColumn(label: Text("شرح آیتم", style: TextStyle(fontWeight: FontWeight.bold))),
-                DataColumn(label: Text("واحد", style: TextStyle(fontWeight: FontWeight.bold))),
-                DataColumn(label: Text("مقدار", style: TextStyle(fontWeight: FontWeight.bold))),
-                DataColumn(label: Text("بهای واحد (ریال)", style: TextStyle(fontWeight: FontWeight.bold))),
-                DataColumn(label: Text("بهای کل (ریال)", style: TextStyle(fontWeight: FontWeight.bold))),
-                DataColumn(label: Text("عملیات", style: TextStyle(fontWeight: FontWeight.bold))),
-              ],
-              rows: List.generate(group.items.length, (itemIndex) {
-                final item = group.items[itemIndex];
-                return DataRow(
-                  cells: [
-                    DataCell(Center(child: Text("${itemIndex + 1}"))),
-                    DataCell(
-                      TextFormField(
-                        initialValue: item.code ?? "",
-                        onChanged: (val) {
-                          setState(() {
-                            item.code = val;
-                          });
-                        },
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 8),
-                        ),
-                      ),
-                    ),
-                    DataCell(
-                      TextFormField(
-                        initialValue: item.description,
-                        onChanged: (val) {
-                          setState(() {
-                            item.description = val;
-                          });
-                        },
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 8),
-                        ),
-                      ),
-                    ),
-                    DataCell(
-                      TextFormField(
-                        initialValue: item.unit,
-                        onChanged: (val) {
-                          setState(() {
-                            item.unit = val;
-                          });
-                        },
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 8),
-                        ),
-                      ),
-                    ),
-                    DataCell(
-                      TextFormField(
-                        initialValue: item.quantity.toString(),
-                        keyboardType: TextInputType.number,
-                        onChanged: (val) {
-                          setState(() {
-                            item.quantity = double.tryParse(val) ?? item.quantity;
-                          });
-                        },
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 8),
-                        ),
-                      ),
-                    ),
-                    DataCell(
-                      TextFormField(
-                        initialValue: _formatNumber(item.unitPrice),
-                        keyboardType: TextInputType.number,
-                        onChanged: (val) {
-                          setState(() {
-                            final cleanValue = val.replaceAll(',', '');
-                            item.unitPrice = double.tryParse(cleanValue) ?? item.unitPrice;
-                          });
-                        },
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 8),
-                        ),
-                      ),
-                    ),
-                    DataCell(
-                      Center(
-                        child: Text(
-                          _formatNumber(item.totalPrice),
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    DataCell(
-                      Center(
-                        child: IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () => _removeItem(groupIndex, itemIndex),
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              }),
+          // ستون شماره ردیف
+          Container(
+            width: 60,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              border: Border(right: BorderSide(color: Colors.grey[400]!)),
+            ),
+            child: const Center(
+              child: Text(
+                "ردیف",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              onPressed: () => _addItemToGroup(groupIndex),
-              child: const Text("افزودن آیتم به این گروه"),
+          // ستون کد فهرست
+          Container(
+            width: 100,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              border: Border(right: BorderSide(color: Colors.grey[400]!)),
+            ),
+            child: const Center(
+              child: Text(
+                "کد فهرست",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+          // ستون شرح
+          Expanded(
+            flex: 3,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                border: Border(right: BorderSide(color: Colors.grey[400]!)),
+              ),
+              child: const Center(
+                child: Text(
+                  "شرح آیتم",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ),
+          // ستون واحد
+          Container(
+            width: 80,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              border: Border(right: BorderSide(color: Colors.grey[400]!)),
+            ),
+            child: const Center(
+              child: Text(
+                "واحد",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+          // ستون مقدار
+          Container(
+            width: 100,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              border: Border(right: BorderSide(color: Colors.grey[400]!)),
+            ),
+            child: const Center(
+              child: Text(
+                "مقدار",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+          // ستون بهای واحد
+          Container(
+            width: 120,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              border: Border(right: BorderSide(color: Colors.grey[400]!)),
+            ),
+            child: const Center(
+              child: Text(
+                "بهای واحد (ریال)",
+                style: TextStyle(fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+          // ستون بهای کل
+          Container(
+            width: 120,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              border: Border(right: BorderSide(color: Colors.grey[400]!)),
+            ),
+            child: const Center(
+              child: Text(
+                "بهای کل (ریال)",
+                style: TextStyle(fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+          // ستون عملیات
+          Container(
+            width: 80,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: const Center(
+              child: Text(
+                "عملیات",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildExcelRow(EstimationItem item, int index) {
+    return Container(
+      height: 50,
+      decoration: BoxDecoration(
+        color: index.isEven ? Colors.white : Colors.grey[50],
+        border: Border(bottom: BorderSide(color: Colors.grey[300]!)),
+      ),
+      child: Row(
+        children: [
+          // ستون شماره ردیف
+          Container(
+            width: 60,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              border: Border(right: BorderSide(color: Colors.grey[300]!)),
+            ),
+            child: Center(child: Text(item.rowNumber.toString())),
+          ),
+          // ستون کد فهرست
+          Container(
+            width: 100,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              border: Border(right: BorderSide(color: Colors.grey[300]!)),
+            ),
+            child: TextFormField(
+              initialValue: item.code,
+              onChanged: (val) => setState(() => item.code = val),
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.zero,
+              ),
+              style: const TextStyle(fontSize: 12),
+            ),
+          ),
+          // ستون شرح
+          Expanded(
+            flex: 3,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                border: Border(right: BorderSide(color: Colors.grey[300]!)),
+              ),
+              child: TextFormField(
+                initialValue: item.description,
+                onChanged: (val) => setState(() => item.description = val),
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.zero,
+                ),
+                style: const TextStyle(fontSize: 12),
+              ),
+            ),
+          ),
+          // ستون واحد
+          Container(
+            width: 80,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              border: Border(right: BorderSide(color: Colors.grey[300]!)),
+            ),
+            child: TextFormField(
+              initialValue: item.unit,
+              onChanged: (val) => setState(() => item.unit = val),
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.zero,
+              ),
+              style: const TextStyle(fontSize: 12),
+            ),
+          ),
+          // ستون مقدار
+          Container(
+            width: 100,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              border: Border(right: BorderSide(color: Colors.grey[300]!)),
+            ),
+            child: TextFormField(
+              initialValue: item.quantity.toString(),
+              keyboardType: TextInputType.number,
+              onChanged: (val) {
+                setState(() {
+                  item.quantity = double.tryParse(val) ?? item.quantity;
+                });
+              },
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.zero,
+              ),
+              style: const TextStyle(fontSize: 12),
+            ),
+          ),
+          // ستون بهای واحد
+          Container(
+            width: 120,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              border: Border(right: BorderSide(color: Colors.grey[300]!)),
+            ),
+            child: TextFormField(
+              initialValue: _formatNumber(item.unitPrice),
+              keyboardType: TextInputType.number,
+              onChanged: (val) {
+                setState(() {
+                  final cleanValue = val.replaceAll(',', '');
+                  item.unitPrice = double.tryParse(cleanValue) ?? item.unitPrice;
+                });
+              },
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.zero,
+              ),
+              style: const TextStyle(fontSize: 12),
+            ),
+          ),
+          // ستون بهای کل
+          Container(
+            width: 120,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              border: Border(right: BorderSide(color: Colors.grey[300]!)),
+            ),
+            child: Center(
+              child: Text(
+                _formatNumber(item.totalPrice),
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                ),
+              ),
+            ),
+          ),
+          // ستون عملیات
+          Container(
+            width: 80,
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.add, size: 18),
+                  onPressed: () => _insertItem(index + 1),
+                  tooltip: "درج ردیف",
+                ),
+                IconButton(
+                  icon: const Icon(Icons.delete, size: 18, color: Colors.red),
+                  onPressed: () => _removeItem(index),
+                  tooltip: "حذف ردیف",
+                ),
+              ],
             ),
           ),
         ],
@@ -372,63 +398,115 @@ class _EstimationTableState extends State<EstimationTable> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        // هدر ثابت
+        _buildExcelHeader(),
+        
+        // بدنه جدول با اسکرول
         Expanded(
-          child: ListView.builder(
-            itemCount: _groups.length,
-            itemBuilder: (context, index) {
-              return _buildGroupTable(_groups[index], index);
-            },
+          child: Scrollbar(
+            controller: _verticalScrollController,
+            thumbVisibility: true,
+            child: Scrollbar(
+              controller: _horizontalScrollController,
+              thumbVisibility: true,
+              notificationPredicate: (notification) => notification.depth == 0,
+              child: SingleChildScrollView(
+                controller: _verticalScrollController,
+                child: SingleChildScrollView(
+                  controller: _horizontalScrollController,
+                  scrollDirection: Axis.horizontal,
+                  child: Container(
+                    constraints: BoxConstraints(
+                      minWidth: MediaQuery.of(context).size.width,
+                    ),
+                    child: Column(
+                      children: [
+                        // ردیف‌های داده
+                        ..._items.asMap().entries.map((entry) {
+                          return _buildExcelRow(entry.value, entry.key);
+                        }).toList(),
+                        
+                        // ردیف جمع کل
+                        Container(
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: Colors.blue[50],
+                            border: Border.all(color: Colors.blue[200]!),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 60,
+                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                child: const Center(child: Text("جمع")),
+                              ),
+                              Container(
+                                width: 100,
+                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                              ),
+                              Expanded(
+                                flex: 3,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                                ),
+                              ),
+                              Container(width: 80),
+                              Container(width: 100),
+                              Container(width: 120),
+                              Container(
+                                width: 120,
+                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                child: Center(
+                                  child: Text(
+                                    _formatNumber(_grandTotal),
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Container(width: 80),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
-        const SizedBox(height: 20),
+        
+        // نوار ابزار پایین
         Container(
-          padding: const EdgeInsets.all(16),
+          height: 60,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
             color: Colors.grey[100],
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.blue),
+            border: Border(top: BorderSide(color: Colors.grey[300]!)),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: _addGroup,
-                    icon: const Icon(Icons.add),
-                    label: const Text("افزودن گروه جدید"),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      foregroundColor: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    "تعداد گروه‌ها: ${_groups.length}",
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                ],
+              ElevatedButton.icon(
+                onPressed: _addItem,
+                icon: const Icon(Icons.add),
+                label: const Text("افزودن ردیف جدید"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
+                ),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    "جمع کل پروژه: ${_formatNumber(_grandTotal)} ریال",
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue,
-                    ),
-                  ),
-                  Text(
-                    "معادل: ${(_grandTotal / 1000000).toStringAsFixed(2)} میلیون ریال",
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.green,
-                    ),
-                  ),
-                ],
+              Text(
+                "تعداد ردیف‌ها: ${_items.length} | جمع کل: ${_formatNumber(_grandTotal)} ریال",
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                ),
               ),
             ],
           ),
@@ -436,4 +514,24 @@ class _EstimationTableState extends State<EstimationTable> {
       ],
     );
   }
+}
+
+class EstimationItem {
+  int rowNumber;
+  String code;
+  String description;
+  String unit;
+  double quantity;
+  double unitPrice;
+
+  EstimationItem({
+    required this.rowNumber,
+    required this.code,
+    required this.description,
+    required this.unit,
+    required this.quantity,
+    required this.unitPrice,
+  });
+
+  double get totalPrice => quantity * unitPrice;
 }
