@@ -27,74 +27,57 @@ class ExcelStyleEstimationTable extends StatefulWidget {
 }
 
 class _ExcelStyleEstimationTableState extends State<ExcelStyleEstimationTable> {
-  final List<EstimationItem> _items = [
-    EstimationItem(
-      rowNumber: 1,
-      code: "010101",
-      description: "خاکبرداری با ماشین",
-      unit: "متر مکعب",
-      quantity: 100,
-      unitPrice: 15000,
-    ),
-    EstimationItem(
-      rowNumber: 2,
-      code: "010102",
-      description: "خاکریزی و تراکم",
-      unit: "متر مکعب",
-      quantity: 80,
-      unitPrice: 25000,
-    ),
-    EstimationItem(
-      rowNumber: 3,
-      code: "020101",
-      description: "تیرآهن IPE 18",
-      unit: "کیلوگرم",
-      quantity: 500,
-      unitPrice: 45000,
-    ),
-  ];
+  final List<EstimationItem> _items = []; // لیست خالی
 
   final ScrollController _horizontalScrollController = ScrollController();
   final ScrollController _verticalScrollController = ScrollController();
 
   void _addItem() {
     setState(() {
-      _items.add(EstimationItem(
+      final newItem = EstimationItem(
         rowNumber: _items.length + 1,
-        code: "000000",
-        description: "آیتم جدید",
-        unit: "عدد",
+        code: "",
+        description: "",
+        unit: "عدد", // مقدار پیش‌فرض
         quantity: 1,
-        unitPrice: 1000,
-      ));
+        unitPrice: 0,
+      );
+      _items.add(newItem);
     });
   }
 
   void _removeItem(int index) {
-    setState(() {
-      _items.removeAt(index);
-      // به روز رسانی شماره ردیف‌ها
-      for (int i = index; i < _items.length; i++) {
-        _items[i].rowNumber = i + 1;
-      }
-    });
+    if (index >= 0 && index < _items.length) {
+      setState(() {
+        _items.removeAt(index);
+        // به روز رسانی شماره ردیف‌ها
+        _updateRowNumbers();
+      });
+    }
   }
 
   void _insertItem(int index) {
-    setState(() {
-      _items.insert(index, EstimationItem(
-        rowNumber: index + 1,
-        code: "000000",
-        description: "آیتم جدید",
-        unit: "عدد",
-        quantity: 1,
-        unitPrice: 1000,
-      ));
-      // به روز رسانی شماره ردیف‌ها
-      for (int i = index + 1; i < _items.length; i++) {
-        _items[i].rowNumber = i + 1;
-      }
-    });
+    if (index >= 0 && index <= _items.length) {
+      setState(() {
+        final newItem = EstimationItem(
+          rowNumber: index + 1,
+          code: "",
+          description: "",
+          unit: "عدد",
+          quantity: 1,
+          unitPrice: 0,
+        );
+        _items.insert(index, newItem);
+        // به روز رسانی شماره ردیف‌ها
+        _updateRowNumbers();
+      });
+    }
+  }
+
+  void _updateRowNumbers() {
+    for (int i = 0; i < _items.length; i++) {
+      _items[i].rowNumber = i + 1;
+    }
   }
 
   double get _grandTotal {
@@ -102,9 +85,56 @@ class _ExcelStyleEstimationTableState extends State<ExcelStyleEstimationTable> {
   }
 
   String _formatNumber(double number) {
+    if (number == 0) return "0";
     return number.toStringAsFixed(0).replaceAllMapped(
       RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
       (Match m) => '${m[1]},',
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Container(
+      height: 200,
+      color: Colors.grey[50],
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.table_chart_outlined,
+              size: 64,
+              color: Colors.grey,
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              "هیچ آیتمی وجود ندارد",
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.grey,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              "برای شروع، یک ردیف جدید اضافه کنید",
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey,
+              ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: _addItem,
+              icon: const Icon(Icons.add),
+              label: const Text("افزودن اولین ردیف"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                foregroundColor: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -266,6 +296,8 @@ class _ExcelStyleEstimationTableState extends State<ExcelStyleEstimationTable> {
               decoration: const InputDecoration(
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.zero,
+                hintText: "کد",
+                hintStyle: TextStyle(fontSize: 12, color: Colors.grey),
               ),
               style: const TextStyle(fontSize: 12),
             ),
@@ -284,6 +316,8 @@ class _ExcelStyleEstimationTableState extends State<ExcelStyleEstimationTable> {
                 decoration: const InputDecoration(
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.zero,
+                  hintText: "شرح آیتم",
+                  hintStyle: TextStyle(fontSize: 12, color: Colors.grey),
                 ),
                 style: const TextStyle(fontSize: 12),
               ),
@@ -302,6 +336,8 @@ class _ExcelStyleEstimationTableState extends State<ExcelStyleEstimationTable> {
               decoration: const InputDecoration(
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.zero,
+                hintText: "واحد",
+                hintStyle: TextStyle(fontSize: 12, color: Colors.grey),
               ),
               style: const TextStyle(fontSize: 12),
             ),
@@ -324,6 +360,8 @@ class _ExcelStyleEstimationTableState extends State<ExcelStyleEstimationTable> {
               decoration: const InputDecoration(
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.zero,
+                hintText: "0",
+                hintStyle: TextStyle(fontSize: 12, color: Colors.grey),
               ),
               style: const TextStyle(fontSize: 12),
             ),
@@ -336,7 +374,7 @@ class _ExcelStyleEstimationTableState extends State<ExcelStyleEstimationTable> {
               border: Border(right: BorderSide(color: Colors.grey[300]!)),
             ),
             child: TextFormField(
-              initialValue: _formatNumber(item.unitPrice),
+              initialValue: item.unitPrice == 0 ? "" : _formatNumber(item.unitPrice),
               keyboardType: TextInputType.number,
               onChanged: (val) {
                 setState(() {
@@ -347,6 +385,8 @@ class _ExcelStyleEstimationTableState extends State<ExcelStyleEstimationTable> {
               decoration: const InputDecoration(
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.zero,
+                hintText: "0",
+                hintStyle: TextStyle(fontSize: 12, color: Colors.grey),
               ),
               style: const TextStyle(fontSize: 12),
             ),
@@ -361,10 +401,10 @@ class _ExcelStyleEstimationTableState extends State<ExcelStyleEstimationTable> {
             child: Center(
               child: Text(
                 _formatNumber(item.totalPrice),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
-                  color: Colors.blue,
+                  color: item.totalPrice > 0 ? Colors.blue : Colors.grey,
                 ),
               ),
             ),
@@ -399,85 +439,87 @@ class _ExcelStyleEstimationTableState extends State<ExcelStyleEstimationTable> {
     return Column(
       children: [
         // هدر ثابت
-        _buildExcelHeader(),
+        if (_items.isNotEmpty) _buildExcelHeader(),
         
-        // بدنه جدول با اسکرول
+        // بدنه جدول با اسکرول یا حالت خالی
         Expanded(
-          child: Scrollbar(
-            controller: _verticalScrollController,
-            thumbVisibility: true,
-            child: Scrollbar(
-              controller: _horizontalScrollController,
-              thumbVisibility: true,
-              notificationPredicate: (notification) => notification.depth == 0,
-              child: SingleChildScrollView(
-                controller: _verticalScrollController,
-                child: SingleChildScrollView(
-                  controller: _horizontalScrollController,
-                  scrollDirection: Axis.horizontal,
-                  child: Container(
-                    constraints: BoxConstraints(
-                      minWidth: MediaQuery.of(context).size.width,
-                    ),
-                    child: Column(
-                      children: [
-                        // ردیف‌های داده
-                        ..._items.asMap().entries.map((entry) {
-                          return _buildExcelRow(entry.value, entry.key);
-                        }).toList(),
-                        
-                        // ردیف جمع کل
-                        Container(
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: Colors.blue[50],
-                            border: Border.all(color: Colors.blue[200]!),
+          child: _items.isEmpty
+              ? _buildEmptyState()
+              : Scrollbar(
+                  controller: _verticalScrollController,
+                  thumbVisibility: true,
+                  child: Scrollbar(
+                    controller: _horizontalScrollController,
+                    thumbVisibility: true,
+                    notificationPredicate: (notification) => notification.depth == 0,
+                    child: SingleChildScrollView(
+                      controller: _verticalScrollController,
+                      child: SingleChildScrollView(
+                        controller: _horizontalScrollController,
+                        scrollDirection: Axis.horizontal,
+                        child: Container(
+                          constraints: BoxConstraints(
+                            minWidth: MediaQuery.of(context).size.width,
                           ),
-                          child: Row(
+                          child: Column(
                             children: [
+                              // ردیف‌های داده
+                              ..._items.asMap().entries.map((entry) {
+                                return _buildExcelRow(entry.value, entry.key);
+                              }).toList(),
+                              
+                              // ردیف جمع کل
                               Container(
-                                width: 60,
-                                padding: const EdgeInsets.symmetric(horizontal: 8),
-                                child: const Center(child: Text("جمع")),
-                              ),
-                              Container(
-                                width: 100,
-                                padding: const EdgeInsets.symmetric(horizontal: 8),
-                              ),
-                              Expanded(
-                                flex: 3,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: Colors.blue[50],
+                                  border: Border.all(color: Colors.blue[200]!),
                                 ),
-                              ),
-                              Container(width: 80),
-                              Container(width: 100),
-                              Container(width: 120),
-                              Container(
-                                width: 120,
-                                padding: const EdgeInsets.symmetric(horizontal: 8),
-                                child: Center(
-                                  child: Text(
-                                    _formatNumber(_grandTotal),
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.blue,
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 60,
+                                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                                      child: const Center(child: Text("جمع")),
                                     ),
-                                  ),
+                                    Container(
+                                      width: 100,
+                                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                                    ),
+                                    Expanded(
+                                      flex: 3,
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                                      ),
+                                    ),
+                                    Container(width: 80),
+                                    Container(width: 100),
+                                    Container(width: 120),
+                                    Container(
+                                      width: 120,
+                                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                                      child: Center(
+                                        child: Text(
+                                          _formatNumber(_grandTotal),
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.blue,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(width: 80),
+                                  ],
                                 ),
                               ),
-                              Container(width: 80),
                             ],
                           ),
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
-          ),
         ),
         
         // نوار ابزار پایین
@@ -494,20 +536,21 @@ class _ExcelStyleEstimationTableState extends State<ExcelStyleEstimationTable> {
               ElevatedButton.icon(
                 onPressed: _addItem,
                 icon: const Icon(Icons.add),
-                label: const Text("افزودن ردیف جدید"),
+                label: Text(_items.isEmpty ? "افزودن اولین ردیف" : "افزودن ردیف جدید"),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
                   foregroundColor: Colors.white,
                 ),
               ),
-              Text(
-                "تعداد ردیف‌ها: ${_items.length} | جمع کل: ${_formatNumber(_grandTotal)} ریال",
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue,
+              if (_items.isNotEmpty)
+                Text(
+                  "تعداد ردیف‌ها: ${_items.length} | جمع کل: ${_formatNumber(_grandTotal)} ریال",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
                 ),
-              ),
             ],
           ),
         ),
