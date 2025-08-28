@@ -199,8 +199,8 @@ class _EstimationTableState extends State<EstimationTable> {
   }
 
   double get _grandTotal {
-    return _groups.fold(0, (sum, group) {
-      return sum + group.items.fold(0, (groupSum, item) => groupSum + item.totalPrice);
+    return _groups.fold(0.0, (sum, group) {
+      return sum + group.items.fold(0.0, (groupSum, item) => groupSum + item.totalPrice);
     });
   }
 
@@ -212,7 +212,7 @@ class _EstimationTableState extends State<EstimationTable> {
   }
 
   Widget _buildGroupTable(EstimationGroup group, int groupIndex) {
-    final groupTotal = group.items.fold(0, (sum, item) => sum + item.totalPrice);
+    final double groupTotal = group.items.fold(0.0, (sum, item) => sum + item.totalPrice);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
