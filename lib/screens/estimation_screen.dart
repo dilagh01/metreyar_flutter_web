@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:data_table_2/data_table_2.dart';
 
-class EditableMetreTablePage extends StatefulWidget {
-  const EditableMetreTablePage({super.key});
+// ✅ تغییر نام کلاس به EstimationScreen
+class EstimationScreen extends StatefulWidget {
+  const EstimationScreen({super.key});
 
   @override
-  State<EditableMetreTablePage> createState() => _EditableMetreTablePageState();
+  State<EstimationScreen> createState() => _EstimationScreenState();
 }
 
-class _EditableMetreTablePageState extends State<EditableMetreTablePage> {
+// ✅ تغییر نام state کلاس
+class _EstimationScreenState extends State<EstimationScreen> {
   List<Map<String, dynamic>> rows = [];
   final List<TextEditingController> _quantityControllers = [];
   final List<TextEditingController> _unitPriceControllers = [];
