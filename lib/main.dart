@@ -22,19 +22,19 @@ class MetreyarApp extends StatelessWidget {
   const MetreyarApp({super.key});
 
   final GoRouter _router = GoRouter(
-    initialLocation: '/home', // مسیر پیش‌فرض
+    initialLocation: '/home',
     routes: [
-      GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
-      GoRoute(path: '/projects', builder: (context, state) => const ProjectsScreen()),
-      GoRoute(path: '/contracts', builder: (context, state) => const ContractsScreen()),
-      GoRoute(path: '/dashboard', builder: (context, state) => const DashboardScreen()),
-      GoRoute(path: '/analysis', builder: (context, state) => const AnalysisScreen()),
-      GoRoute(path: '/features', builder: (context, state) => const FeaturesScreen()),
-      GoRoute(path: '/estimation', builder: (context, state) => const EstimationScreen()),
-      GoRoute(path: '/price-list', builder: (context, state) => const PriceListScreen()),
-      GoRoute(path: '/report', builder: (context, state) => const ReportScreen()),
-      GoRoute(path: '/settings', builder: (context, state) => const SettingsScreen()),
-      GoRoute(path: '/workflow', builder: (context, state) => const WorkflowScreen()),
+      GoRoute(path: '/home', builder: (context, state) => HomeScreen()),
+      GoRoute(path: '/projects', builder: (context, state) => ProjectsScreen()),
+      GoRoute(path: '/contracts', builder: (context, state) => ContractsScreen()),
+      GoRoute(path: '/dashboard', builder: (context, state) => DashboardScreen()),
+      GoRoute(path: '/analysis', builder: (context, state) => AnalysisScreen()),
+      GoRoute(path: '/features', builder: (context, state) => FeaturesScreen()),
+      GoRoute(path: '/estimation', builder: (context, state) => EstimationScreen()),
+      GoRoute(path: '/price-list', builder: (context, state) => PriceListScreen()),
+      GoRoute(path: '/report', builder: (context, state) => ReportScreen()),
+      GoRoute(path: '/settings', builder: (context, state) => SettingsScreen()),
+      GoRoute(path: '/workflow', builder: (context, state) => WorkflowScreen()),
     ],
   );
 
@@ -46,7 +46,6 @@ class MetreyarApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         fontFamily: "Vazir",
-        useMaterial3: true,
       ),
       routerConfig: _router,
     );
