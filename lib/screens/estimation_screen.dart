@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:data_table_2/data_table_2.dart';
-import 'package:file_picker/file_picker.dart';
-import 'services/file_service.dart';
-import 'services/pdf_service.dart';
+import '../package:flutter/material.dart';
+import '../package:data_table_2/data_table_2.dart';
+import '../package:file_picker/file_picker.dart';
+import '../services/file_service.dart';
+import '../services/pdf_service.dart';
 
 class EstimationScreen extends StatefulWidget {
   const EstimationScreen({super.key});
