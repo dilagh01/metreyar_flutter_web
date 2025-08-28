@@ -25,6 +25,7 @@ dependencies:
   file_picker: ^10.3.2
   printing: ^5.11.0
   pdf: ^3.10.4
+  open_file: ^3.3.1  # یا آخرین نسخه
 dev_dependencies:
   flutter_test:
     sdk: flutter
