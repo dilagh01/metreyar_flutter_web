@@ -15,11 +15,10 @@ import 'screens/analysis_screen.dart';
 import 'screens/workflow_screen.dart';
 
 void main() {
-  runApp(const MetreyarApp());
 }
 
 class MetreyarApp extends StatelessWidget {
-   MetreyarApp({super.key});
+  const MetreyarApp({super.key});
 
   final GoRouter _router = GoRouter(
     initialLocation: '/home',
