@@ -1,5 +1,6 @@
 // lib/services/local_storage.dart
 import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 
 class LocalStorage {
   static final LocalStorage _instance = LocalStorage._internal();
@@ -9,7 +10,7 @@ class LocalStorage {
   late Box<dynamic> _box;
 
   Future<void> init() async {
-    await Hive.initFlutter();
+    await Hive.init((await getApplicationDocumentsDirectory()).path);
     _box = await Hive.openBox('metreyar_data');
   }
 

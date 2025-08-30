@@ -1,11 +1,16 @@
-// utils/estimation_calculator.dart
+import '../models/row_item.dart';
+
 class EstimationCalculator {
-  static double calculateTotal(List<Map<String, dynamic>> items) {
-    double total = 0;
+  static double calculateTotal(List<RowItem> items) {
+    return items.fold(0, (sum, item) => sum + (item.quantity * item.unitPrice));
+  }
+
+  static Map<String, double> calculateCategoryTotals(List<RowItem> items) {
+    Map<String, double> totals = {};
     for (var item in items) {
-      total += (item['quantity'] ?? 0) * (item['unitPrice'] ?? 0);
+      totals[item.category] = (totals[item.category] ?? 0) + (item.quantity * item.unitPrice);
     }
-    return total;
+    return totals;
   }
 
   static double calculateWithWaste(double quantity, double wastePercentage) {
