@@ -1,89 +1,108 @@
+// lib/screens/estimation_screen.dart
 import 'package:flutter/material.dart';
-import 'package:data_table_2/data_table_2.dart';
-import '../widgets/sidebar.dart';
+import 'package:provider/provider.dart';
+import '../providers/estimation_provider.dart';
+import '../models/row_item.dart';
+import '../widgets/data_table_widget.dart';
+import '../widgets/chart_widget.dart';
 
 class EstimationScreen extends StatefulWidget {
+  EstimationScreen({super.key});
 
   @override
   State<EstimationScreen> createState() => _EstimationScreenState();
 }
 
 class _EstimationScreenState extends State<EstimationScreen> {
-  List<Map<String, dynamic>> rows = [];
-  final List<TextEditingController> _quantityControllers = [];
-  final List<TextEditingController> _unitPriceControllers = [];
+  final TextEditingController _descController = TextEditingController();
+  final TextEditingController _qtyController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
 
-  int calcTotal(int qty, int unitPrice) => qty * unitPrice;
+  void _addItem(BuildContext context) {
+    final provider = Provider.of<EstimationProvider>(context, listen: false);
+    
+    final item = RowItem(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      code: 'ITEM-${provider.items.length + 1}',
+      description: _descController.text,
+      unit: 'عدد',
+      quantity: double.tryParse(_qtyController.text) ?? 0,
+      unitPrice: double.tryParse(_priceController.text) ?? 0,
+      category: 'عمومی',
+    );
 
-  void addRow() {
-    setState(() {
-      final quantityController = TextEditingController(text: '0');
-      final unitPriceController = TextEditingController(text: '0');
-      
-      _quantityControllers.add(quantityController);
-      _unitPriceControllers.add(unitPriceController);
-      
-      rows.add({
-        "ردیف": rows.length + 1,
-        "کد فهرست": "----",
-        "شرح آیتم": "",
-        "واحد": "عدد",
-        "مقدار": 0,
-        "بهای واحد": 0,
-        "quantity_controller": quantityController,
-        "unit_price_controller": unitPriceController,
-      });
-    });
-  }
-
-  void deleteRow(int index) {
-    setState(() {
-      _quantityControllers[index].dispose();
-      _unitPriceControllers[index].dispose();
-      _quantityControllers.removeAt(index);
-      _unitPriceControllers.removeAt(index);
-      
-      rows.removeAt(index);
-      for (int i = 0; i < rows.length; i++) {
-        rows[i]["ردیف"] = i + 1;
-      }
-    });
-  }
-
-  int get grandTotal {
-    int sum = 0;
-    for (var row in rows) {
-      sum += calcTotal(row["مقدار"], row["بهای واحد"]);
-    }
-    return sum;
-  }
-
-  @override
-  void dispose() {
-    for (var controller in _quantityControllers) {
-      controller.dispose();
-    }
-    for (var controller in _unitPriceControllers) {
-      controller.dispose();
-    }
-    super.dispose();
+    provider.addItem(item);
+    
+    _descController.clear();
+    _qtyController.clear();
+    _priceController.clear();
   }
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<EstimationProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("جدول متره قابل ویرایش"),
+        title: Text('برآورد متره'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            tooltip: "افزودن ردیف جدید",
-            onPressed: addRow,
-          ),
+          IconButton(icon: Icon(Icons.save), onPressed: () {}),
         ],
       ),
-      body: const Center(
-        child: Text('صفحه برآورد - نسخه ساده'),
+      body: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          children: [
+            // فرم افزودن آیتم
+            Card(
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _descController,
+                        decoration: InputDecoration(labelText: 'شرح آیتم'),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    SizedBox(
+                      width: 100,
+                      child: TextField(
+                        controller: _qtyController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(labelText: 'مقدار'),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    SizedBox(
+                      width: 120,
+                      child: TextField(
+                        controller: _priceController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(labelText: 'بهای واحد'),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: () => _addItem(context),
+                      child: Text('افزودن'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            
+            // جدول داده‌ها
+            Expanded(
+              child: DataTableWidget(items: provider.items),
+            ),
+            
+            // نمودار و جمع کل
+            ChartWidget(items: provider.items),
+          ],
+        ),
       ),
     );
   }

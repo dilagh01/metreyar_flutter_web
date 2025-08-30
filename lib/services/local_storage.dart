@@ -1,4 +1,6 @@
-// services/local_storage.dart
+// lib/services/local_storage.dart
+import 'package:hive/hive.dart';
+
 class LocalStorage {
   static final LocalStorage _instance = LocalStorage._internal();
   factory LocalStorage() => _instance;
@@ -8,7 +10,7 @@ class LocalStorage {
 
   Future<void> init() async {
     await Hive.initFlutter();
-    _box = await Hive.openBox('estimation_data');
+    _box = await Hive.openBox('metreyar_data');
   }
 
   Future<void> saveEstimations(List<Map<String, dynamic>> data) async {
@@ -17,5 +19,13 @@ class LocalStorage {
 
   List<Map<String, dynamic>> getEstimations() {
     return List<Map<String, dynamic>>.from(_box.get('estimations') ?? []);
+  }
+
+  Future<void> saveProjects(List<Map<String, dynamic>> data) async {
+    await _box.put('projects', data);
+  }
+
+  List<Map<String, dynamic>> getProjects() {
+    return List<Map<String, dynamic>>.from(_box.get('projects') ?? []);
   }
 }

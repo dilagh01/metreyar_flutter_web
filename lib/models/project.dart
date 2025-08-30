@@ -1,16 +1,39 @@
 class Project {
+  final String id;
   final String name;
-  final List<RowItem> rows;
+  final String location;
+  final DateTime startDate;
+  final DateTime? endDate;
+  final double budget;
 
-  Project({required this.name, required this.rows});
-}
+  Project({
+    required this.id,
+    required this.name,
+    required this.location,
+    required this.startDate,
+    this.endDate,
+    required this.budget,
+  });
 
-// lib/models/row_item.dart
-class RowItem {
-  final String description;
-  final double quantity;
-  final double unitPrice;
-  double get total => quantity * unitPrice; // فرمول ساده
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'location': location,
+      'startDate': startDate.toIso8601String(),
+      'endDate': endDate?.toIso8601String(),
+      'budget': budget,
+    };
+  }
 
-  RowItem({required this.description, required this.quantity, required this.unitPrice});
+  factory Project.fromMap(Map<String, dynamic> map) {
+    return Project(
+      id: map['id'],
+      name: map['name'],
+      location: map['location'],
+      startDate: DateTime.parse(map['startDate']),
+      endDate: map['endDate'] != null ? DateTime.parse(map['endDate']) : null,
+      budget: map['budget'],
+    );
+  }
 }

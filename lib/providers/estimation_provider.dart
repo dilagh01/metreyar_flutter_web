@@ -1,23 +1,41 @@
-// providers/estimation_provider.dart
-final estimationProvider = StateNotifierProvider<EstimationNotifier, List<Map<String, dynamic>>>((ref) {
-  return EstimationNotifier();
-});
+// lib/providers/estimation_provider.dart
+import 'package:flutter/foundation.dart';
+import '../models/row_item.dart';
 
-class EstimationNotifier extends StateNotifier<List<Map<String, dynamic>>> {
-  EstimationNotifier() : super([]);
+class EstimationProvider with ChangeNotifier {
+  List<RowItem> _items = [];
 
-  void addRow(Map<String, dynamic> row) {
-    state = [...state, row];
+  List<RowItem> get items => _items;
+
+  double get grandTotal {
+    return _items.fold(0, (sum, item) => sum + item.totalPrice);
   }
 
-  void updateRow(int index, Map<String, dynamic> newRow) {
-    state = [
-      for (int i = 0; i < state.length; i++)
-        i == index ? newRow : state[i]
-    ];
+  void addItem(RowItem item) {
+    _items.add(item);
+    notifyListeners();
   }
 
-  void deleteRow(int index) {
-    state = state.where((_, i) => i != index).toList();
+  void updateItem(int index, RowItem newItem) {
+    _items[index] = newItem;
+    notifyListeners();
+  }
+
+  void deleteItem(int index) {
+    _items.removeAt(index);
+    notifyListeners();
+  }
+
+  void clearItems() {
+    _items.clear();
+    notifyListeners();
+  }
+
+  Map<String, double> getCategoryTotals() {
+    Map<String, double> totals = {};
+    for (var item in _items) {
+      totals[item.category] = (totals[item.category] ?? 0) + item.totalPrice;
+    }
+    return totals;
   }
 }

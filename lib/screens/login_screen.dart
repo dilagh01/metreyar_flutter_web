@@ -1,6 +1,7 @@
+// lib/screens/login_screen.dart
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../widgets/sidebar.dart';
+import '../widgets/tad_button.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -13,15 +14,10 @@ class LoginScreen extends StatelessWidget {
     final password = _passwordController.text;
 
     if (username.isNotEmpty && password.isNotEmpty) {
-      // لاگین موفق - برو به صفحه اصلی
       context.go('/home');
     } else {
-      // نمایش خطا
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('لطفا نام کاربری و رمز عبور را وارد کنید'),
-          backgroundColor: Colors.red,
-        ),
+        SnackBar(content: Text('لطفا نام کاربری و رمز عبور را وارد کنید')),
       );
     }
   }
@@ -37,57 +33,28 @@ class LoginScreen extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 10,
-                offset: Offset(0, 4),
-              ),
-            ],
+            boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // لوگو
               CircleAvatar(
                 radius: 40,
                 backgroundColor: Colors.blue,
-                child: Text(
-                  'م',
-                  style: TextStyle(
-                    fontSize: 32,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                child: Text('م', style: TextStyle(fontSize: 32, color: Colors.white)),
               ),
               SizedBox(height: 24),
-              
-              // عنوان
-              Text(
-                'ورود به متره یار',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue,
-                ),
-              ),
+              Text('ورود به متره یار', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               SizedBox(height: 32),
-
-              // فیلد نام کاربری
               TextFormField(
                 controller: _usernameController,
                 decoration: InputDecoration(
                   labelText: 'نام کاربری',
                   prefixIcon: Icon(Icons.person),
                   border: OutlineInputBorder(),
-                  filled: true,
-                  fillColor: Colors.grey[50],
                 ),
               ),
               SizedBox(height: 16),
-
-              // فیلد رمز عبور
               TextFormField(
                 controller: _passwordController,
                 obscureText: true,
@@ -95,59 +62,13 @@ class LoginScreen extends StatelessWidget {
                   labelText: 'رمز عبور',
                   prefixIcon: Icon(Icons.lock),
                   border: OutlineInputBorder(),
-                  filled: true,
-                  fillColor: Colors.grey[50],
                 ),
               ),
               SizedBox(height: 24),
-
-              // دکمه ورود
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: () => _login(context),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: Text(
-                    'ورود',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              ),
-              SizedBox(height: 16),
-
-              // لینک فراموشی رمز
-              TextButton(
-                onPressed: () {
-                  // صفحه فراموشی رمز
-                },
-                child: Text(
-                  'رمز عبور را فراموش کرده‌اید؟',
-                  style: TextStyle(color: Colors.blue),
-                ),
-              ),
-
-              // ثبت نام
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('حساب کاربری ندارید؟'),
-                  TextButton(
-                    onPressed: () {
-                      // صفحه ثبت نام
-                    },
-                    child: Text(
-                      'ثبت نام',
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                  ),
-                ],
+              TadButton(
+                text: 'ورود به سیستم',
+                onPressed: () => _login(context),
+                isPrimary: true,
               ),
             ],
           ),

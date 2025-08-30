@@ -1,0 +1,28 @@
+            sideTitles: SideTitles(
+              showTitles: true,
+              getTitlesWidget: (value, meta) {
+                int index = value.toInt();
+                if (index >= 0 && index < barData.length) {
+                  return Text(barData[index].x.toString());
+                }
+                return const Text('');
+              },
+            ),
+          ),
+        ),
+        borderData: FlBorderData(show: false),
+        barGroups: barData,
+      ),
+    );
+  }
+
+  double _findMaxY() {
+    double maxY = 0;
+    for (var group in barData) {
+      for (var rod in group.barRods) {
+        if (rod.toY > maxY) maxY = rod.toY;
+      }
+    }
+    return maxY + 1;
+  }
+}

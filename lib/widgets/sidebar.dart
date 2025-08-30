@@ -1,42 +1,45 @@
+// lib/widgets/sidebar.dart
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-class SideBar extends StatelessWidget {
-  final Function(String) onItemTap;
-
-  const SideBar({Key? key, required this.onItemTap}) : super(key: key);
+class Sidebar extends StatelessWidget {
+  Sidebar({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
+        padding: EdgeInsets.zero,
         children: [
           DrawerHeader(
             decoration: BoxDecoration(color: Colors.blue),
-            child: Text("متره یار", style: TextStyle(color: Colors.white, fontSize: 20)),
+            child: Text('متره یار', style: TextStyle(color: Colors.white, fontSize: 24)),
           ),
           ListTile(
-            title: Text("خانه"),
-            onTap: () => onItemTap("/home"),
+            leading: Icon(Icons.home),
+            title: Text('صفحه اصلی'),
+            onTap: () => context.go('/home'),
           ),
           ListTile(
-            title: Text("قراردادها"),
-            onTap: () => onItemTap("/contracts"),
+            leading: Icon(Icons.calculate),
+            title: Text('برآورد متره'),
+            onTap: () => context.go('/estimation'),
           ),
           ListTile(
-            title: Text("داشبورد"),
-            onTap: () => onItemTap("/dashboard"),
+            leading: Icon(Icons.analytics),
+            title: Text('آنالیز پروژه'),
+            onTap: () => context.go('/analysis'),
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.settings),
+            title: Text('تنظیمات'),
+            onTap: () {},
           ),
           ListTile(
-            title: Text("گزارش‌ها"),
-            onTap: () => onItemTap("/report"),
-          ),
-          ListTile(
-            title: Text("تنظیمات"),
-            onTap: () => onItemTap("/settings"),
-          ),
-          ListTile(
-            title: Text("   ^f   ^l ^e    "),
-            onTap: () => onItemTap("/estimation"),
+            leading: Icon(Icons.exit_to_app),
+            title: Text('خروج'),
+            onTap: () => context.go('/login'),
           ),
         ],
       ),

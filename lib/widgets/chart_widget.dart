@@ -1,46 +1,40 @@
+// lib/widgets/chart_widget.dart
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
+import '../models/row_item.dart';
+import '../utils/estimation_calculator.dart';
 
 class ChartWidget extends StatelessWidget {
-  final List<BarChartGroupData> barData;
+  final List<RowItem> items;
 
-  const ChartWidget({super.key, required this.barData});
+  const ChartWidget({super.key, required this.items});
 
   @override
   Widget build(BuildContext context) {
-    return BarChart(
-      BarChartData(
-        alignment: BarChartAlignment.spaceAround,
-        maxY: _findMaxY(),
-        barTouchData: BarTouchData(enabled: true),
-        titlesData: FlTitlesData(
-          leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: true)),
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              getTitlesWidget: (value, meta) {
-                int index = value.toInt();
-                if (index >= 0 && index < barData.length) {
-                  return Text(barData[index].x.toString());
-                }
-                return const Text('');
-              },
-            ),
-          ),
+    final grandTotal = EstimationCalculator.calculateTotal(items);
+    final categoryTotals = EstimationCalculator.calculateCategoryTotals(items);
+
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('خلاصه مالی', style: TextStyle(fontWeight: FontWeight.bold)),
+            SizedBox(height: 10),
+            Text('جمع کل: ${grandTotal.toStringAsFixed(2)} ریال', 
+                 style: TextStyle(fontSize: 18, color: Colors.blue)),
+            SizedBox(height: 10),
+            ...categoryTotals.entries.map((entry) => 
+              Row(
+                children: [
+                  Expanded(child: Text(entry.key)),
+                  Text('${entry.value.toStringAsFixed(2)} ریال'),
+                ],
+              )
+            ).toList(),
+          ],
         ),
-        borderData: FlBorderData(show: false),
-        barGroups: barData,
       ),
     );
-  }
-
-  double _findMaxY() {
-    double maxY = 0;
-    for (var group in barData) {
-      for (var rod in group.barRods) {
-        if (rod.toY > maxY) maxY = rod.toY;
-      }
-    }
-    return maxY + 1;
   }
 }
