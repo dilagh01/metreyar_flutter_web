@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class WorkflowScreen extends StatelessWidget {
-  const WorkflowScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

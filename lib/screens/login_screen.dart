@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../widgets/sidebar.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});

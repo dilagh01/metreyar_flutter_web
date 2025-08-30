@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../widgets/data_table_widget.dart';
+import '../widgets/sidebar.dart';
 
 class PriceListScreen extends StatelessWidget {
-  const PriceListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

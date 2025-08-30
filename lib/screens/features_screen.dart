@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/feature_card.dart';
+import '../widgets/sidebar.dart';
 
 class FeaturesScreen extends StatelessWidget {
   final List<Map<String, dynamic>> features = [
