@@ -13,34 +13,35 @@ import 'screens/report_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/analysis_screen.dart';
 import 'screens/workflow_screen.dart';
+import 'screens/login_screen.dart';
 
 void main() {
-  runApp(const MetreyarApp());
+  runApp(MetreyarApp());
 }
 
 class MetreyarApp extends StatelessWidget {
-  const MetreyarApp({super.key});
+  MetreyarApp({super.key});
+
+  final GoRouter _router = GoRouter(
+    initialLocation: '/home',
+    routes: [
+      GoRoute(path: '/home', builder: (context, state) => HomeScreen()),
+      GoRoute(path: '/projects', builder: (context, state) => ProjectsScreen()),
+      GoRoute(path: '/contracts', builder: (context, state) => ContractsScreen()),
+      GoRoute(path: '/dashboard', builder: (context, state) => DashboardScreen()),
+      GoRoute(path: '/analysis', builder: (context, state) => AnalysisScreen()),
+      GoRoute(path: '/features', builder: (context, state) => FeaturesScreen()),
+      GoRoute(path: '/estimation', builder: (context, state) => EstimationScreen()),
+      GoRoute(path: '/price-list', builder: (context, state) => PriceListScreen()),
+      GoRoute(path: '/report', builder: (context, state) => ReportScreen()),
+      GoRoute(path: '/settings', builder: (context, state) => SettingsScreen()),
+      GoRoute(path: '/workflow', builder: (context, state) => WorkflowScreen()),
+      GoRoute(path: '/login', builder: (context, state) => LoginScreen()),
+    ],
+  );
 
   @override
   Widget build(BuildContext context) {
-    // انتقال GoRouter به داخل متد build
-    final GoRouter _router = GoRouter(
-      initialLocation: '/home',
-      routes: [
-        GoRoute(path: '/home', builder: (context, state) => HomeScreen()),
-        GoRoute(path: '/projects', builder: (context, state) => ProjectsScreen()),
-        GoRoute(path: '/contracts', builder: (context, state) => ContractsScreen()),
-        GoRoute(path: '/dashboard', builder: (context, state) => DashboardScreen()),
-        GoRoute(path: '/analysis', builder: (context, state) => AnalysisScreen()),
-        GoRoute(path: '/features', builder: (context, state) => FeaturesScreen()),
-        GoRoute(path: '/estimation', builder: (context, state) => EstimationScreen()),
-        GoRoute(path: '/price-list', builder: (context, state) => PriceListScreen()),
-        GoRoute(path: '/report', builder: (context, state) => ReportScreen()),
-        GoRoute(path: '/settings', builder: (context, state) => SettingsScreen()),
-        GoRoute(path: '/workflow', builder: (context, state) => WorkflowScreen()),
-      ],
-    );
-
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: "متره یار",

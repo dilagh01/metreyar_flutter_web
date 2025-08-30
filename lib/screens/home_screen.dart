@@ -5,84 +5,187 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.menu, color: Colors.grey[700]),
+          onPressed: () {
+            // باز کردن منوی کناری
+            Scaffold.of(context).openDrawer();
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.apps, color: Colors.grey[700]),
+            onPressed: () {},
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CircleAvatar(
+              backgroundColor: Colors.blue,
+              child: Text(
+                'م',
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+        ],
+      ),
+      drawer: _buildDrawer(context),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // لوگو یا آواتار
-            CircleAvatar(
-              radius: 40,
-              backgroundColor: Colors.blue,
-              child: Text(
-                'م',
-                style: TextStyle(
-                  fontSize: 32,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+            // لوگو
+            Text(
+              'متره یار',
+              style: TextStyle(
+                fontSize: 48,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue,
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 40),
             
             // نوار جستجو
             Container(
-              width: 500,
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'جستجو در متره یار یا وارد کردن آدرس',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  prefixIcon: Icon(Icons.search),
-                  filled: true,
-                  fillColor: Colors.white,
+              width: 600,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(25),
+                border: Border.all(color: Colors.grey[300]!),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: [
+                    Icon(Icons.search, color: Colors.grey[500]),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: 'جستجو در پروژه‌ها، متره، برآورد...',
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                    Icon(Icons.mic, color: Colors.grey[500]),
+                  ],
                 ),
               ),
             ),
             SizedBox(height: 30),
             
-            // shortcuts grid
-            GridView.count(
-              shrinkWrap: true,
-              crossAxisCount: 4,
+            // دکمه‌های action
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildShortcut('پروژه‌ها', Icons.folder, () {}),
-                _buildShortcut('برآورد', Icons.calculate, () {}),
-                _buildShortcut('گزارشات', Icons.bar_chart, () {}),
-                _buildShortcut('تنظیمات', Icons.settings, () {}),
-                _buildShortcut('متریال', Icons.construction, () {}),
-                _buildShortcut('کارگران', Icons.people, () {}),
-                _buildShortcut('ماشین‌آلات', Icons.directions_car, () {}),
-                _buildShortcut('کمک', Icons.help, () {}),
+                _buildActionButton('پروژه‌های من', Icons.folder),
+                SizedBox(width: 20),
+                _buildActionButton('برآورد جدید', Icons.calculate),
+              ],
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildActionButton('گزارشات', Icons.bar_chart),
+                SizedBox(width: 20),
+                _buildActionButton('تنظیمات', Icons.settings),
               ],
             ),
           ],
         ),
       ),
+      
+      // نوار پایینی
+      bottomNavigationBar: BottomAppBar(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('© 2024 متره یار', style: TextStyle(color: Colors.grey)),
+              Row(
+                children: [
+                  Text('حریم خصوصی', style: TextStyle(color: Colors.blue)),
+                  SizedBox(width: 20),
+                  Text('قوانین', style: TextStyle(color: Colors.blue)),
+                  SizedBox(width: 20),
+                  Text('پشتیبانی', style: TextStyle(color: Colors.blue)),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
-  Widget _buildShortcut(String title, IconData icon, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: EdgeInsets.all(8),
-        child: Column(
-          children: [
-            CircleAvatar(
-              backgroundColor: Colors.blue[50],
-              child: Icon(icon, color: Colors.blue),
+  Widget _buildDrawer(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.blue,
             ),
-            SizedBox(height: 8),
-            Text(
-              title,
-              style: TextStyle(fontSize: 12),
-              textAlign: TextAlign.center,
+            child: Text(
+              'متره یار',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ],
-        ),
+          ),
+          ListTile(
+            leading: Icon(Icons.dashboard),
+            title: Text('داشبورد'),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: Icon(Icons.folder),
+            title: Text('پروژه‌ها'),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: Icon(Icons.calculate),
+            title: Text('برآورد'),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: Icon(Icons.bar_chart),
+            title: Text('گزارشات'),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: Icon(Icons.settings),
+            title: Text('تنظیمات'),
+            onTap: () {},
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.exit_to_app),
+            title: Text('خروج'),
+            onTap: () {},
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionButton(String text, IconData icon) {
+    return ElevatedButton.icon(
+      onPressed: () {},
+      icon: Icon(icon),
+      label: Text(text),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.grey[100],
+        foregroundColor: Colors.grey[800],
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       ),
     );
   }
