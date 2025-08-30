@@ -10,7 +10,7 @@ class LocalStorage {
   late Box<dynamic> _box;
 
   Future<void> init() async {
-    await Hive.init((await getApplicationDocumentsDirectory()).path);
+    Hive.init((await getApplicationDocumentsDirectory()).path);
     _box = await Hive.openBox('metreyar_data');
   }
 
@@ -20,13 +20,5 @@ class LocalStorage {
 
   List<Map<String, dynamic>> getEstimations() {
     return List<Map<String, dynamic>>.from(_box.get('estimations') ?? []);
-  }
-
-  Future<void> saveProjects(List<Map<String, dynamic>> data) async {
-    await _box.put('projects', data);
-  }
-
-  List<Map<String, dynamic>> getProjects() {
-    return List<Map<String, dynamic>>.from(_box.get('projects') ?? []);
   }
 }
