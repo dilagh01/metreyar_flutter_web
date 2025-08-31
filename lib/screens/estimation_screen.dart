@@ -7,6 +7,8 @@ import '../utils/estimation_calculator.dart';
 import '../widgets/chart_widget.dart';
 import '../widgets/sidebar.dart';
 import '../widgets/nav_bar.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class EstimationScreen extends StatefulWidget {
   const EstimationScreen({super.key});
@@ -51,72 +53,35 @@ class _EstimationScreenState extends State<EstimationScreen> {
     }
   }
 
-  Future<void> _searchItems(String query) async {
-    setState(() {
-      _isSearching = true;
-    });
+Future<void> _searchFromAPI(String query) async {
+  if (query.length < 2) return;
 
-    try {
-      // جستجو از API (مثال با داده‌های ساختگی)
-      await Future.delayed(Duration(milliseconds: 500)); // شبیه‌سازی delay شبکه
-      
-      // داده‌های نمونه از اینترنت (می‌توانید با API واقعی جایگزین کنید)
-      final sampleData = [
-        {
-          'description': 'سیمان پرتلند تیپ ۲',
-          'unit': 'کیسه',
-          'averagePrice': 25000,
-          'category': 'مصالح'
-        },
-        {
-          'description': 'آجر فشاری ۲۰*۲۰',
-          'unit': 'عدد',
-          'averagePrice': 1500,
-          'category': 'مصالح'
-        },
-        {
-          'description': 'تیرآهن نمره ۱۴',
-          'unit': 'کیلوگرم',
-          'averagePrice': 18000,
-          'category': 'اسکلت'
-        },
-        {
-          'description': 'دستمزد کارگر ساده',
-          'unit': 'نفر-روز',
-          'averagePrice': 300000,
-          'category': 'نیروی انسانی'
-        },
-        {
-          'description': 'لوله PVC فشار قوی',
-          'unit': 'متر',
-          'averagePrice': 12000,
-          'category': 'تاسیسات'
-        },
-        {
-          'description': 'کابل برق ۳*۲.۵',
-          'unit': 'متر',
-          'averagePrice': 8000,
-          'category': 'برق'
-        },
-      ];
+  setState(() {
+    _isSearching = true;
+  });
 
-      final filteredResults = sampleData.where((item) =>
-        item['description'].toString().toLowerCase().contains(query.toLowerCase()) ||
-        item['category'].toString().toLowerCase().contains(query.toLowerCase())
-      ).toList();
+  try {
+    // مثال با API ساختگی - باید با API واقعی جایگزین شود
+    const apiUrl = 'https://api.example.com/materials/search?q=';
+    final response = await http.get(Uri.parse('$apiUrl$query'));
 
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
       setState(() {
-        _searchResults = filteredResults;
+        _searchResults = List<Map<String, dynamic>>.from(data['results']);
         _isSearching = false;
       });
-
-    } catch (e) {
-      setState(() {
-        _isSearching = false;
-        _showSnackbar('خطا در جستجو: $e');
-      });
+    } else {
+      throw Exception('خطا در دریافت داده');
     }
+  } catch (e) {
+    // Fallback به داده‌های داخلی اگر API کار نکرد
+    _searchMaterials(query);
+    setState(() {
+      _isSearching = false;
+    });
   }
+}
 
   void _useSearchResult(Map<String, dynamic> result) {
     setState(() {

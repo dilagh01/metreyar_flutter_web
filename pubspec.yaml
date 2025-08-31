@@ -26,6 +26,7 @@ dependencies:
   printing: ^5.11.0
   pdf: ^3.10.4
   open_file: ^3.3.1  # یا آخرین نسخه
+  http: ^0.13.5
 dev_dependencies:
   flutter_test:
     sdk: flutter
