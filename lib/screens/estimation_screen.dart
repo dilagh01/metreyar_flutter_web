@@ -1,6 +1,7 @@
 // lib/screens/estimation_screen.dart
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import '../models/row_item.dart';
 import '../utils/estimation_calculator.dart';
 import '../widgets/chart_widget.dart';
@@ -20,6 +21,7 @@ class _EstimationScreenState extends State<EstimationScreen> {
   final List<TextEditingController> _qtyControllers = [];
   final List<TextEditingController> _priceControllers = [];
 
+  final TextEditingController _searchController = TextEditingController();
   final TextEditingController _newDescController = TextEditingController();
   final TextEditingController _newQtyController = TextEditingController();
   final TextEditingController _newPriceController = TextEditingController();
@@ -29,10 +31,137 @@ class _EstimationScreenState extends State<EstimationScreen> {
   final List<String> _units = ['عدد', 'متر', 'متر مربع', 'متر مکعب', 'کیلوگرم', 'تن', 'دستگاه', 'نفر-روز'];
   final List<String> _categories = ['عمومی', 'اسکلت', 'نازک کاری', 'تاسیسات', 'برق', 'مکانیک', 'نما', 'محوطه سازی'];
 
+  List<Map<String, dynamic>> _searchResults = [];
+  bool _isSearching = false;
+
   @override
   void initState() {
     super.initState();
     _addNewRow();
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  void _onSearchChanged() {
+    if (_searchController.text.length > 2) {
+      _searchItems(_searchController.text);
+    } else {
+      setState(() {
+        _searchResults.clear();
+      });
+    }
+  }
+
+  Future<void> _searchItems(String query) async {
+    setState(() {
+      _isSearching = true;
+    });
+
+    try {
+      // جستجو از API (مثال با داده‌های ساختگی)
+      await Future.delayed(Duration(milliseconds: 500)); // شبیه‌سازی delay شبکه
+      
+      // داده‌های نمونه از اینترنت (می‌توانید با API واقعی جایگزین کنید)
+      final sampleData = [
+        {
+          'description': 'سیمان پرتلند تیپ ۲',
+          'unit': 'کیسه',
+          'averagePrice': 25000,
+          'category': 'مصالح'
+        },
+        {
+          'description': 'آجر فشاری ۲۰*۲۰',
+          'unit': 'عدد',
+          'averagePrice': 1500,
+          'category': 'مصالح'
+        },
+        {
+          'description': 'تیرآهن نمره ۱۴',
+          'unit': 'کیلوگرم',
+          'averagePrice': 18000,
+          'category': 'اسکلت'
+        },
+        {
+          'description': 'دستمزد کارگر ساده',
+          'unit': 'نفر-روز',
+          'averagePrice': 300000,
+          'category': 'نیروی انسانی'
+        },
+        {
+          'description': 'لوله PVC فشار قوی',
+          'unit': 'متر',
+          'averagePrice': 12000,
+          'category': 'تاسیسات'
+        },
+        {
+          'description': 'کابل برق ۳*۲.۵',
+          'unit': 'متر',
+          'averagePrice': 8000,
+          'category': 'برق'
+        },
+      ];
+
+      final filteredResults = sampleData.where((item) =>
+        item['description'].toString().toLowerCase().contains(query.toLowerCase()) ||
+        item['category'].toString().toLowerCase().contains(query.toLowerCase())
+      ).toList();
+
+      setState(() {
+        _searchResults = filteredResults;
+        _isSearching = false;
+      });
+
+    } catch (e) {
+      setState(() {
+        _isSearching = false;
+        _showSnackbar('خطا در جستجو: $e');
+      });
+    }
+  }
+
+  void _useSearchResult(Map<String, dynamic> result) {
+    setState(() {
+      _newDescController.text = result['description'];
+      _newUnitController.text = result['unit'];
+      _newPriceController.text = result['averagePrice'].toString();
+      _newCategoryController.text = result['category'];
+      
+      _searchResults.clear();
+      _searchController.clear();
+    });
+  }
+
+  void _searchFromWeb(String query) async {
+    // جستجوی واقعی از اینترنت (مثال با API ساختگی)
+    try {
+      // const apiUrl = 'https://your-api.com/search?q=$query';
+      // final response = await http.get(Uri.parse(apiUrl));
+      
+      // if (response.statusCode == 200) {
+      //   final data = json.decode(response.body);
+      //   setState(() {
+      //     _searchResults = List<Map<String, dynamic>>.from(data['results']);
+      //   });
+      // }
+
+      // شبیه‌سازی پاسخ API
+      await Future.delayed(Duration(seconds: 1));
+      
+      setState(() {
+        _searchResults = [
+          {
+            'description': '${query} (یافت شده از اینترنت)',
+            'unit': 'عدد',
+            'averagePrice': 10000,
+            'category': 'عمومی',
+            'source': 'پایگاه داده ملی'
+          }
+        ];
+        _isSearching = false;
+      });
+
+    } catch (e) {
+      _showSnackbar('خطا در دریافت داده از اینترنت');
+    }
   }
 
   void _addNewRow() {
@@ -122,6 +251,8 @@ class _EstimationScreenState extends State<EstimationScreen> {
     _newDescController.clear();
     _newQtyController.clear();
     _newPriceController.clear();
+    _newUnitController.text = 'عدد';
+    _newCategoryController.text = 'عمومی';
   }
 
   void _clearAll() {
@@ -164,6 +295,7 @@ class _EstimationScreenState extends State<EstimationScreen> {
 
   @override
   void dispose() {
+    _searchController.dispose();
     _newDescController.dispose();
     _newQtyController.dispose();
     _newPriceController.dispose();
@@ -195,6 +327,50 @@ class _EstimationScreenState extends State<EstimationScreen> {
         padding: EdgeInsets.all(16),
         child: Column(
           children: [
+            // جستجو از اینترنت
+            Card(
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    Text('جستجوی مصالح از اینترنت', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 16),
+                    TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        labelText: 'جستجوی مصالح (مثال: سیمان، آجر، تیرآهن)',
+                        prefixIcon: Icon(Icons.search),
+                        suffixIcon: _isSearching ? CircularProgressIndicator() : null,
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    if (_searchResults.isNotEmpty)
+                      Column(
+                        children: [
+                          Text('نتایج جستجو:', style: TextStyle(fontWeight: FontWeight.bold)),
+                          SizedBox(height: 10),
+                          ..._searchResults.map((result) => ListTile(
+                            title: Text(result['description']),
+                            subtitle: Text('${result['averagePrice']} ریال - ${result['unit']}'),
+                            trailing: IconButton(
+                              icon: Icon(Icons.add),
+                              onPressed: () => _useSearchResult(result),
+                            ),
+                          )).toList(),
+                        ],
+                      ),
+                    SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () => _searchFromWeb(_searchController.text),
+                      child: Text('جستجو در اینترنت'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+
             // فرم افزودن آیتم جدید
             Card(
               child: Padding(
