@@ -2,35 +2,45 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class NavBar extends StatelessWidget implements PreferredSizeWidget {
-  const NavBar({super.key});
+  final String title;
+  final VoidCallback? onSave;
+  final VoidCallback? onClear;
 
-final menuItems = [
-  {'title': 'خانه', 'route': '/'}, // مسیر اصلی خانه
-  {'title': 'پروژه‌ها', 'route': '/projects'},
-  {'title': 'آنالیز', 'route': '/analysis'},
-  {'title': 'صورت وضعیت', 'route': '/report'},
-  {'title': 'فهرست بها', 'route': '/price-list'},
-  {'title': 'کنترل کارگاه', 'route': '/estimation'},
-  {'title': 'قراردادها', 'route': '/contracts'},
-  {'title': 'تنظیمات', 'route': '/settings'},
-  {'title': 'داشبورد', 'route': '/dashboard'},
-  {'title': 'Workflow', 'route': '/workflow'},
-];
-    return AppBar(
-      title: const Text('نرم افزار متره یار'),
-      backgroundColor: Colors.blue.shade800,
-      actions: menuItems.map((item) {
-        return TextButton(
-          onPressed: () => context.go(item['route']!),
-          child: Text(
-            item['title']!,
-            style: const TextStyle(color: Colors.white),
-          ),
-        );
-      }).toList(),
-    );
-  }
+  const NavBar({
+    super.key,
+    required this.title,
+    this.onSave,
+    this.onClear,
+  });
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      title: Text(title),
+      backgroundColor: Colors.blue.shade800,
+      foregroundColor: Colors.white,
+      actions: [
+        if (onSave != null)
+          IconButton(
+            icon: const Icon(Icons.save),
+            onPressed: onSave,
+            tooltip: 'ذخیره',
+          ),
+        if (onClear != null)
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: onClear,
+            tooltip: 'پاک کردن',
+          ),
+        IconButton(
+          icon: const Icon(Icons.settings),
+          onPressed: () => context.go('/settings'),
+          tooltip: 'تنظیمات',
+        ),
+      ],
+    );
+  }
 }
