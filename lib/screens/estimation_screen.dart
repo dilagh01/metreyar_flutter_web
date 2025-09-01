@@ -82,6 +82,24 @@ Future<void> _searchFromAPI(String query) async {
     });
   }
 }
+void _onSearchChanged() {
+  if (_searchController.text.length > 2) {
+    _searchItems(_searchController.text);
+  } else {
+    setState(() {
+      _searchResults.clear();
+    });
+  }
+}
+
+// اضافه کردن متدهای زیر در اینجا
+void _searchItems(String query) {
+  // کد متد
+}
+
+void _searchMaterials(String query) {
+  // کد متد
+}
 
   void _useSearchResult(Map<String, dynamic> result) {
     setState(() {
