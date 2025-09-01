@@ -8,6 +8,15 @@ import '../widgets/chart_widget.dart';
 import '../widgets/sidebar.dart';
 import '../widgets/nav_bar.dart';
 
+// اضافه کردن کلاس EstimationScreen
+class EstimationScreen extends StatefulWidget {
+  const EstimationScreen({super.key});
+
+  @override
+  State<EstimationScreen> createState() => _EstimationScreenState();
+}
+
+// بقیه کد کلاس _EstimationScreenState که قبلاً اضافه کرد��د
 class _EstimationScreenState extends State<EstimationScreen> {
   final List<RowItem> _items = [];
   final List<TextEditingController> _descControllers = [];
