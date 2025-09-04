@@ -27,6 +27,8 @@ dependencies:
   pdf: ^3.10.4
   open_file: ^3.3.1  # یا آخرین نسخه
   http: ^0.13.5
+  syncfusion_flutter_pdf: ^23.1.44
+  syncfusion_flutter_datagrid: ^23.1.44
 dev_dependencies:
   flutter_test:
     sdk: flutter

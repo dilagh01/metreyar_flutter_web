@@ -1,41 +1,45 @@
-// lib/providers/estimation_provider.dart
 import 'package:flutter/foundation.dart';
-import '../models/row_item.dart';
+import '../services/api_service.dart';
 
 class EstimationProvider with ChangeNotifier {
-  List<RowItem> _items = [];
+  List<dynamic> _projects = [];
+  bool _loading = false;
+  String _error = '';
 
-  List<RowItem> get items => _items;
+  List<dynamic> get projects => _projects;
+  bool get loading => _loading;
+  String get error => _error;
 
-  double get grandTotal {
-    return _items.fold(0, (sum, item) => sum + item.totalPrice);
-  }
-
-  void addItem(RowItem item) {
-    _items.add(item);
+  Future<void> loadProjects() async {
+    _loading = true;
+    _error = '';
     notifyListeners();
-  }
 
-  void updateItem(int index, RowItem newItem) {
-    _items[index] = newItem;
-    notifyListeners();
-  }
-
-  void deleteItem(int index) {
-    _items.removeAt(index);
-    notifyListeners();
-  }
-
-  void clearItems() {
-    _items.clear();
-    notifyListeners();
-  }
-
-  Map<String, double> getCategoryTotals() {
-    Map<String, double> totals = {};
-    for (var item in _items) {
-      totals[item.category] = (totals[item.category] ?? 0) + item.totalPrice;
+    try {
+      _projects = await ApiService.getProjects();
+      _error = '';
+    } catch (e) {
+      _error = 'خطا در بارگذاری پروژه‌ها: $e';
+    } finally {
+      _loading = false;
+      notifyListeners();
     }
-    return totals;
+  }
+
+  Future<Map<String, dynamic>> calculateEstimation(Map<String, dynamic> data) async {
+    _loading = true;
+    notifyListeners();
+
+    try {
+      final result = await ApiService.calculateEstimation(data);
+      _error = '';
+      return result;
+    } catch (e) {
+      _error = 'خطا در محاسبه: $e';
+      return {'success': false, 'error': _error};
+    } finally {
+      _loading = false;
+      notifyListeners();
+    }
   }
 }

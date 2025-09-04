@@ -141,7 +141,7 @@ class _EstimationScreenState extends State<EstimationScreen> {
     });
 
     try {
-      const apiUrl = 'https://api.example.com/materials/search?q=';
+      const apiUrl = 'https://metreyar.onrender.com/materials/search?q=';
       final response = await http.get(Uri.parse('$apiUrl$query'));
 
       if (response.statusCode == 200) {
