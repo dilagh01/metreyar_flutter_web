@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:metreyar/providers/estimation_provider.dart';
+
 class MaterialsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -8,6 +11,10 @@ class MaterialsScreen extends StatelessWidget {
         builder: (context, estimation, child) {
           if (estimation.loading) {
             return Center(child: CircularProgressIndicator());
+          }
+
+          if (estimation.materials.isEmpty) {
+            return Center(child: Text('هیچ ماده‌ای یافت نشد'));
           }
 
           return ListView.builder(
@@ -24,7 +31,8 @@ class MaterialsScreen extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.read<EstimationProvider>().loadMaterials(),
+        onPressed: () =>
+            context.read<EstimationProvider>().loadMaterials(),
         child: Icon(Icons.refresh),
       ),
     );

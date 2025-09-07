@@ -1,56 +1,79 @@
-class EstimationProvider with ChangeNotifier {
-  List<dynamic> _materials = [];
-  List<dynamic> _projects = [];
-  Map<String, dynamic>? _calculationResult;
-  bool _loading = false;
+import 'package:flutter/material.dart';
+import 'package:metreyar/services/api_service.dart';
 
-  List<dynamic> get materials => _materials;
-  List<dynamic> get projects => _projects;
-  Map<String, dynamic>? get calculationResult => _calculationResult;
+class EstimationProvider extends ChangeNotifier {
+  // --- State ---
+  bool _loading = false;
   bool get loading => _loading;
 
-  // دریافت مواد اولیه
+  List<Map<String, dynamic>> _materials = [];
+  List<Map<String, dynamic>> get materials => _materials;
+
+  List<Map<String, dynamic>> _projects = [];
+  List<Map<String, dynamic>> get projects => _projects;
+
+  Map<String, dynamic>? _calculationResult;
+  Map<String, dynamic>? get calculationResult => _calculationResult;
+
+  // --- Methods ---
   Future<void> loadMaterials() async {
-    _setLoading(true);
     try {
-      _materials = await ApiService.getMaterials();
-      print('✅ Loaded ${_materials.length} materials');
+      _loading = true;
+      notifyListeners();
+
+      final data = await ApiService.getMaterials();
+      _materials = List<Map<String, dynamic>>.from(data['materials'] ?? []);
+
+      _loading = false;
+      notifyListeners();
     } catch (e) {
-      print('❌ Error loading materials: $e');
-    } finally {
-      _setLoading(false);
+      _loading = false;
+      notifyListeners();
+      debugPrint("❌ Error loading materials: $e");
     }
   }
 
-  // دریافت پروژه‌ها
   Future<void> loadProjects() async {
-    _setLoading(true);
     try {
-      _projects = await ApiService.getProjects();
-      print('✅ Loaded ${_projects.length} projects');
+      _loading = true;
+      notifyListeners();
+
+      final data = await ApiService.getProjects();
+      _projects = List<Map<String, dynamic>>.from(data ?? []);
+
+      _loading = false;
+      notifyListeners();
     } catch (e) {
-      print('❌ Error loading projects: $e');
-    } finally {
-      _setLoading(false);
+      _loading = false;
+      notifyListeners();
+      debugPrint("❌ Error loading projects: $e");
     }
   }
 
-  // محاسبه برآورد
-  Future<void> calculateEstimation(Map<String, dynamic> data) async {
-    _setLoading(true);
+  Future<void> createProject(Map<String, dynamic> projectData) async {
     try {
-      _calculationResult = await ApiService.calculateEstimation(data);
-      print('✅ Calculation result: $_calculationResult');
+      final response = await ApiService.createProject(projectData);
+      debugPrint("✅ Project created: $response");
+      await loadProjects(); // refresh list
     } catch (e) {
-      print('❌ Error calculating estimation: $e');
-      throw e;
-    } finally {
-      _setLoading(false);
+      debugPrint("❌ Error creating project: $e");
     }
   }
 
-  void _setLoading(bool value) {
-    _loading = value;
-    notifyListeners();
+  Future<void> calculateEstimation(Map<String, dynamic> calcData) async {
+    try {
+      _loading = true;
+      notifyListeners();
+
+      final result = await ApiService.calculateEstimation(calcData);
+      _calculationResult = result['result'];
+
+      _loading = false;
+      notifyListeners();
+    } catch (e) {
+      _loading = false;
+      notifyListeners();
+      debugPrint("❌ Error calculating estimation: $e");
+    }
   }
 }
