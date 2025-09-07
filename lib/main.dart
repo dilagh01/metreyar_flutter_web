@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-// Import‌های placeholder (بعداً با مسیر واقعی پروژه جایگزین کن)
 import 'providers/estimation_provider.dart';
 import 'screens/materials_screen.dart';
 
@@ -11,24 +9,24 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => EstimationProvider()),
       ],
-      child: const MetreyarApp(),
+      child: const MyApp(),
     ),
   );
 }
 
-class MetreyarApp extends StatelessWidget {
-  const MetreyarApp({Key? key}) : super(key: key);
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Metreyar Flutter Web',
+      debugShowCheckedModeBanner: false,
+      title: 'Metreyar',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+        fontFamily: 'Vazirmatn', // فونت مدرن فارسی
       ),
-      debugShowCheckedModeBanner: false,
-      home: const MaterialsScreen(),
+      home: MaterialsScreen(),
     );
   }
 }
