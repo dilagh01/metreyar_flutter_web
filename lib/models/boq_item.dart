@@ -1,3 +1,4 @@
+class BOQItem {
   int id;
   String description;
   String unit;
@@ -17,3 +18,14 @@
     totalPrice = quantity * unitPrice;
   }
 }
+
+
+
+
+
+
+
+
+
+
+
