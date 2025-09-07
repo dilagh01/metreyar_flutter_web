@@ -1,48 +1,68 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
 class ApiService {
-  static const String baseUrl = 'https://metreyar.onrender.comapi/v1';
-  static const String apiVersion = '/api/v1';
+  static const String baseUrl = 'https://metreyar.onrender.com';
 
-  static Future<Map<String, dynamic>> get(String endpoint) async {
-    final response = await http.get(Uri.parse('$baseUrl$apiVersion$endpoint'));
-    return _handleResponse(response);
-  }
-
-  static Future<Map<String, dynamic>> post(String endpoint, dynamic data) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl$apiVersion$endpoint'),
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode(data),
-    );
-    return _handleResponse(response);
-  }
-
-  static Map<String, dynamic> _handleResponse(http.Response response) {
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    } else {
-      throw Exception('API Error: ${response.statusCode}');
-    }
-  }
-
-  // متدهای خاص برای متریار
-  static Future<List<dynamic>> getProjects() async {
-    final response = await get('/projects');
-    return response['projects'] ?? [];
-  }
-
-  static Future<Map<String, dynamic>> calculateEstimation(Map<String, dynamic> data) async {
-    return await post('/calculations/estimate', data);
-  }
-
-  static Future<bool> checkHealth() async {
+  static Future<Map<String, dynamic>> _request(
+    String method, 
+    String endpoint, 
+    dynamic data
+  ) async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/health'));
-      return response.statusCode == 200;
+      final url = Uri.parse('$baseUrl$endpoint');
+      print('🌐 API Call: $method $url');
+      
+      final headers = {'Content-Type': 'application/json'};
+      final body = data != null ? json.encode(data) : null;
+      
+      http.Response response;
+      
+      if (method == 'POST') {
+        response = await http.post(url, headers: headers, body: body);
+      } else {
+        response = await http.get(url, headers: headers);
+      }
+      
+      print('📡 Response Status: ${response.statusCode}');
+      
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('API Error: ${response.statusCode}');
+      }
     } catch (e) {
-      return false;
+      print('❌ API Connection Error: $e');
+      throw Exception('Connection failed: $e');
     }
+  }
+
+  // دریافت مواد اولیه
+  static Future<List<dynamic>> getMaterials() async {
+    try {
+      final response = await _request('GET', '/api/materials', null);
+      return response['materials'] ?? [];
+    } catch (e) {
+      print('❌ Error getting materials: $e');
+      return [];
+    }
+  }
+
+  // محاسبه برآورد
+  static Future<Map<String, dynamic>> calculateEstimation(Map<String, dynamic> data) async {
+    return await _request('POST', '/api/calculate/estimation', data);
+  }
+
+  // دریافت پروژه‌ها
+  static Future<List<dynamic>> getProjects() async {
+    try {
+      final response = await _request('GET', '/api/projects', null);
+      return response ?? [];
+    } catch (e) {
+      print('❌ Error getting projects: $e');
+      return [];
+    }
+  }
+
+  // ایجاد پروژه جدید
+  static Future<Map<String, dynamic>> createProject(Map<String, dynamic> data) async {
+    return await _request('POST', '/api/projects', data);
   }
 }

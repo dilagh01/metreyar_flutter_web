@@ -1,45 +1,56 @@
-import 'package:flutter/foundation.dart';
-import '../services/api_service.dart';
-
 class EstimationProvider with ChangeNotifier {
+  List<dynamic> _materials = [];
   List<dynamic> _projects = [];
+  Map<String, dynamic>? _calculationResult;
   bool _loading = false;
-  String _error = '';
 
+  List<dynamic> get materials => _materials;
   List<dynamic> get projects => _projects;
+  Map<String, dynamic>? get calculationResult => _calculationResult;
   bool get loading => _loading;
-  String get error => _error;
 
-  Future<void> loadProjects() async {
-    _loading = true;
-    _error = '';
-    notifyListeners();
-
+  // دریافت مواد اولیه
+  Future<void> loadMaterials() async {
+    _setLoading(true);
     try {
-      _projects = await ApiService.getProjects();
-      _error = '';
+      _materials = await ApiService.getMaterials();
+      print('✅ Loaded ${_materials.length} materials');
     } catch (e) {
-      _error = 'خطا در بارگذاری پروژه‌ها: $e';
+      print('❌ Error loading materials: $e');
     } finally {
-      _loading = false;
-      notifyListeners();
+      _setLoading(false);
     }
   }
 
-  Future<Map<String, dynamic>> calculateEstimation(Map<String, dynamic> data) async {
-    _loading = true;
-    notifyListeners();
-
+  // دریافت پروژه‌ها
+  Future<void> loadProjects() async {
+    _setLoading(true);
     try {
-      final result = await ApiService.calculateEstimation(data);
-      _error = '';
-      return result;
+      _projects = await ApiService.getProjects();
+      print('✅ Loaded ${_projects.length} projects');
     } catch (e) {
-      _error = 'خطا در محاسبه: $e';
-      return {'success': false, 'error': _error};
+      print('❌ Error loading projects: $e');
     } finally {
-      _loading = false;
-      notifyListeners();
+      _setLoading(false);
     }
+  }
+
+  // محاسبه برآورد
+  Future<void> calculateEstimation(Map<String, dynamic> data) async {
+    _setLoading(true);
+    try {
+      _calculationResult = await ApiService.calculateEstimation(data);
+      print('✅ Calculation result: $_calculationResult');
+    } catch (e) {
+      print('❌ Error calculating estimation: $e');
+      throw e;
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  void _setLoading(bool value) {
+    _loading = value;
+    notifyListeners();
   }
 }
