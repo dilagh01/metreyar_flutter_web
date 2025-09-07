@@ -29,6 +29,8 @@ dependencies:
   http: ^0.13.5
   syncfusion_flutter_pdf: ^23.1.44
   syncfusion_flutter_datagrid: ^23.1.44
+  google_fonts: ^2.1.0
+  quran: ^1.4.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
