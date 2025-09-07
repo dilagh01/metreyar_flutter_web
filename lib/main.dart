@@ -1,39 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'providers/estimation_provider.dart';
-import 'screens/home_screen.dart';
+
+import 'providers/boq_provider.dart';
+import 'screens/boq_screen.dart';
 
 void main() {
-  runApp(MultiProvider(
-    providers: [
-      ChangeNotifierProvider(create: (_) => EstimationProvider()),
-    ],
-    child: MyApp(),
-  ));
+  runApp(const MetreyarApp());
 }
 
-class MyApp extends StatelessWidget {
+class MetreyarApp extends StatelessWidget {
+  const MetreyarApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Metreyar Quran Noor UI',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: Color(0xFF006A4E),
-        accentColor: Colors.greenAccent,
-        scaffoldBackgroundColor: Color(0xFF101820),
-        fontFamily: 'IranSans',
-        appBarTheme: AppBarTheme(
-          backgroundColor: Color(0xFF006A4E),
-          centerTitle: true,
-          elevation: 2,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => BOQProvider()),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Metreyar',
+        theme: ThemeData(
+          useMaterial3: true,
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.green).copyWith(
+            secondary: Colors.greenAccent,
+          ),
         ),
-        floatingActionButtonTheme: FloatingActionButtonThemeData(
-          backgroundColor: Color(0xFF006A4E),
-        ),
+        home: const BOQScreen(),
       ),
-      home: HomeScreen(),
     );
   }
 }

@@ -2,13 +2,20 @@ import 'package:flutter/material.dart';
 import '../models/boq_item.dart';
 
 class BOQProvider extends ChangeNotifier {
-  List<BOQItem> _items = [];
+  final List<BOQItem> _items = [];
 
-  List<BOQItem> get items => _items;
+  List<BOQItem> get items => List.unmodifiable(_items);
 
   void addItem(BOQItem item) {
     _items.add(item);
     notifyListeners();
+  }
+
+  void updateItem(int index, BOQItem item) {
+    if (index >= 0 && index < _items.length) {
+      _items[index] = item;
+      notifyListeners();
+    }
   }
 
   void removeItem(BOQItem item) {
@@ -16,14 +23,14 @@ class BOQProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateItem(int index, BOQItem newItem) {
+  void removeItemAt(int index) {
     if (index >= 0 && index < _items.length) {
-      _items[index] = newItem;
+      _items.removeAt(index);
       notifyListeners();
     }
   }
 
-  double get totalPrice {
+  double get totalCost {
     return _items.fold(0, (sum, item) => sum + item.totalPrice);
   }
 }
