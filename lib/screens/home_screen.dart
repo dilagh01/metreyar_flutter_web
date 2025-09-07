@@ -1,53 +1,72 @@
-// lib/screens/home_screen.dart
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import '../widgets/feature_card.dart';
 import '../widgets/sidebar.dart';
+import 'materials_screen.dart';
+import 'boq_screen.dart';
 
 class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('متره یار - صفحه اصلی'),
-        backgroundColor: Colors.blue[700],
-        foregroundColor: Colors.white,
+      body: Row(
+        children: [
+          SideBar(),
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  Text('Dashboard',
+                      style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.greenAccent)),
+                  SizedBox(height: 16),
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        MaterialCard(title: 'Materials', onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => MaterialsScreen())
+                          );
+                        }),
+                        MaterialCard(title: 'BOQ', onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => BOQScreen())
+                          );
+                        }),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
-      drawer: Sidebar(),
-      body: Padding(
-        padding: EdgeInsets.all(16),
-        child: GridView.count(
-          crossAxisCount: 2,
-          childAspectRatio: 1.5,
-          children: [
-            FeatureCard(
-              title: 'برآورد متره',
-              icon: Icons.calculate,
-              color: Colors.blue,
-              onTap: () => context.go('/estimation'),
-            ),
-            FeatureCard(
-              title: 'آنالیز پروژه',
-              icon: Icons.analytics,
-              color: Colors.green,
-              onTap: () => context.go('/analysis'),
-            ),
-            FeatureCard(
-              title: 'گزارشات',
-              icon: Icons.bar_chart,
-              color: Colors.orange,
-              onTap: () {},
-            ),
-            FeatureCard(
-              title: 'تنظیمات',
-              icon: Icons.settings,
-              color: Colors.purple,
-              onTap: () {},
-            ),
-          ],
-        ),
+    );
+  }
+}
+
+class MaterialCard extends StatelessWidget {
+  final String title;
+  final VoidCallback onTap;
+  const MaterialCard({required this.title, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Colors.black.withOpacity(0.3),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: Color(0xFF006A4E)),
+      ),
+      margin: EdgeInsets.symmetric(vertical: 8),
+      child: ListTile(
+        title: Text(title, style: TextStyle(color: Colors.white)),
+        trailing: Icon(Icons.arrow_forward, color: Colors.greenAccent),
+        onTap: onTap,
       ),
     );
   }

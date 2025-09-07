@@ -1,45 +1,37 @@
-// lib/widgets/sidebar.dart
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
-class Sidebar extends StatelessWidget {
-  Sidebar({super.key});
-
+class SideBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
+    return Container(
+      width: 220,
+      color: Color(0xFF101820),
+      child: Column(
         children: [
-          DrawerHeader(
-            decoration: BoxDecoration(color: Colors.blue),
-            child: Text('متره یار', style: TextStyle(color: Colors.white, fontSize: 24)),
+          SizedBox(height: 40),
+          Text(
+            'Metreyar',
+            style: TextStyle(
+              color: Colors.greenAccent,
+              fontSize: 22,
+              fontWeight: FontWeight.bold
+            ),
           ),
+          Divider(color: Colors.greenAccent),
           ListTile(
-            leading: Icon(Icons.home),
-            title: Text('صفحه اصلی'),
-            onTap: () => context.go('/home'),
-          ),
-          ListTile(
-            leading: Icon(Icons.calculate),
-            title: Text('برآورد متره'),
-            onTap: () => context.go('/estimation'),
-          ),
-          ListTile(
-            leading: Icon(Icons.analytics),
-            title: Text('آنالیز پروژه'),
-            onTap: () => context.go('/analysis'),
-          ),
-          Divider(),
-          ListTile(
-            leading: Icon(Icons.settings),
-            title: Text('تنظیمات'),
+            leading: Icon(Icons.dashboard, color: Colors.greenAccent),
+            title: Text('Dashboard', style: TextStyle(color: Colors.white)),
             onTap: () {},
           ),
           ListTile(
-            leading: Icon(Icons.exit_to_app),
-            title: Text('خروج'),
-            onTap: () => context.go('/login'),
+            leading: Icon(Icons.list_alt, color: Colors.greenAccent),
+            title: Text('BOQ', style: TextStyle(color: Colors.white)),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: Icon(Icons.money, color: Colors.greenAccent),
+            title: Text('Materials', style: TextStyle(color: Colors.white)),
+            onTap: () {},
           ),
         ],
       ),
