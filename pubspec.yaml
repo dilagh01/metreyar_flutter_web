@@ -38,3 +38,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+flutter:
+  fonts:
+    - family: Vazir
+      fonts:
+        - asset: assets/fonts/Vazir.ttf

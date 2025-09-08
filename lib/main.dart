@@ -1,17 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 
 void main() {
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => BoqProvider()),
-        ChangeNotifierProvider(create: (_) => ProjectProvider()),
-        ChangeNotifierProvider(create: (_) => PriceProvider()),
-      ],
-      child: MyApp(),
-    ),
-  );
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -25,451 +16,300 @@ class MyApp extends StatelessWidget {
         appBarTheme: AppBarTheme(
           backgroundColor: Colors.blue[800],
           foregroundColor: Colors.white,
+          systemOverlayStyle: SystemUiOverlayStyle.light,
         ),
       ),
-      home: LoginScreen(),
+      home: HomeScreen(),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
-// مدل‌های داده
-class BoqItem {
-  final String id;
-  String description;
-  String unit;
-  double quantity;
-  double unitPrice;
-  double totalPrice;
-
-  BoqItem({
-    required this.id,
-    required this.description,
-    required this.unit,
-    required this.quantity,
-    required this.unitPrice,
-  }) : totalPrice = quantity * unitPrice;
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class Project {
-  final String id;
-  final String name;
-  final String client;
-  final DateTime startDate;
-  final DateTime endDate;
-  final List<BoqItem> boqItems;
+class _HomeScreenState extends State<HomeScreen> {
+  bool _sidebarCollapsed = false;
+  String _currentPage = 'داشبورد';
 
-  Project({
-    required this.id,
-    required this.name,
-    required this.client,
-    required this.startDate,
-    required this.endDate,
-    required this.boqItems,
-  });
-}
-
-// ارائه‌دهندگان وضعیت
-class BoqProvider with ChangeNotifier {
-  List<BoqItem> _boqItems = [];
-
-  List<BoqItem> get boqItems => _boqItems;
-
-  void addBoqItem(BoqItem item) {
-    _boqItems.add(item);
-    notifyListeners();
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Row(
+        children: [
+          // نوار کناری
+          AnimatedContainer(
+            duration: Duration(milliseconds: 300),
+            width: _sidebarCollapsed ? 70 : 250,
+            color: Colors.white,
+            child: Column(
+              children: [
+                // لوگو و عنوان
+                Container(
+                  height: 60,
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    children: [
+                      Icon(Icons.calculate, color: Colors.blue[800]),
+                      if (!_sidebarCollapsed) SizedBox(width: 10),
+                      if (!_sidebarCollapsed)
+                        Text(
+                          'متره‌یار',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue[800],
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                Divider(height: 1),
+                Expanded(
+                  child: ListView(
+                    children: [
+                      _buildSidebarSection('اصلی', Icons.home, [
+                        _buildSidebarItem('داشبورد', Icons.dashboard, 'داشبورد'),
+                        _buildSidebarItem('پروژه‌ها', Icons.work, 'پروژه‌ها'),
+                        _buildSidebarItem('فهرست بها', Icons.list, 'فهرست بها'),
+                      ]),
+                      _buildSidebarSection('متره و برآورد', Icons.calculate, [
+                        _buildSidebarItem('آیتم‌های متره', Icons.cube, 'آیتم‌های متره'),
+                        _buildSidebarItem('محاسبات', Icons.functions, 'محاسبات'),
+                        _buildSidebarItem('برآورد هزینه', Icons.attach_money, 'برآورد هزینه'),
+                      ]),
+                      _buildSidebarSection('گزارش‌ها', Icons.bar_chart, [
+                        _buildSidebarItem('گزارش مالی', Icons.pie_chart, 'گزارش مالی'),
+                        _buildSidebarItem('آنالیز پروژه', Icons.trending_up, 'آنالیز پروژه'),
+                        _buildSidebarItem('خروجی PDF', Icons.picture_as_pdf, 'خروجی PDF'),
+                      ]),
+                      _buildSidebarSection('تنظیمات', Icons.settings, [
+                        _buildSidebarItem('پروفایل کاربری', Icons.person, 'پروفایل کاربری'),
+                        _buildSidebarItem('ظاهر برنامه', Icons.palette, 'ظاهر برنامه'),
+                        _buildSidebarItem('راهنما و پشتیبانی', Icons.help, 'راهنما و پشتیبانی'),
+                      ]),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // محتوای اصلی
+          Expanded(
+            child: Column(
+              children: [
+                // هدر
+                Container(
+                  height: 60,
+                  color: Colors.blue[800],
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    children: [
+                      // دکمه منو
+                      IconButton(
+                        icon: Icon(_sidebarCollapsed ? Icons.menu : Icons.arrow_back, color: Colors.white),
+                        onPressed: () {
+                          setState(() {
+                            _sidebarCollapsed = !_sidebarCollapsed;
+                          });
+                        },
+                      ),
+                      // نوار جستجو
+                      Expanded(
+                        child: Container(
+                          margin: EdgeInsets.symmetric(horizontal: 16),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: TextField(
+                            decoration: InputDecoration(
+                              hintText: 'جستجوی پروژه، آیتم، فهرست بها...',
+                              hintStyle: TextStyle(color: Colors.white70),
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                              prefixIcon: Icon(Icons.search, color: Colors.white70),
+                            ),
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                      // دکمه‌های تنظیمات
+                      IconButton(
+                        icon: Icon(Icons.settings, color: Colors.white),
+                        onPressed: () {},
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.person, color: Colors.white),
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                ),
+                // محتوای صفحه
+                Expanded(
+                  child: _buildContent(),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      // نوار پایین
+      bottomNavigationBar: Container(
+        height: 50,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 4,
+              offset: Offset(0, -2),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _buildBottomNavItem(Icons.home, 'صفحه اصلی'),
+            _buildBottomNavItem(Icons.book, 'راهنما'),
+            _buildBottomNavItem(Icons.calculate, 'متره آنلاین'),
+            _buildBottomNavItem(Icons.download, 'دانلودها'),
+            _buildBottomNavItem(Icons.phone, 'تماس با ما'),
+          ],
+        ),
+      ),
+    );
   }
 
-  void updateBoqItem(String id, BoqItem newItem) {
-    final index = _boqItems.indexWhere((item) => item.id == id);
-    if (index != -1) {
-      _boqItems[index] = newItem;
-      notifyListeners();
+  Widget _buildSidebarSection(String title, IconData icon, List<Widget> children) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
+          child: Row(
+            children: [
+              Icon(icon, size: 18, color: Colors.blue[800]),
+              if (!_sidebarCollapsed) SizedBox(width: 8),
+              if (!_sidebarCollapsed)
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue[800],
+                  ),
+                ),
+            ],
+          ),
+        ),
+        Column(children: children),
+        SizedBox(height: 8),
+      ],
+    );
+  }
+
+  Widget _buildSidebarItem(String title, IconData icon, String page) {
+    return ListTile(
+      leading: Icon(icon, color: _currentPage == page ? Colors.blue[800] : Colors.grey[700]),
+      title: _sidebarCollapsed ? null : Text(title),
+      contentPadding: EdgeInsets.symmetric(horizontal: 16),
+      selected: _currentPage == page,
+      selectedTileColor: Colors.blue[50],
+      onTap: () {
+        setState(() {
+          _currentPage = page;
+        });
+      },
+    );
+  }
+
+  Widget _buildContent() {
+    switch (_currentPage) {
+      case 'پروژه‌ها':
+        return _buildProjectsContent();
+      case 'فهرست بها':
+        return _buildPriceListContent();
+      default:
+        return _buildDashboardContent();
     }
   }
 
-  void removeBoqItem(String id) {
-    _boqItems.removeWhere((item) => item.id == id);
-    notifyListeners();
-  }
-}
-
-class ProjectProvider with ChangeNotifier {
-  List<Project> _projects = [];
-
-  List<Project> get projects => _projects;
-
-  void addProject(Project project) {
-    _projects.add(project);
-    notifyListeners();
-  }
-}
-
-class PriceProvider with ChangeNotifier {
-  Map<String, double> _priceList = {};
-
-  Map<String, double> get priceList => _priceList;
-
-  void updatePrice(String item, double price) {
-    _priceList[item] = price;
-    notifyListeners();
-  }
-}
-
-// صفحه ورود
-class LoginScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Container(
-          padding: EdgeInsets.all(20),
-          width: 400,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+  Widget _buildDashboardContent() {
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'داشبورد متره و برآورد',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 16),
+          // کارت‌های اطلاعاتی
+          GridView.count(
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+            childAspectRatio: 1.5,
             children: [
-              Image.asset('assets/logo.png', height: 100),
-              SizedBox(height: 30),
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'نام کاربری',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 15),
-              TextField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: 'رمز عبور',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomeScreen()),
-                  );
-                },
-                child: Text('ورود به سیستم'),
-                style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 50),
-                ),
-              ),
+              _buildInfoCard('تعداد پروژه‌ها', '۱۸', Icons.work, '۲ پروژه فعال در حال حاضر'),
+              _buildInfoCard('مجموع برآورد', '۵,۲۸۰,۰۰۰,۰۰۰', Icons.attach_money, '۱۵% افزایش نسبت به ماه گذشته'),
+              _buildInfoCard('آیتم‌های متره', '۳۴۷', Icons.cube, '۱۲ آیتم اضافه شده امروز'),
+              _buildInfoCard('وضعیت سیستم', 'فعال', Icons.check_circle, 'همه سرویس‌ها در دسترس هستند'),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-// صفحه اصلی
-class HomeScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('متره‌یار - سیستم متره و برآورد'),
-        actions: [
-          IconButton(icon: Icon(Icons.settings), onPressed: () {}),
-          IconButton(icon: Icon(Icons.exit_to_app), onPressed: () {}),
+          SizedBox(height: 24),
+          Text(
+            'پروژه‌های اخیر',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 16),
+          _buildProjectsTable(),
         ],
       ),
-      drawer: Drawer(
-        child: ListView(
-          children: [
-            DrawerHeader(
-              child: Text('منو اصلی', style: TextStyle(color: Colors.white, fontSize: 20)),
-              decoration: BoxDecoration(color: Colors.blue[800]),
-            ),
-            ListTile(
-              leading: Icon(Icons.dashboard),
-              title: Text('داشبورد'),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: Icon(Icons.assignment),
-              title: Text('پروژه‌ها'),
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ProjectsScreen()));
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.list),
-              title: Text('فهرست بها'),
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => PriceListScreen()));
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.calculate),
-              title: Text('متره و برآورد'),
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => BoqScreen()));
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.analytics),
-              title: Text('آنالیز و گزارش'),
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => AnalysisScreen()));
-              },
-            ),
-          ],
-        ),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('به متره‌یار خوش آمدید', style: TextStyle(fontSize: 24)),
-            SizedBox(height: 20),
-            Wrap(
-              spacing: 20,
-              runSpacing: 20,
-              children: [
-                _buildFeatureCard(context, 'پروژه‌ها', Icons.assignment, ProjectsScreen()),
-                _buildFeatureCard(context, 'فهرست بها', Icons.list, PriceListScreen()),
-                _buildFeatureCard(context, 'متره و برآورد', Icons.calculate, BoqScreen()),
-                _buildFeatureCard(context, 'گزارش‌ها', Icons.analytics, AnalysisScreen()),
-              ],
-            ),
-          ],
-        ),
-      ),
     );
   }
 
-  Widget _buildFeatureCard(BuildContext context, String title, IconData icon, Widget screen) {
+  Widget _buildInfoCard(String title, String value, IconData icon, String description) {
     return Card(
-      child: InkWell(
-        onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => screen));
-        },
-        child: Container(
-          width: 150,
-          height: 150,
-          padding: EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 40),
-              SizedBox(height: 10),
-              Text(title, textAlign: TextAlign.center),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// صفحه پروژه‌ها
-class ProjectsScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('مدیریت پروژه‌ها')),
-      body: Consumer<ProjectProvider>(
-        builder: (context, projectProvider, child) {
-          return ListView.builder(
-            itemCount: projectProvider.projects.length,
-            itemBuilder: (context, index) {
-              final project = projectProvider.projects[index];
-              return ListTile(
-                title: Text(project.name),
-                subtitle: Text(project.client),
-                trailing: IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: () {},
+      elevation: 2,
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                onTap: () {},
-              );
-            },
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _showAddProjectDialog(context);
-        },
-        child: Icon(Icons.add),
-      ),
-    );
-  }
-
-  void _showAddProjectDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('ایجاد پروژه جدید'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(decoration: InputDecoration(labelText: 'نام پروژه')),
-              TextField(decoration: InputDecoration(labelText: 'کارفرما')),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('لغو'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('پروژه جدید ایجاد شد')),
-                );
-              },
-              child: Text('ایجاد'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
-
-// صفحه فهرست بها
-class PriceListScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('فهرست بها')),
-      body: Consumer<PriceProvider>(
-        builder: (context, priceProvider, child) {
-          return DataTable(
-            columns: [
-              DataColumn(label: Text('ردیف')),
-              DataColumn(label: Text('شرح آیتم')),
-              DataColumn(label: Text('واحد')),
-              DataColumn(label: Text('قیمت (ریال)')),
-            ],
-            rows: priceProvider.priceList.entries.map((entry) {
-              return DataRow(cells: [
-                DataCell(Text((priceProvider.priceList.keys.toList().indexOf(entry.key) + 1).toString())),
-                DataCell(Text(entry.key)),
-                DataCell(Text('متر مربع')),
-                DataCell(Text(entry.value.toStringAsFixed(2))),
-              ]);
-            }).toList(),
-          );
-        },
-      ),
-    );
-  }
-}
-
-// صفحه متره و برآورد
-class BoqScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('متره و برآورد')),
-      body: Consumer<BoqProvider>(
-        builder: (context, boqProvider, child) {
-          return SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-              columns: [
-                DataColumn(label: Text('ردیف')),
-                DataColumn(label: Text('شرح آیتم')),
-                DataColumn(label: Text('واحد')),
-                DataColumn(label: Text('مقدار')),
-                DataColumn(label: Text('قیمت واحد')),
-                DataColumn(label: Text('جمع کل')),
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.blue[50],
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(icon, color: Colors.blue[700]),
+                ),
               ],
-              rows: boqProvider.boqItems.map((item) {
-                return DataRow(cells: [
-                  DataCell(Text((boqProvider.boqItems.indexOf(item) + 1).toString())),
-                  DataCell(Text(item.description)),
-                  DataCell(Text(item.unit)),
-                  DataCell(Text(item.quantity.toString())),
-                  DataCell(Text(item.unitPrice.toStringAsFixed(2))),
-                  DataCell(Text(item.totalPrice.toStringAsFixed(2))),
-                ]);
-              }).toList(),
             ),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _showAddBoqItemDialog(context);
-        },
-        child: Icon(Icons.add),
-      ),
-    );
-  }
-
-  void _showAddBoqItemDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('افزودن آیتم جدید'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(decoration: InputDecoration(labelText: 'شرح آیتم')),
-              TextField(decoration: InputDecoration(labelText: 'واحد')),
-              TextField(decoration: InputDecoration(labelText: 'مقدار'), keyboardType: TextInputType.number),
-              TextField(decoration: InputDecoration(labelText: 'قیمت واحد'), keyboardType: TextInputType.number),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('لغو'),
+            SizedBox(height: 8),
+            Text(
+              value,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue[700]),
             ),
-            ElevatedButton(
-              onPressed: () {
-                final boqProvider = Provider.of<BoqProvider>(context, listen: false);
-                boqProvider.addBoqItem(BoqItem(
-                  id: DateTime.now().toString(),
-                  description: 'آیتم تست',
-                  unit: 'متر مربع',
-                  quantity: 10,
-                  unitPrice: 50000,
-                ));
-                Navigator.of(context).pop();
-              },
-              child: Text('افزودن'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
-
-// صفحه آنالیز و گزارش
-class AnalysisScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('آنالیز و گزارش‌ها')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.bar_chart, size: 60, color: Colors.blue),
-            SizedBox(height: 20),
-            Text('گزارش‌های تحلیلی پروژه', style: TextStyle(fontSize: 20)),
-            SizedBox(height: 30),
-            Wrap(
-              spacing: 20,
-              runSpacing: 20,
-              children: [
-                _buildReportCard('گزارش مالی', Icons.attach_money),
-                _buildReportCard('آنالیز مصالح', Icons.construction),
-                _buildReportCard('زمان‌بندی', Icons.schedule),
-                _buildReportCard('نمودارها', Icons.show_chart),
-              ],
+            SizedBox(height: 4),
+            Text(
+              description,
+              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
             ),
           ],
         ),
@@ -477,21 +317,113 @@ class AnalysisScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildReportCard(String title, IconData icon) {
+  Widget _buildProjectsTable() {
     return Card(
-      child: Container(
-        width: 150,
-        height: 120,
-        padding: EdgeInsets.all(15),
+      elevation: 2,
+      child: Padding(
+        padding: EdgeInsets.all(16),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(icon, size: 30),
-            SizedBox(height: 10),
-            Text(title, textAlign: TextAlign.center),
+            Text(
+              'لیست پروژه‌های فعال',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 16),
+            DataTable(
+              columns: [
+                DataColumn(label: Text('نام پروژه')),
+                DataColumn(label: Text('کارفرما')),
+                DataColumn(label: Text('تاریخ شروع')),
+                DataColumn(label: Text('مبلغ برآورد')),
+                DataColumn(label: Text('وضعیت')),
+                DataColumn(label: Text('عملیات')),
+              ],
+              rows: [
+                DataRow(cells: [
+                  DataCell(Text('مجتمع مسکونی نور')),
+                  DataCell(Text('شرکت عمران نور')),
+                  DataCell(Text('۱۴۰۲/۰۵/۱۰')),
+                  DataCell(Text('۲,۱۵۰,۰۰۰,۰۰۰ تومان')),
+                  DataCell(
+                    Chip(
+                      label: Text('فعال', style: TextStyle(color: Colors.white)),
+                      backgroundColor: Colors.green,
+                    ),
+                  ),
+                  DataCell(Row(
+                    children: [
+                      IconButton(icon: Icon(Icons.visibility, size: 18), onPressed: () {}),
+                      IconButton(icon: Icon(Icons.edit, size: 18), onPressed: () {}),
+                      IconButton(icon: Icon(Icons.delete, size: 18), onPressed: () {}),
+                    ],
+                  )),
+                ]),
+                DataRow(cells: [
+                  DataCell(Text('پروژه تجاری کوهستان')),
+                  DataCell(Text('هلدینگ کوهستان')),
+                  DataCell(Text('۱۴۰۲/۰۴/۲۲')),
+                  DataCell(Text('۱,۸۰۰,۰۰۰,۰۰۰ تومان')),
+                  DataCell(
+                    Chip(
+                      label: Text('فعال', style: TextStyle(color: Colors.white)),
+                      backgroundColor: Colors.green,
+                    ),
+                  ),
+                  DataCell(Row(
+                    children: [
+                      IconButton(icon: Icon(Icons.visibility, size: 18), onPressed: () {}),
+                      IconButton(icon: Icon(Icons.edit, size: 18), onPressed: () {}),
+                      IconButton(icon: Icon(Icons.delete, size: 18), onPressed: () {}),
+                    ],
+                  )),
+                ]),
+                DataRow(cells: [
+                  DataCell(Text('ویلای سبز')),
+                  DataCell(Text('آقای حسینی')),
+                  DataCell(Text('۱۴۰۲/۰۳/۱۵')),
+                  DataCell(Text('۸۵۰,۰۰۰,۰۰۰ تومان')),
+                  DataCell(
+                    Chip(
+                      label: Text('در انتظار', style: TextStyle(color: Colors.white)),
+                      backgroundColor: Colors.orange,
+                    ),
+                  ),
+                  DataCell(Row(
+                    children: [
+                      IconButton(icon: Icon(Icons.visibility, size: 18), onPressed: () {}),
+                      IconButton(icon: Icon(Icons.edit, size: 18), onPressed: () {}),
+                      IconButton(icon: Icon(Icons.delete, size: 18), onPressed: () {}),
+                    ],
+                  )),
+                ]),
+              ],
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildProjectsContent() {
+    return Center(child: Text('صفحه پروژه‌ها'));
+  }
+
+  Widget _buildPriceListContent() {
+    return Center(child: Text('صفحه فهرست بها'));
+  }
+
+  Widget _buildBottomNavItem(IconData icon, String label) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(icon, size: 20, color: Colors.grey[700]),
+        SizedBox(height: 4),
+        Text(
+          label,
+          style: TextStyle(fontSize: 10, color: Colors.grey[700]),
+        ),
+      ],
     );
   }
 }
