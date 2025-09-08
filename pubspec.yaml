@@ -1,9 +1,11 @@
 name: metreyar
 description: A new Flutter project.
-publish_to: 'none' # Remove this if you plan to publish on pub.dev
+publish_to: 'none'
+
+version: 1.0.0+1
 
 environment:
-  sdk: ">=3.4.0 <4.0.0"
+  sdk: '>=3.4.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -12,7 +14,7 @@ dependencies:
   # Charts
   fl_chart: ^0.66.2
 
-  # Navigation & State Management (ساده‌ترین انتخاب)
+  # Navigation & State Management
   cupertino_icons: ^1.0.8
   provider: ^6.0.5
   go_router: ^6.5.0
@@ -25,21 +27,32 @@ dependencies:
   file_picker: ^10.3.2
   printing: ^5.11.0
   pdf: ^3.10.4
-  open_file: ^3.3.1  # یا آخرین نسخه
+  open_file: ^3.3.1
   http: ^0.13.5
   syncfusion_flutter_pdf: ^23.1.44
   syncfusion_flutter_datagrid: ^23.1.44
   google_fonts: ^2.1.0
   quran: ^1.3.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
 
+# فقط یک بخش flutter باید وجود داشته باشد
 flutter:
   uses-material-design: true
-flutter:
+  
+  # اضافه کردن فونت فارسی (مثال)
   fonts:
     - family: Vazir
       fonts:
         - asset: assets/fonts/Vazir.ttf
+
+  # assets ها
+  assets:
+    - assets/images/
+    - assets/fonts/
+
+
+
