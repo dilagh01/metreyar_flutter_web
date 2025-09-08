@@ -75,8 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         _buildSidebarItem('پروژه‌ها', Icons.work, 'پروژه‌ها'),
                         _buildSidebarItem('فهرست بها', Icons.list, 'فهرست بها'),
                       ]),
-                      _buildSidebarSection('متره و برآورد', Icons.calculate, [
-                        _buildSidebarItem('آیتم‌های متره', Icons.cube, 'آیتم‌های متره'),
+                       _buildSidebarItem('آیتم‌های متره', Icons.calculate, 'آیتم‌های متره'),                        _buildSidebarItem('آیتم‌های متره', Icons.cube, 'آیتم‌های متره'),
                         _buildSidebarItem('محاسبات', Icons.functions, 'محاسبات'),
                         _buildSidebarItem('برآورد هزینه', Icons.attach_money, 'برآورد هزینه'),
                       ]),
