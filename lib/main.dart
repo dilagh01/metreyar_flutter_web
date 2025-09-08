@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,11 +13,18 @@ class MyApp extends StatelessWidget {
       title: 'متره‌یار',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        fontFamily: 'Vazir',
+        textTheme: GoogleFonts.vazirTextTheme(
+          Theme.of(context).textTheme,
+        ),
         appBarTheme: AppBarTheme(
           backgroundColor: Colors.blue[800],
           foregroundColor: Colors.white,
           systemOverlayStyle: SystemUiOverlayStyle.light,
+          titleTextStyle: GoogleFonts.vazir(
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       home: HomeScreen(),
@@ -57,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       if (!_sidebarCollapsed)
                         Text(
                           'متره‌یار',
-                          style: TextStyle(
+                          style: GoogleFonts.vazir(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                             color: Colors.blue[800],
@@ -127,12 +135,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: TextField(
                             decoration: InputDecoration(
                               hintText: 'جستجوی پروژه، آیتم، فهرست بها...',
-                              hintStyle: TextStyle(color: Colors.white70),
+                              hintStyle: GoogleFonts.vazir(color: Colors.white70),
                               border: InputBorder.none,
                               contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 0),
                               prefixIcon: Icon(Icons.search, color: Colors.white70),
                             ),
-                            style: TextStyle(color: Colors.white),
+                            style: GoogleFonts.vazir(color: Colors.white),
                           ),
                         ),
                       ),
@@ -197,7 +205,7 @@ class _HomeScreenState extends State<HomeScreen> {
               if (!_sidebarCollapsed)
                 Text(
                   title,
-                  style: TextStyle(
+                  style: GoogleFonts.vazir(
                     fontWeight: FontWeight.bold,
                     color: Colors.blue[800],
                   ),
@@ -214,7 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildSidebarItem(String title, IconData icon, String page) {
     return ListTile(
       leading: Icon(icon, color: _currentPage == page ? Colors.blue[800] : Colors.grey[700]),
-      title: _sidebarCollapsed ? null : Text(title),
+      title: _sidebarCollapsed ? null : Text(title, style: GoogleFonts.vazir()),
       contentPadding: EdgeInsets.symmetric(horizontal: 16),
       selected: _currentPage == page,
       selectedTileColor: Colors.blue[50],
@@ -245,7 +253,10 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Text(
             'داشبورد متره و برآورد',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: GoogleFonts.vazir(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           SizedBox(height: 16),
           // کارت‌های اطلاعاتی
@@ -266,7 +277,10 @@ class _HomeScreenState extends State<HomeScreen> {
           SizedBox(height: 24),
           Text(
             'پروژه‌های اخیر',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: GoogleFonts.vazir(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           SizedBox(height: 16),
           _buildProjectsTable(),
@@ -288,7 +302,9 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Text(
                   title,
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: GoogleFonts.vazir(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 Container(
                   width: 40,
@@ -304,12 +320,19 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 8),
             Text(
               value,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue[700]),
+              style: GoogleFonts.vazir(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue[700],
+              ),
             ),
             SizedBox(height: 4),
             Text(
               description,
-              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+              style: GoogleFonts.vazir(
+                fontSize: 12,
+                color: Colors.grey[600],
+              ),
             ),
           ],
         ),
@@ -327,27 +350,30 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Text(
               'لیست پروژه‌های فعال',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: GoogleFonts.vazir(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             SizedBox(height: 16),
             DataTable(
               columns: [
-                DataColumn(label: Text('نام پروژه')),
-                DataColumn(label: Text('کارفرما')),
-                DataColumn(label: Text('تاریخ شروع')),
-                DataColumn(label: Text('مبلغ برآورد')),
-                DataColumn(label: Text('وضعیت')),
-                DataColumn(label: Text('عملیات')),
+                DataColumn(label: Text('نام پروژه', style: GoogleFonts.vazir())),
+                DataColumn(label: Text('کارفرما', style: GoogleFonts.vazir())),
+                DataColumn(label: Text('تاریخ شروع', style: GoogleFonts.vazir())),
+                DataColumn(label: Text('مبلغ برآورد', style: GoogleFonts.vazir())),
+                DataColumn(label: Text('وضعیت', style: GoogleFonts.vazir())),
+                DataColumn(label: Text('عملیات', style: GoogleFonts.vazir())),
               ],
               rows: [
                 DataRow(cells: [
-                  DataCell(Text('مجتمع مسکونی نور')),
-                  DataCell(Text('شرکت عمران نور')),
-                  DataCell(Text('۱۴۰۲/۰۵/۱۰')),
-                  DataCell(Text('۲,۱۵۰,۰۰۰,۰۰۰ تومان')),
+                  DataCell(Text('مجتمع مسکونی نور', style: GoogleFonts.vazir())),
+                  DataCell(Text('شرکت عمران نور', style: GoogleFonts.vazir())),
+                  DataCell(Text('۱۴۰۲/۰۵/۱۰', style: GoogleFonts.vazir())),
+                  DataCell(Text('۲,۱۵۰,۰۰۰,۰۰۰ تومان', style: GoogleFonts.vazir())),
                   DataCell(
                     Chip(
-                      label: Text('فعال', style: TextStyle(color: Colors.white)),
+                      label: Text('فعال', style: GoogleFonts.vazir(color: Colors.white)),
                       backgroundColor: Colors.green,
                     ),
                   ),
@@ -360,13 +386,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   )),
                 ]),
                 DataRow(cells: [
-                  DataCell(Text('پروژه تجاری کوهستان')),
-                  DataCell(Text('هلدینگ کوهستان')),
-                  DataCell(Text('۱۴۰۲/۰۴/۲۲')),
-                  DataCell(Text('۱,۸۰۰,۰۰۰,۰۰۰ تومان')),
+                  DataCell(Text('پروژه تجاری کوهستان', style: GoogleFonts.vazir())),
+                  DataCell(Text('هلدینگ کوهستان', style: GoogleFonts.vazir())),
+                  DataCell(Text('۱۴۰۲/۰۴/۲۲', style: GoogleFonts.vazir())),
+                  DataCell(Text('۱,۸۰۰,۰۰۰,۰۰۰ تومان', style: GoogleFonts.vazir())),
                   DataCell(
                     Chip(
-                      label: Text('فعال', style: TextStyle(color: Colors.white)),
+                      label: Text('فعال', style: GoogleFonts.vazir(color: Colors.white)),
                       backgroundColor: Colors.green,
                     ),
                   ),
@@ -379,13 +405,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   )),
                 ]),
                 DataRow(cells: [
-                  DataCell(Text('ویلای سبز')),
-                  DataCell(Text('آقای حسینی')),
-                  DataCell(Text('۱۴۰۲/۰۳/۱۵')),
-                  DataCell(Text('۸۵۰,۰۰۰,۰۰۰ تومان')),
+                  DataCell(Text('ویلای سبز', style: GoogleFonts.vazir())),
+                  DataCell(Text('آقای حسینی', style: GoogleFonts.vazir())),
+                  DataCell(Text('۱۴۰۲/۰۳/۱۵', style: GoogleFonts.vazir())),
+                  DataCell(Text('۸۵۰,۰۰۰,۰۰۰ تومان', style: GoogleFonts.vazir())),
                   DataCell(
                     Chip(
-                      label: Text('در انتظار', style: TextStyle(color: Colors.white)),
+                      label: Text('در انتظار', style: GoogleFonts.vazir(color: Colors.white)),
                       backgroundColor: Colors.orange,
                     ),
                   ),
@@ -406,11 +432,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildProjectsContent() {
-    return Center(child: Text('صفحه پروژه‌ها'));
+    return Center(child: Text('صفحه پروژه‌ها', style: GoogleFonts.vazir()));
   }
 
   Widget _buildPriceListContent() {
-    return Center(child: Text('صفحه فهرست بها'));
+    return Center(child: Text('صفحه فهرست بها', style: GoogleFonts.vazir()));
   }
 
   Widget _buildBottomNavItem(IconData icon, String label) {
@@ -421,7 +447,10 @@ class _HomeScreenState extends State<HomeScreen> {
         SizedBox(height: 4),
         Text(
           label,
-          style: TextStyle(fontSize: 10, color: Colors.grey[700]),
+          style: GoogleFonts.vazir(
+            fontSize: 10,
+            color: Colors.grey[700],
+          ),
         ),
       ],
     );
