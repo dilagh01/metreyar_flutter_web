@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(MyApp());
@@ -13,11 +12,8 @@ class MyApp extends StatelessWidget {
       title: 'متره‌یار',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        textTheme: GoogleFonts.notoSansTextTheme(
-          Theme.of(context).textTheme,
-        ),
         appBarTheme: AppBarTheme(
-          backgroundColor: Colors.blue[800],
+          backgroundColor: Colors.blue[800]!,
           foregroundColor: Colors.white,
           systemOverlayStyle: SystemUiOverlayStyle.light,
           titleTextStyle: TextStyle(
@@ -48,7 +44,6 @@ class _HomeScreenState extends State<HomeScreen> {
       fontSize: fontSize,
       fontWeight: fontWeight,
       color: color,
-      fontFamily: 'Vazir', // اگر فونت دارید استفاده کنید
     );
   }
 
@@ -70,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
-                      Icon(Icons.calculate, color: Colors.blue[800]),
+                      Icon(Icons.calculate, color: Colors.blue[800]!),
                       if (!_sidebarCollapsed) SizedBox(width: 10),
                       if (!_sidebarCollapsed)
                         Text(
@@ -78,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: _persianStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Colors.blue[800],
+                            color: Colors.blue[800]!,
                           ),
                         ),
                     ],
@@ -121,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 // هدر
                 Container(
                   height: 60,
-                  color: Colors.blue[800],
+                  color: Colors.blue[800]!,
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
@@ -210,14 +205,14 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
           child: Row(
             children: [
-              Icon(icon, size: 18, color: Colors.blue[800]),
+              Icon(icon, size: 18, color: Colors.blue[800]!),
               if (!_sidebarCollapsed) SizedBox(width: 8),
               if (!_sidebarCollapsed)
                 Text(
                   title,
                   style: _persianStyle(
                     fontWeight: FontWeight.bold,
-                    color: Colors.blue[800],
+                    color: Colors.blue[800]!,
                   ),
                 ),
             ],
@@ -231,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildSidebarItem(String title, IconData icon, String page) {
     return ListTile(
-      leading: Icon(icon, color: _currentPage == page ? Colors.blue[800] : Colors.grey[700]),
+      leading: Icon(icon, color: _currentPage == page ? Colors.blue[800]! : Colors.grey[700]!),
       title: _sidebarCollapsed ? null : Text(title, style: _persianStyle()),
       contentPadding: EdgeInsets.symmetric(horizontal: 16),
       selected: _currentPage == page,
@@ -323,7 +318,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: Colors.blue[50],
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(icon, color: Colors.blue[700]),
+                  child: Icon(icon, color: Colors.blue[700]!),
                 ),
               ],
             ),
@@ -333,7 +328,7 @@ class _HomeScreenState extends State<HomeScreen> {
               style: _persianStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.blue[700],
+                color: Colors.blue[700]!,
               ),
             ),
             SizedBox(height: 4),
@@ -341,7 +336,7 @@ class _HomeScreenState extends State<HomeScreen> {
               description,
               style: _persianStyle(
                 fontSize: 12,
-                color: Colors.grey[600],
+                color: Colors.grey[600]!,
               ),
             ),
           ],
@@ -395,7 +390,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   )),
                 ]),
-                // ردیف‌های دیگر...
               ],
             ),
           ],
@@ -416,13 +410,13 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(icon, size: 20, color: Colors.grey[700]),
+        Icon(icon, size: 20, color: Colors.grey[700]!),
         SizedBox(height: 4),
         Text(
           label,
           style: _persianStyle(
             fontSize: 10,
-            color: Colors.grey[700],
+            color: Colors.grey[700]!,
           ),
         ),
       ],
