@@ -75,7 +75,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         _buildSidebarItem('پروژه‌ها', Icons.work, 'پروژه‌ها'),
                         _buildSidebarItem('فهرست بها', Icons.list, 'فهرست بها'),
                       ]),
-                       _buildSidebarItem('آیتم‌های متره', Icons.calculate, 'آیتم‌های متره'),                        _buildSidebarItem('آیتم‌های متره', Icons.cube, 'آیتم‌های متره'),
+                      _buildSidebarSection('متره و برآورد', Icons.calculate, [
+                        _buildSidebarItem('آیتم‌های متره', Icons.calculate, 'آیتم‌های متره'),
                         _buildSidebarItem('محاسبات', Icons.functions, 'محاسبات'),
                         _buildSidebarItem('برآورد هزینه', Icons.attach_money, 'برآورد هزینه'),
                       ]),
@@ -258,7 +259,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               _buildInfoCard('تعداد پروژه‌ها', '۱۸', Icons.work, '۲ پروژه فعال در حال حاضر'),
               _buildInfoCard('مجموع برآورد', '۵,۲۸۰,۰۰۰,۰۰۰', Icons.attach_money, '۱۵% افزایش نسبت به ماه گذشته'),
-              _buildInfoCard('آیتم‌های متره', '۳۴۷', Icons.cube, '۱۲ آیتم اضافه شده امروز'),
+              _buildInfoCard('آیتم‌های متره', '۳۴۷', Icons.calculate, '۱۲ آیتم اضافه شده امروز'),
               _buildInfoCard('وضعیت سیستم', 'فعال', Icons.check_circle, 'همه سرویس‌ها در دسترس هستند'),
             ],
           ),
