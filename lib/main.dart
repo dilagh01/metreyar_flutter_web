@@ -35,8 +35,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool _sidebarCollapsed = false;
+  bool _sidebarCollapsed = true; // حالت پیش‌فرض: مخفی
   String _currentPage = 'داشبورد';
+  bool _isHovering = false;
 
   // تابع برای ایجاد استایل فارسی
   TextStyle _persianStyle({double fontSize = 14, FontWeight fontWeight = FontWeight.normal, Color color = Colors.black}) {
@@ -52,61 +53,65 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: Row(
         children: [
-          // نوار کناری
-          AnimatedContainer(
-            duration: Duration(milliseconds: 300),
-            width: _sidebarCollapsed ? 70 : 250,
-            color: Colors.white,
-            child: Column(
-              children: [
-                // لوگو و عنوان
-                Container(
-                  height: 60,
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    children: [
-                      Icon(Icons.calculate, color: Colors.blue[800]!),
-                      if (!_sidebarCollapsed) SizedBox(width: 10),
-                      if (!_sidebarCollapsed)
-                        Text(
-                          'متره‌یار',
-                          style: _persianStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blue[800]!,
+          // نوار کناری مخفی
+          MouseRegion(
+            onEnter: (_) => setState(() => _isHovering = true),
+            onExit: (_) => setState(() => _isHovering = false),
+            child: AnimatedContainer(
+              duration: Duration(milliseconds: 300),
+              width: _isHovering ? 250 : 70, // هنگام hover باز شود
+              color: Colors.white,
+              child: Column(
+                children: [
+                  // لوگو و عنوان
+                  Container(
+                    height: 60,
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      children: [
+                        Icon(Icons.calculate, color: Colors.blue[800]!),
+                        if (_isHovering) SizedBox(width: 10),
+                        if (_isHovering)
+                          Text(
+                            'متره‌یار',
+                            style: _persianStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue[800]!,
+                            ),
                           ),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                Divider(height: 1),
-                Expanded(
-                  child: ListView(
-                    children: [
-                      _buildSidebarSection('اصلی', Icons.home, [
-                        _buildSidebarItem('داشبورد', Icons.dashboard, 'داشبورد'),
-                        _buildSidebarItem('پروژه‌ها', Icons.work, 'پروژه‌ها'),
-                        _buildSidebarItem('فهرست بها', Icons.list, 'فهرست بها'),
-                      ]),
-                      _buildSidebarSection('متره و برآورد', Icons.calculate, [
-                        _buildSidebarItem('آیتم‌های متره', Icons.calculate, 'آیتم‌های متره'),
-                        _buildSidebarItem('محاسبات', Icons.functions, 'محاسبات'),
-                        _buildSidebarItem('برآورد هزینه', Icons.attach_money, 'برآورد هزینه'),
-                      ]),
-                      _buildSidebarSection('گزارش‌ها', Icons.bar_chart, [
-                        _buildSidebarItem('گزارش مالی', Icons.pie_chart, 'گزارش مالی'),
-                        _buildSidebarItem('آنالیز پروژه', Icons.trending_up, 'آنالیز پروژه'),
-                        _buildSidebarItem('خروجی PDF', Icons.picture_as_pdf, 'خروجی PDF'),
-                      ]),
-                      _buildSidebarSection('تنظیمات', Icons.settings, [
-                        _buildSidebarItem('پروفایل کاربری', Icons.person, 'پروفایل کاربری'),
-                        _buildSidebarItem('ظاهر برنامه', Icons.palette, 'ظاهر برنامه'),
-                        _buildSidebarItem('راهنما و پشتیبانی', Icons.help, 'راهنما و پشتیبانی'),
-                      ]),
-                    ],
+                  Divider(height: 1),
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        _buildSidebarSection('اصلی', Icons.home, [
+                          _buildSidebarItem('داشبورد', Icons.dashboard, 'داشبورد'),
+                          _buildSidebarItem('پروژه‌ها', Icons.work, 'پروژه‌ها'),
+                          _buildSidebarItem('فهرست بها', Icons.list, 'فهرست بها'),
+                        ]),
+                        _buildSidebarSection('متره و برآورد', Icons.calculate, [
+                          _buildSidebarItem('آیتم‌های متره', Icons.calculate, 'آیتم‌های متره'),
+                          _buildSidebarItem('محاسبات', Icons.functions, 'محاسبات'),
+                          _buildSidebarItem('برآورد هزینه', Icons.attach_money, 'برآورد هزینه'),
+                        ]),
+                        _buildSidebarSection('گزارش‌ها', Icons.bar_chart, [
+                          _buildSidebarItem('گزارش مالی', Icons.pie_chart, 'گزارش مالی'),
+                          _buildSidebarItem('آنالیز پروژه', Icons.trending_up, 'آنالیز پروژه'),
+                          _buildSidebarItem('خروجی PDF', Icons.picture_as_pdf, 'خروجی PDF'),
+                        ]),
+                        _buildSidebarSection('تنظیمات', Icons.settings, [
+                          _buildSidebarItem('پروفایل کاربری', Icons.person, 'پروفایل کاربری'),
+                          _buildSidebarItem('ظاهر برنامه', Icons.palette, 'ظاهر برنامه'),
+                          _buildSidebarItem('راهنما و پشتیبانی', Icons.help, 'راهنما و پشتیبانی'),
+                        ]),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           // محتوای اصلی
@@ -120,12 +125,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
-                      // دکمه منو
+                      // دکمه منو برای نمایش/مخفی کردن نوار کناری
                       IconButton(
-                        icon: Icon(_sidebarCollapsed ? Icons.menu : Icons.arrow_back, color: Colors.white),
+                        icon: Icon(Icons.menu, color: Colors.white),
                         onPressed: () {
                           setState(() {
                             _sidebarCollapsed = !_sidebarCollapsed;
+                            _isHovering = !_isHovering;
                           });
                         },
                       ),
@@ -206,8 +212,8 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Row(
             children: [
               Icon(icon, size: 18, color: Colors.blue[800]!),
-              if (!_sidebarCollapsed) SizedBox(width: 8),
-              if (!_sidebarCollapsed)
+              if (_isHovering) SizedBox(width: 8),
+              if (_isHovering)
                 Text(
                   title,
                   style: _persianStyle(
@@ -227,7 +233,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildSidebarItem(String title, IconData icon, String page) {
     return ListTile(
       leading: Icon(icon, color: _currentPage == page ? Colors.blue[800]! : Colors.grey[700]!),
-      title: _sidebarCollapsed ? null : Text(title, style: _persianStyle()),
+      title: _isHovering ? Text(title, style: _persianStyle()) : null,
       contentPadding: EdgeInsets.symmetric(horizontal: 16),
       selected: _currentPage == page,
       selectedTileColor: Colors.blue[50],
