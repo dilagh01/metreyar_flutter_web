@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'providers/project_provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -8,20 +10,25 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'متره‌یار',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        brightness: Brightness.light,
-        appBarTheme: AppBarTheme(
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
-          elevation: 0,
-          systemOverlayStyle: SystemUiOverlayStyle.dark,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (ctx) => ProjectProvider()),
+      ],
+      child: MaterialApp(
+        title: 'متره‌یار',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          brightness: Brightness.light,
+          appBarTheme: AppBarTheme(
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.black,
+            elevation: 0,
+            systemOverlayStyle: SystemUiOverlayStyle.dark,
+          ),
         ),
+        home: HomeScreen(),
+        debugShowCheckedModeBanner: false,
       ),
-      home: HomeScreen(),
-      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -45,8 +52,18 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    // بارگیری پروژه‌ها هنگام راه‌اندازی
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ProjectProvider>(context, listen: false).loadProjects();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final projectProvider = Provider.of<ProjectProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -64,6 +81,15 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         actions: [
+          // نشانگر وضعیت اتصال
+          IconButton(
+            icon: Icon(
+              projectProvider.isConnected ? Icons.cloud_done : Icons.cloud_off,
+              color: projectProvider.isConnected ? Colors.green : Colors.red,
+            ),
+            onPressed: () => projectProvider.retry(),
+            tooltip: projectProvider.isConnected ? 'متصل به سرور' : 'قطع ارتباط',
+          ),
           Container(
             width: 250,
             margin: EdgeInsets.symmetric(vertical: 8),
@@ -88,7 +114,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: () {},
+            onPressed: () {
+              if (_selectedIndex == 1) {
+                _showAddProjectDialog(context);
+              }
+            },
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8),
@@ -208,6 +238,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildDashboardContent() {
+    final projectProvider = Provider.of<ProjectProvider>(context);
+
     return SingleChildScrollView(
       padding: EdgeInsets.all(16),
       child: Column(
@@ -219,6 +251,30 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           SizedBox(height: 16),
           
+          // نشانگر وضعیت اتصال
+          if (!projectProvider.isConnected)
+            Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.orange[100],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.cloud_off, color: Colors.orange),
+                  SizedBox(width: 8),
+                  Text('اتصال به سرور برقرار نیست'),
+                  Spacer(),
+                  TextButton(
+                    onPressed: () => projectProvider.retry(),
+                    child: Text('تلاش مجدد'),
+                  ),
+                ],
+              ),
+            ),
+          
+          SizedBox(height: 16),
+          
           // کارت‌های اطلاعاتی
           GridView.count(
             crossAxisCount: 4,
@@ -228,10 +284,16 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisSpacing: 16,
             childAspectRatio: 2,
             children: [
-              _buildInfoCard('پروژه‌های فعال', '۱۲', Icons.folder, Colors.blue),
-              _buildInfoCard('آیتم‌های متره', '۳۴۷', Icons.list, Colors.green),
-              _buildInfoCard('برآورد کل', '۵.۲B', Icons.attach_money, Colors.orange),
-              _buildInfoCard('تسک‌های pending', '۸', Icons.task, Colors.red),
+              _buildInfoCard('پروژه‌ها', '${projectProvider.projects.length}', Icons.folder, Colors.blue),
+              _buildInfoCard('پروژه‌های فعال', 
+                '${projectProvider.projects.where((p) => p.status == 'فعال').length}', 
+                Icons.check_circle, Colors.green),
+              _buildInfoCard('برآورد کل', 
+                '${projectProvider.projects.fold(0.0, (sum, p) => sum + p.estimatedBudget).toStringAsFixed(1)}B', 
+                Icons.attach_money, Colors.orange),
+              _buildInfoCard('وضعیت', projectProvider.isConnected ? 'متصل' : 'قطع', 
+                  projectProvider.isConnected ? Icons.cloud_done : Icons.cloud_off, 
+                  projectProvider.isConnected ? Colors.green : Colors.red),
             ],
           ),
           
@@ -241,32 +303,52 @@ class _HomeScreenState extends State<HomeScreen> {
           Text('پروژه‌های اخیر', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           SizedBox(height: 16),
           
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 4,
-                  offset: Offset(0, 2),
-                ),
-              ],
+          if (projectProvider.isLoading)
+            Center(child: CircularProgressIndicator())
+          else if (projectProvider.error.isNotEmpty)
+            Center(child: Text('خطا: ${projectProvider.error}'))
+          else
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: DataTable(
+                columns: [
+                  DataColumn(label: Text('نام پروژه')),
+                  DataColumn(label: Text('کارفرما')),
+                  DataColumn(label: Text('وضعیت')),
+                  DataColumn(label: Text('بودجه')),
+                ],
+                rows: projectProvider.projects.map((project) {
+                  Color statusColor = Colors.green;
+                  if (project.status == 'در حال انجام') statusColor = Colors.orange;
+                  if (project.status == 'اتمام') statusColor = Colors.grey;
+
+                  return DataRow(
+                    cells: [
+                      DataCell(Text(project.name, style: TextStyle(fontWeight: FontWeight.bold))),
+                      DataCell(Text(project.client)),
+                      DataCell(
+                        Chip(
+                          label: Text(project.status, style: TextStyle(color: Colors.white, fontSize: 12)),
+                          backgroundColor: statusColor,
+                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        ),
+                      ),
+                      DataCell(Text('${project.estimatedBudget.toStringAsFixed(1)}M تومان')),
+                    ],
+                  );
+                }).toList(),
+              ),
             ),
-            child: DataTable(
-              columns: [
-                DataColumn(label: Text('نام پروژه')),
-                DataColumn(label: Text('وضعیت')),
-                DataColumn(label: Text('آخرین بروزرسانی')),
-                DataColumn(label: Text('عملیات')),
-              ],
-              rows: [
-                _buildProjectRow('پروژه تجاری کوهستان', 'فعال', '۲ ساعت پیش'),
-                _buildProjectRow('مجتمع مسکونی نور', 'در حال انجام', '۱ روز پیش'),
-                _buildProjectRow('ویلای سبز', 'اتمام', '۳ روز پیش'),
-              ],
-            ),
-          ),
         ],
       ),
     );
@@ -291,36 +373,91 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  DataRow _buildProjectRow(String name, String status, String lastUpdate) {
-    Color statusColor = Colors.green;
-    if (status == 'در حال انجام') statusColor = Colors.orange;
-    if (status == 'اتمام') statusColor = Colors.grey;
-
-    return DataRow(
-      cells: [
-        DataCell(Text(name, style: TextStyle(fontWeight: FontWeight.bold))),
-        DataCell(
-          Chip(
-            label: Text(status, style: TextStyle(color: Colors.white, fontSize: 12)),
-            backgroundColor: statusColor,
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-          ),
-        ),
-        DataCell(Text(lastUpdate)),
-        DataCell(
-          Row(
-            children: [
-              IconButton(icon: Icon(Icons.visibility, size: 18), onPressed: () {}),
-              IconButton(icon: Icon(Icons.edit, size: 18), onPressed: () {}),
-            ],
-          ),
-        ),
-      ],
+  Widget _buildProjectsContent() {
+    final projectProvider = Provider.of<ProjectProvider>(context);
+    
+    return Scaffold(
+      body: projectProvider.isLoading
+          ? Center(child: CircularProgressIndicator())
+          : projectProvider.error.isNotEmpty
+              ? Center(child: Text('خطا: ${projectProvider.error}'))
+              : ListView.builder(
+                  itemCount: projectProvider.projects.length,
+                  itemBuilder: (ctx, index) {
+                    final project = projectProvider.projects[index];
+                    return ListTile(
+                      title: Text(project.name),
+                      subtitle: Text(project.client),
+                      trailing: Text('${project.estimatedBudget.toStringAsFixed(1)}M تومان'),
+                    );
+                  },
+                ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _showAddProjectDialog(context);
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 
-  Widget _buildProjectsContent() {
-    return Center(child: Text('صفحه پروژه‌ها', style: TextStyle(fontSize: 24)));
+  void _showAddProjectDialog(BuildContext context) {
+    final nameController = TextEditingController();
+    final clientController = TextEditingController();
+    final budgetController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('ایجاد پروژه جدید'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(labelText: 'نام پروژه'),
+            ),
+            TextField(
+              controller: clientController,
+              decoration: InputDecoration(labelText: 'کارفرما'),
+            ),
+            TextField(
+              controller: budgetController,
+              decoration: InputDecoration(labelText: 'بودجه (میلیون تومان)'),
+              keyboardType: TextInputType.number,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text('لغو'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              try {
+                final newProject = Project(
+                  id: 0,
+                  name: nameController.text,
+                  client: clientController.text,
+                  startDate: DateTime.now(),
+                  status: 'فعال',
+                  estimatedBudget: double.tryParse(budgetController.text) ?? 0,
+                );
+                await Provider.of<ProjectProvider>(context, listen: false)
+                    .addProject(newProject);
+                Navigator.pop(ctx);
+              } catch (e) {
+                ScaffoldMessenger.of(ctx).showSnackBar(
+                  SnackBar(content: Text('خطا در ایجاد پروژه: $e')),
+                );
+              }
+            },
+            child: Text('ایجاد'),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildPriceListContent() {
@@ -335,5 +472,3 @@ class _HomeScreenState extends State<HomeScreen> {
     return Center(child: Text('صفحه تنظیمات', style: TextStyle(fontSize: 24)));
   }
 }
-
-
