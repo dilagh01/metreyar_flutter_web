@@ -1,17 +1,58 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+// lib/providers/project_provider.dart
+import 'package:flutter/foundation.dart';
+import '../models/project.dart';
+import '../services/api_service.dart';
 
-class ApiService {
-  static const String baseUrl = "https://metreyar.onrender.com/api";
+class ProjectProvider with ChangeNotifier {
+  List<Project> _projects = [];
+  bool _isLoading = false;
+  String _error = '';
+  bool _isConnected = true;
 
-  static Future<Map<String, dynamic>> getMaterials() async {
-    final url = Uri.parse("$baseUrl/materials");
-    final response = await http.get(url);
+  List<Project> get projects => _projects;
+  bool get isLoading => _isLoading;
+  String get error => _error;
+  bool get isConnected => _isConnected;
 
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception("Failed to load materials: ${response.statusCode}");
+  Future<void> loadProjects() async {
+    _isLoading = true;
+    _error = '';
+    notifyListeners();
+
+    try {
+      final data = await ApiService.getProjects();
+      _projects = (data as List).map((json) => Project.fromJson(json)).toList();
+      _isConnected = true;
+    } catch (e) {
+      _error = e.toString();
+      _isConnected = false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> addProject(Project project) async {
+    try {
+      final data = await ApiService.createProject(project.toJson());
+      _projects.add(Project.fromJson(data));
+      _isConnected = true;
+      notifyListeners();
+    } catch (e) {
+      _error = e.toString();
+      _isConnected = false;
+      notifyListeners();
+      throw e;
+    }
+  }
+
+  void checkConnection() async {
+    try {
+      _isConnected = await ApiService.checkConnection();
+      notifyListeners();
+    } catch (e) {
+      _isConnected = false;
+      notifyListeners();
     }
   }
 }
