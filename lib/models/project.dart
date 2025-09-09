@@ -1,39 +1,15 @@
 class Project {
-  final String id;
   final String name;
-  final String location;
-  final DateTime startDate;
-  final DateTime? endDate;
-  final double budget;
+  final String status;
+  final String client;
+  final double estimatedBudget;
+  final String lastUpdate;
 
   Project({
-    required this.id,
     required this.name,
-    required this.location,
-    required this.startDate,
-    this.endDate,
-    required this.budget,
+    required this.status,
+    required this.client,
+    required this.estimatedBudget,
+    required this.lastUpdate,
   });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'location': location,
-      'startDate': startDate.toIso8601String(),
-      'endDate': endDate?.toIso8601String(),
-      'budget': budget,
-    };
-  }
-
-  factory Project.fromMap(Map<String, dynamic> map) {
-    return Project(
-      id: map['id'],
-      name: map['name'],
-      location: map['location'],
-      startDate: DateTime.parse(map['startDate']),
-      endDate: map['endDate'] != null ? DateTime.parse(map['endDate']) : null,
-      budget: map['budget'],
-    );
-  }
 }

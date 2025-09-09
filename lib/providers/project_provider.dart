@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
 import '../models/project.dart';
 
-class ProjectProvider extends ChangeNotifier {
-  List<Project> _projects = [];
+class ProjectProvider with ChangeNotifier {
+  List<Project> projects = [];
 
-  List<Project> get projects => _projects;
+  bool _isConnected = false;
+  bool _isLoading = false;
+  String _error = '';
 
-  void loadProjects() {
-    // TODO: داده‌ها رو از دیتابیس یا API بخونید
-    _projects = [
-      Project(name: 'پروژه نمونه', status: 'فعال', lastUpdate: 'امروز'),
-    ];
+  bool get isConnected => _isConnected;
+  bool get isLoading => _isLoading;
+  String get error => _error;
+
+  void retry() {
+    // لاجیک برای اتصال دوباره به بک‌اند
+    _isConnected = true; // مثال
     notifyListeners();
   }
 
   void addProject(Project project) {
-    _projects.add(project);
+    projects.add(project);
     notifyListeners();
   }
 }
