@@ -56,3 +56,6 @@ class ProjectProvider with ChangeNotifier {
     }
   }
 }
+void retry() {
+  loadProjects();
+}
