@@ -337,5 +337,3 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 
-
-برای پریویدور بروزرسانی شده است
