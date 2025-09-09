@@ -402,64 +402,66 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _showAddProjectDialog(BuildContext context) {
-    final nameController = TextEditingController();
-    final clientController = TextEditingController();
-    final budgetController = TextEditingController();
+void _showAddProjectDialog(BuildContext context) {
+  final nameController = TextEditingController();
+  final clientController = TextEditingController();
+  final budgetController = TextEditingController();
 
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('ایجاد پروژه جدید'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: nameController,
-              decoration: InputDecoration(labelText: 'نام پروژه'),
-            ),
-            TextField(
-              controller: clientController,
-              decoration: InputDecoration(labelText: 'کارفرما'),
-            ),
-            TextField(
-              controller: budgetController,
-              decoration: InputDecoration(labelText: 'بودجه (میلیون تومان)'),
-              keyboardType: TextInputType.number,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text('لغو'),
+  showDialog(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: Text('ایجاد پروژه جدید'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: nameController,
+            decoration: InputDecoration(labelText: 'نام پروژه'),
           ),
-          ElevatedButton(
-            onPressed: () async {
-              try {
-                final newProject = Project(
-                  id: 0,
-                  name: nameController.text,
-                  client: clientController.text,
-                  startDate: DateTime.now(),
-                  status: 'فعال',
-                  estimatedBudget: double.tryParse(budgetController.text) ?? 0,
-                );
-                await Provider.of<ProjectProvider>(context, listen: false)
-                    .addProject(newProject);
-                Navigator.pop(ctx);
-              } catch (e) {
-                ScaffoldMessenger.of(ctx).showSnackBar(
-                  SnackBar(content: Text('خطا در ایجاد پروژه: $e')),
-                );
-              }
-            },
-            child: Text('ایجاد'),
+          TextField(
+            controller: clientController,
+            decoration: InputDecoration(labelText: 'کارفرما'),
+          ),
+          TextField(
+            controller: budgetController,
+            decoration: InputDecoration(labelText: 'بودجه (میلیون تومان)'),
+            keyboardType: TextInputType.number,
           ),
         ],
       ),
-    );
-  }
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(ctx),
+          child: Text('لغو'),
+        ),
+        ElevatedButton(
+          onPressed: () async {
+            try {
+              final newProject = Project(
+                id: 0,
+                name: nameController.text,
+                client: clientController.text,
+                startDate: DateTime.now(),
+                status: 'فعال',
+                estimatedBudget: double.tryParse(budgetController.text) ?? 0,
+                lastUpdate: DateTime.now().toIso8601String(), // <- اضافه شد
+              );
+
+              await Provider.of<ProjectProvider>(context, listen: false)
+                  .addProject(newProject);
+              Navigator.pop(ctx);
+            } catch (e) {
+              ScaffoldMessenger.of(ctx).showSnackBar(
+                SnackBar(content: Text('خطا در ایجاد پروژه: $e')),
+              );
+            }
+          },
+          child: Text('ایجاد'),
+        ),
+      ],
+    ),
+  );
+}
 
   Widget _buildPriceListContent() {
     return Center(child: Text('صفحه فهرست بها', style: TextStyle(fontSize: 24)));
