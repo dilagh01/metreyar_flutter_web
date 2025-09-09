@@ -1,4 +1,4 @@
-// lib/models/project.dart
+// در lib/models/project.dart
 class Project {
   final int id;
   final String name;
@@ -7,7 +7,7 @@ class Project {
   final DateTime? endDate;
   final String status;
   final double estimatedBudget;
-  final DateTime lastUpdate; // اضافه کردن lastUpdate
+  final String lastUpdate; // تغییر به String
 
   Project({
     required this.id,
@@ -17,7 +17,7 @@ class Project {
     this.endDate,
     required this.status,
     required this.estimatedBudget,
-    required this.lastUpdate, // اضافه کردن lastUpdate
+    required this.lastUpdate, // تغییر به String
   });
 
   factory Project.fromJson(Map<String, dynamic> json) {
@@ -29,7 +29,7 @@ class Project {
       endDate: json['end_date'] != null ? DateTime.parse(json['end_date']) : null,
       status: json['status'] ?? 'فعال',
       estimatedBudget: (json['estimated_budget'] ?? 0).toDouble(),
-      lastUpdate: DateTime.parse(json['last_update'] ?? DateTime.now().toString()), // اضافه کردن lastUpdate
+      lastUpdate: json['last_update'] ?? DateTime.now().toIso8601String(), // تغییر به String
     );
   }
 
@@ -41,7 +41,7 @@ class Project {
       'end_date': endDate?.toIso8601String(),
       'status': status,
       'estimated_budget': estimatedBudget,
-      'last_update': lastUpdate.toIso8601String(), // اضافه کردن lastUpdate
+      'last_update': lastUpdate, // تغییر به String
     };
   }
 }
