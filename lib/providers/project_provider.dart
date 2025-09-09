@@ -46,6 +46,13 @@ class ProjectProvider with ChangeNotifier {
     }
   }
 
+  // اضافه کردن متد retry
+  void retry() {
+    if (_error.isNotEmpty) {
+      loadProjects();
+    }
+  }
+
   void checkConnection() async {
     try {
       _isConnected = await ApiService.checkConnection();
@@ -55,7 +62,4 @@ class ProjectProvider with ChangeNotifier {
       notifyListeners();
     }
   }
-}
-void retry() {
-  loadProjects();
 }
