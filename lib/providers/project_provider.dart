@@ -1,20 +1,18 @@
-import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+// lib/providers/project_provider.dart
+import 'package:flutter/foundation.dart';
 import '../models/project.dart';
+import '../services/api_service.dart';
 
 class ProjectProvider with ChangeNotifier {
-  List<Project> projects = [];
-
-  bool _isConnected = false;
+  List<Project> _projects = [];
   bool _isLoading = false;
   String _error = '';
+  bool _isConnected = true;
 
-  bool get isConnected => _isConnected;
+  List<Project> get projects => _projects;
   bool get isLoading => _isLoading;
   String get error => _error;
-
-  final String baseUrl = "http://localhost:3000/api"; // آدرس بک‌اند (جایگزین کن)
+  bool get isConnected => _isConnected;
 
   Future<void> loadProjects() async {
     _isLoading = true;
@@ -22,47 +20,39 @@ class ProjectProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final response = await http.get(Uri.parse("$baseUrl/projects"));
-
-      if (response.statusCode == 200) {
-        final List data = json.decode(response.body);
-        projects = data.map((e) => Project.fromJson(e)).toList();
-        _isConnected = true;
-      } else {
-        _error = "خطا در بارگذاری پروژه‌ها (${response.statusCode})";
-        _isConnected = false;
-      }
+      final data = await ApiService.getProjects();
+      _projects = (data as List).map((json) => Project.fromJson(json)).toList();
+      _isConnected = true;
     } catch (e) {
-      _error = "عدم اتصال به سرور: $e";
+      _error = e.toString();
       _isConnected = false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
-
-    _isLoading = false;
-    notifyListeners();
   }
 
   Future<void> addProject(Project project) async {
     try {
-      final response = await http.post(
-        Uri.parse("$baseUrl/projects"),
-        headers: {"Content-Type": "application/json"},
-        body: json.encode(project.toJson()),
-      );
-
-      if (response.statusCode == 201) {
-        final newProject = Project.fromJson(json.decode(response.body));
-        projects.add(newProject);
-        notifyListeners();
-      } else {
-        _error = "خطا در ایجاد پروژه (${response.statusCode})";
-      }
+      final data = await ApiService.createProject(project.toJson());
+      _projects.add(Project.fromJson(data));
+      _isConnected = true;
+      notifyListeners();
     } catch (e) {
-      _error = "عدم اتصال به سرور: $e";
+      _error = e.toString();
+      _isConnected = false;
+      notifyListeners();
+      throw e;
     }
-    notifyListeners();
   }
 
-  void retry() {
-    loadProjects();
+  void checkConnection() async {
+    try {
+      _isConnected = await ApiService.checkConnection();
+      notifyListeners();
+    } catch (e) {
+      _isConnected = false;
+      notifyListeners();
+    }
   }
 }

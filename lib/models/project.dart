@@ -1,43 +1,43 @@
+// lib/models/project.dart
 class Project {
   final int id;
   final String name;
-  final String status;
   final String client;
-  final double estimatedBudget;
   final DateTime startDate;
-  final String lastUpdate;
+  final DateTime? endDate;
+  final String status;
+  final double estimatedBudget;
 
   Project({
     required this.id,
     required this.name,
-    required this.status,
     required this.client,
-    required this.estimatedBudget,
     required this.startDate,
-    required this.lastUpdate,
+    this.endDate,
+    required this.status,
+    required this.estimatedBudget,
   });
 
   factory Project.fromJson(Map<String, dynamic> json) {
     return Project(
-      id: json['id'],
-      name: json['name'],
-      status: json['status'],
-      client: json['client'],
-      estimatedBudget: (json['estimatedBudget'] as num).toDouble(),
-      startDate: DateTime.parse(json['startDate']),
-      lastUpdate: json['lastUpdate'],
+      id: json['id'] ?? 0,
+      name: json['name'] ?? '',
+      client: json['client'] ?? '',
+      startDate: DateTime.parse(json['start_date'] ?? DateTime.now().toString()),
+      endDate: json['end_date'] != null ? DateTime.parse(json['end_date']) : null,
+      status: json['status'] ?? 'فعال',
+      estimatedBudget: (json['estimated_budget'] ?? 0).toDouble(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      "id": id,
-      "name": name,
-      "status": status,
-      "client": client,
-      "estimatedBudget": estimatedBudget,
-      "startDate": startDate.toIso8601String(),
-      "lastUpdate": lastUpdate,
+      'name': name,
+      'client': client,
+      'start_date': startDate.toIso8601String(),
+      'end_date': endDate?.toIso8601String(),
+      'status': status,
+      'estimated_budget': estimatedBudget,
     };
   }
 }

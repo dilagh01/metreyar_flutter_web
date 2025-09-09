@@ -1,58 +1,103 @@
-// lib/providers/project_provider.dart
+// lib/services/api_service.dart
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
-import '../models/project.dart';
-import '../services/api_service.dart';
 
-class ProjectProvider with ChangeNotifier {
-  List<Project> _projects = [];
-  bool _isLoading = false;
-  String _error = '';
-  bool _isConnected = true;
+class ApiService {
+  static const String baseUrl = 'https://metreyar.onrender.com';
+  static const String apiVersion = '/api/v1';
 
-  List<Project> get projects => _projects;
-  bool get isLoading => _isLoading;
-  String get error => _error;
-  bool get isConnected => _isConnected;
+  static const Map<String, String> headers = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  };
 
-  Future<void> loadProjects() async {
-    _isLoading = true;
-    _error = '';
-    notifyListeners();
-
+  // تابع عمومی برای درخواست‌های GET
+  static Future<dynamic> get(String endpoint) async {
+    if (kDebugMode) {
+      print('GET: $baseUrl$apiVersion$endpoint');
+    }
+    
     try {
-      final data = await ApiService.getProjects();
-      _projects = (data as List).map((json) => Project.fromJson(json)).toList();
-      _isConnected = true;
+      final response = await http.get(
+        Uri.parse('$baseUrl$apiVersion$endpoint'),
+        headers: headers,
+      );
+      
+      return _handleResponse(response);
     } catch (e) {
-      _error = e.toString();
-      _isConnected = false;
-    } finally {
-      _isLoading = false;
-      notifyListeners();
+      throw Exception('خطا در اتصال به سرور: $e');
     }
   }
 
-  Future<void> addProject(Project project) async {
+  // تابع عمومی برای درخواست‌های POST
+  static Future<dynamic> post(String endpoint, dynamic data) async {
+    if (kDebugMode) {
+      print('POST: $baseUrl$apiVersion$endpoint');
+      print('Data: $data');
+    }
+    
     try {
-      final data = await ApiService.createProject(project.toJson());
-      _projects.add(Project.fromJson(data));
-      _isConnected = true;
-      notifyListeners();
+      final response = await http.post(
+        Uri.parse('$baseUrl$apiVersion$endpoint'),
+        headers: headers,
+        body: json.encode(data),
+      );
+      
+      return _handleResponse(response);
     } catch (e) {
-      _error = e.toString();
-      _isConnected = false;
-      notifyListeners();
-      throw e;
+      throw Exception('خطا در اتصال به سرور: $e');
     }
   }
 
-  void checkConnection() async {
+  static dynamic _handleResponse(http.Response response) {
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      if (response.body.isEmpty) {
+        return {'success': true};
+      }
+      return json.decode(response.body);
+    } else if (response.statusCode == 401) {
+      throw Exception('احراز هویت ناموفق');
+    } else if (response.statusCode == 404) {
+      throw Exception('منبع یافت نشد');
+    } else if (response.statusCode >= 500) {
+      throw Exception('خطای سرور');
+    } else {
+      throw Exception('خطای ناشناخته: ${response.statusCode}');
+    }
+  }
+
+  // متدهای خاص برای endpointهای مختلف
+  static Future<List<dynamic>> getProjects() async {
+    return await get('/projects/');
+  }
+
+  static Future<dynamic> createProject(Map<String, dynamic> projectData) async {
+    return await post('/projects/', projectData);
+  }
+
+  static Future<List<dynamic>> getPriceBooks() async {
+    return await get('/price-books/');
+  }
+
+  static Future<List<dynamic>> getProjectBoq(int projectId) async {
+    return await get('/projects/$projectId/boq/');
+  }
+
+  static Future<dynamic> addBoqItem(int projectId, Map<String, dynamic> boqData) async {
+    return await post('/projects/$projectId/boq/', boqData);
+  }
+
+  // متد برای بررسی وضعیت اتصال
+  static Future<bool> checkConnection() async {
     try {
-      _isConnected = await ApiService.checkConnection();
-      notifyListeners();
+      final response = await http.get(
+        Uri.parse('$baseUrl/health'),
+        headers: headers,
+      ).timeout(Duration(seconds: 5));
+      return response.statusCode == 200;
     } catch (e) {
-      _isConnected = false;
-      notifyListeners();
+      return false;
     }
   }
 }
