@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 
 class ApiService {
-  static const String baseUrl = 'https://metreyar.onrender.com';
+  static const String baseUrl = 'https://metreyar.onrender.com/api/v1';
   static const String apiVersion = '/api/v1';
 
   static const Map<String, String> headers = {
