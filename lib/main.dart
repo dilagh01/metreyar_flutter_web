@@ -1,18 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-import 'project_provider.dart';
-import 'project.dart';
 
 void main() {
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => ProjectProvider()),
-      ],
-      child: MyApp(),
-    ),
-  );
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -43,16 +33,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+  bool _sidebarCollapsed = true;
   bool _isHovering = false;
-
-  @override
-  void initState() {
-    super.initState();
-    // ✅ وقتی صفحه لود میشه، پروژه‌ها رو از Provider می‌گیریم
-    Future.microtask(() {
-      Provider.of<ProjectProvider>(context, listen: false).fetchProjects();
-    });
-  }
 
   final List<String> _pageTitles = [
     'داشبورد',
@@ -72,7 +54,13 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Icon(Icons.calculate, color: Colors.blue[700]),
             SizedBox(width: 8),
-            Text('متره‌یار', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+            Text(
+              'متره‌یار',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
           ],
         ),
         actions: [
@@ -94,21 +82,73 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           SizedBox(width: 16),
-          IconButton(icon: Icon(Icons.notifications_none), onPressed: () {}),
-          IconButton(icon: Icon(Icons.add), onPressed: () {}),
+          IconButton(
+            icon: Icon(Icons.notifications_none),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {},
+          ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8),
             child: CircleAvatar(
               radius: 16,
               backgroundColor: Colors.blue,
-              child: Text('ユ', style: TextStyle(color: Colors.white, fontSize: 14)),
+              child: Text(
+                'ユ',
+                style: TextStyle(color: Colors.white, fontSize: 14),
+              ),
             ),
           ),
         ],
       ),
       body: Row(
         children: [
-          _buildSidebar(),
+          // نوار کناری (سبک GitHub)
+          MouseRegion(
+            onEnter: (_) => setState(() => _isHovering = true),
+            onExit: (_) => setState(() => _isHovering = false),
+            child: Container(
+              width: _isHovering ? 220 : 70,
+              decoration: BoxDecoration(
+                border: Border(
+                  right: BorderSide(
+                    color: Colors.grey[300]!,
+                    width: 1,
+                  ),
+                ),
+              ),
+              child: ListView(
+                children: [
+                  // لوگو
+                  Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Icon(
+                      Icons.calculate,
+                      size: 32,
+                      color: Colors.blue[700],
+                    ),
+                  ),
+                  
+                  // منوی اصلی
+                  _buildSidebarItem(Icons.dashboard, 'داشبورد', 0),
+                  _buildSidebarItem(Icons.folder, 'پروژه‌ها', 1),
+                  _buildSidebarItem(Icons.list, 'فهرست بها', 2),
+                  _buildSidebarItem(Icons.bar_chart, 'گزارش‌ها', 3),
+                  _buildSidebarItem(Icons.settings, 'تنظیمات', 4),
+                  
+                  Divider(),
+                  
+                  // منوی ثانویه
+                  _buildSidebarItem(Icons.calculate, 'محاسبات', 5),
+                  _buildSidebarItem(Icons.analytics, 'آنالیز', 6),
+                ],
+              ),
+            ),
+          ),
+          
+          // محتوای اصلی
           Expanded(
             child: Container(
               color: Colors.grey[50],
@@ -120,44 +160,28 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildSidebar() {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovering = true),
-      onExit: (_) => setState(() => _isHovering = false),
-      child: Container(
-        width: _isHovering ? 220 : 70,
-        decoration: BoxDecoration(
-          border: Border(right: BorderSide(color: Colors.grey[300]!, width: 1)),
-        ),
-        child: ListView(
-          children: [
-            Padding(
-              padding: EdgeInsets.all(16),
-              child: Icon(Icons.calculate, size: 32, color: Colors.blue[700]),
-            ),
-            _buildSidebarItem(Icons.dashboard, 'داشبورد', 0),
-            _buildSidebarItem(Icons.folder, 'پروژه‌ها', 1),
-            _buildSidebarItem(Icons.list, 'فهرست بها', 2),
-            _buildSidebarItem(Icons.bar_chart, 'گزارش‌ها', 3),
-            _buildSidebarItem(Icons.settings, 'تنظیمات', 4),
-            Divider(),
-            _buildSidebarItem(Icons.calculate, 'محاسبات', 5),
-            _buildSidebarItem(Icons.analytics, 'آنالیز', 6),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildSidebarItem(IconData icon, String title, int index) {
     final bool isSelected = _selectedIndex == index;
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     return ListTile(
-      leading: Icon(icon, size: 20, color: isSelected ? Colors.blue[700] : isDark ? Colors.grey[400] : Colors.grey[600]),
-      title: _isHovering ? Text(title, style: TextStyle(fontSize: 14, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal, color: isSelected ? Colors.blue[700] : isDark ? Colors.grey[400] : Colors.grey[600])) : null,
+      leading: Icon(
+        icon,
+        size: 20,
+        color: isSelected ? Colors.blue[700] : isDark ? Colors.grey[400] : Colors.grey[600],
+      ),
+      title: _isHovering ? Text(
+        title,
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          color: isSelected ? Colors.blue[700] : isDark ? Colors.grey[400] : Colors.grey[600],
+        ),
+      ) : null,
       selected: isSelected,
-      selectedTileColor: isSelected ? Colors.blue[50]! : null,
+      selectedTileColor: isSelected 
+          ? Colors.blue[50]!
+          : null,
       onTap: () {
         setState(() {
           _selectedIndex = index;
@@ -184,67 +208,67 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildDashboardContent() {
-    return Consumer<ProjectProvider>(
-      builder: (context, provider, child) {
-        if (provider.isLoading) {
-          return Center(child: CircularProgressIndicator());
-        }
-
-        return SingleChildScrollView(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'داشبورد متره‌یار',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 16),
+          
+          // کارت‌های اطلاعاتی
+          GridView.count(
+            crossAxisCount: 4,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+            childAspectRatio: 2,
             children: [
-              Text('داشبورد متره‌یار', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-              SizedBox(height: 16),
-              GridView.count(
-                crossAxisCount: 4,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                childAspectRatio: 2,
-                children: [
-                  _buildInfoCard('تعداد پروژه‌ها', provider.projects.length.toString(), Icons.folder, Colors.blue),
-                  _buildInfoCard('پروژه‌های فعال', provider.projects.where((p) => p.status == 'فعال').length.toString(), Icons.check_circle, Colors.green),
-                  _buildInfoCard('در حال انجام', provider.projects.where((p) => p.status == 'در حال انجام').length.toString(), Icons.timelapse, Colors.orange),
-                  _buildInfoCard('اتمام یافته', provider.projects.where((p) => p.status == 'اتمام').length.toString(), Icons.done_all, Colors.red),
-                ],
-              ),
-              SizedBox(height: 24),
-              Text('پروژه‌های اخیر', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              SizedBox(height: 16),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))],
-                ),
-                child: DataTable(
-                  columns: [
-                    DataColumn(label: Text('نام پروژه')),
-                    DataColumn(label: Text('وضعیت')),
-                    DataColumn(label: Text('آخرین بروزرسانی')),
-                  ],
-                  rows: provider.projects.map((p) {
-                    Color statusColor = Colors.green;
-                    if (p.status == 'در حال انجام') statusColor = Colors.orange;
-                    if (p.status == 'اتمام') statusColor = Colors.grey;
-
-                    return DataRow(
-                      cells: [
-                        DataCell(Text(p.name, style: TextStyle(fontWeight: FontWeight.bold))),
-                        DataCell(Chip(label: Text(p.status, style: TextStyle(color: Colors.white, fontSize: 12)), backgroundColor: statusColor)),
-                        DataCell(Text("${p.lastUpdate.toLocal()}")),
-                      ],
-                    );
-                  }).toList(),
-                ),
-              ),
+              _buildInfoCard('پروژه‌های فعال', '۱۲', Icons.folder, Colors.blue),
+              _buildInfoCard('آیتم‌های متره', '۳۴۷', Icons.list, Colors.green),
+              _buildInfoCard('برآورد کل', '۵.۲B', Icons.attach_money, Colors.orange),
+              _buildInfoCard('تسک‌های pending', '۸', Icons.task, Colors.red),
             ],
           ),
-        );
-      },
+          
+          SizedBox(height: 24),
+          
+          // پروژه‌های اخیر
+          Text('پروژه‌های اخیر', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          SizedBox(height: 16),
+          
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
+            child: DataTable(
+              columns: [
+                DataColumn(label: Text('نام پروژه')),
+                DataColumn(label: Text('وضعیت')),
+                DataColumn(label: Text('آخرین بروزرسانی')),
+                DataColumn(label: Text('عملیات')),
+              ],
+              rows: [
+                _buildProjectRow('پروژه تجاری کوهستان', 'فعال', '۲ ساعت پیش'),
+                _buildProjectRow('مجتمع مسکونی نور', 'در حال انجام', '۱ روز پیش'),
+                _buildProjectRow('ویلای سبز', 'اتمام', '۳ روز پیش'),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -267,6 +291,34 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  DataRow _buildProjectRow(String name, String status, String lastUpdate) {
+    Color statusColor = Colors.green;
+    if (status == 'در حال انجام') statusColor = Colors.orange;
+    if (status == 'اتمام') statusColor = Colors.grey;
+
+    return DataRow(
+      cells: [
+        DataCell(Text(name, style: TextStyle(fontWeight: FontWeight.bold))),
+        DataCell(
+          Chip(
+            label: Text(status, style: TextStyle(color: Colors.white, fontSize: 12)),
+            backgroundColor: statusColor,
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          ),
+        ),
+        DataCell(Text(lastUpdate)),
+        DataCell(
+          Row(
+            children: [
+              IconButton(icon: Icon(Icons.visibility, size: 18), onPressed: () {}),
+              IconButton(icon: Icon(Icons.edit, size: 18), onPressed: () {}),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildProjectsContent() {
     return Center(child: Text('صفحه پروژه‌ها', style: TextStyle(fontSize: 24)));
   }
@@ -283,3 +335,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Center(child: Text('صفحه تنظیمات', style: TextStyle(fontSize: 24)));
   }
 }
+
+
+
+برای پریویدور بروزرسانی شده است
