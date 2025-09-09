@@ -71,3 +71,36 @@ class MaterialCard extends StatelessWidget {
     );
   }
 }
+Consumer<ProjectProvider>(
+  builder: (context, provider, child) {
+    if (provider.isLoading) {
+      return Center(child: CircularProgressIndicator());
+    }
+    if (provider.error.isNotEmpty) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(provider.error),
+            SizedBox(height: 8),
+            ElevatedButton(
+              onPressed: () => provider.retry(),
+              child: Text('تلاش دوباره'),
+            ),
+          ],
+        ),
+      );
+    }
+    return ListView.builder(
+      itemCount: provider.projects.length,
+      itemBuilder: (context, index) {
+        final project = provider.projects[index];
+        return ListTile(
+          title: Text(project.name),
+          subtitle: Text('${project.client} - ${project.status}'),
+          trailing: Text('${project.estimatedBudget} تومان'),
+        );
+      },
+    );
+  },
+)
