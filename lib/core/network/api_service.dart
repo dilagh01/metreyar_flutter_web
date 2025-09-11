@@ -76,3 +76,60 @@ class ApiService {
 
   // ... متدهای کمکی قبلی (_retryRequest, _logRequest, _logResponse, _handleResponse)
 }
+static void _logRequest(String method, String url, [dynamic data]) {
+  if (kDebugMode) {
+    print('🌐 $method $url');
+    if (data != null) {
+      print('📦 Request Data: $data');
+    }
+  }
+}
+
+static void _logResponse(http.Response response) {
+  if (kDebugMode) {
+    print('📨 Response: ${response.statusCode}');
+    print('📄 Body: ${response.body}');
+  }
+}
+
+static Future<http.Response> _retryRequest(Future<http.Response> Function() request) async {
+  for (int i = 0; i < maxRetries; i++) {
+    try {
+      final response = await request().timeout(timeoutDuration);
+      if (response.statusCode < 500 || i == maxRetries - 1) {
+        return response;
+      }
+    } catch (e) {
+      if (i == maxRetries - 1) rethrow;
+    }
+
+    if (i < maxRetries - 1) {
+      await Future.delayed(retryDelay * (i + 1));
+    }
+  }
+  throw Exception('Request failed after $maxRetries attempts');
+}
+
+static dynamic _handleResponse(http.Response response) {
+  final statusCode = response.statusCode;
+
+  switch (statusCode) {
+    case 200:
+    case 201:
+      return response.body.isNotEmpty ? json.decode(response.body) : {'success': true};
+    case 204:
+      return {'success': true};
+    case 400:
+      throw Exception('درخواست نامعتبر');
+    case 401:
+      throw Exception('دسترسی غیرمجاز');
+    case 403:
+      throw Exception('ممنوع');
+    case 404:
+      throw Exception('پیدا نشد');
+    case 500:
+      throw Exception('خطای سرور');
+    default:
+      throw Exception('خطای ناشناخته: $statusCode');
+  }
+}

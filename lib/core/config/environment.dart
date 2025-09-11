@@ -1,14 +1,11 @@
-// lib/core/config/api_endpoints.dart
-class ApiEndpoints {
-  static String get projects => '/projects';
-  static String project(int id) => '/projects/$id';
-  static String projectBoq(int projectId) => '/projects/$projectId/boq';
-  static String projectBoqAnalyze(int projectId) => '/projects/$projectId/boq/analyze';
-  static String get priceBooks => '/price-books';
-  static String get resources => '/resources';
-  static String get analyses => '/analyses';
+class Environment {
+  static const String baseUrl = 'https://metreyar.onrender.com';
+  static const String apiVersion = '/api/v1';
   
-  static String buildUrl(String endpoint) {
-    return '${Environment.baseUrl}${Environment.apiVersion}$endpoint';
-  }
+  // برای توسعه و تولید
+  static const bool isProduction = bool.fromEnvironment('dart.vm.product');
+  static const bool isDevelopment = !isProduction;
 }
+
+
+

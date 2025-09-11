@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart
+
 class ErrorHandler {
   static String handleException(dynamic error) {
     if (error is String) {
