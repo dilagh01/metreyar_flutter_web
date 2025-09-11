@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart
+import 'package:flutter/foundation.dart';
 
 class ErrorHandler {
   static String handleException(dynamic error) {

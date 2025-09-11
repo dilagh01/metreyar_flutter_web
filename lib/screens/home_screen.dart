@@ -1,109 +1,42 @@
 import 'package:flutter/material.dart';
-import '../widgets/sidebar.dart';
-import 'materials_screen.dart';
-import 'boq_screen.dart';
+
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
 
 class _HomeScreenState extends State<HomeScreen> {
-  // ... کدهای قبلی
-
-  @override
-  void initState() {
-    super.initState();
-    // بارگیری اولیه برنامه
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<MainProvider>(context, listen: false).initializeApp();
-    });
-  }
-
-  Widget _buildDashboardContent() {
-    final mainProvider = Provider.of<MainProvider>(context);
-    final projectProvider = mainProvider.projectProvider;
-
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // نشانگر خطای全局
-          if (mainProvider.globalError.isNotEmpty)
-            Container(
-              padding: EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.red[100],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.error, color: Colors.red),
-                  SizedBox(width: 8),
-                  Expanded(child: Text(mainProvider.globalError)),
-                  IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () => mainProvider.clearGlobalError(),
-                  ),
-                ],
-              ),
-            ),
-
-          // بقیه محتوا...
-        ],
-      ),
-    );
-  }
-}
-
-class MaterialCard extends StatelessWidget {
-  final String title;
-  final VoidCallback onTap;
-  const MaterialCard({required this.title, required this.onTap});
-
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.black.withOpacity(0.3),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Color(0xFF006A4E)),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('متره‌یار'),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
       ),
-      margin: EdgeInsets.symmetric(vertical: 8),
-      child: ListTile(
-        title: Text(title, style: TextStyle(color: Colors.white)),
-        trailing: Icon(Icons.arrow_forward, color: Colors.greenAccent),
-        onTap: onTap,
-      ),
-    );
-  }
-}
-Consumer<ProjectProvider>(
-  builder: (context, provider, child) {
-    if (provider.isLoading) {
-      return Center(child: CircularProgressIndicator());
-    }
-    if (provider.error.isNotEmpty) {
-      return Center(
+      body: Center(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(provider.error),
+            Icon(Icons.construction, size: 64, color: Colors.blue),
+            SizedBox(height: 16),
+            Text(
+              'به متره‌یار خوش آمدید',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
             SizedBox(height: 8),
+            Text(
+              'سیستم مدیریت برآورد پروژه‌های ساختمانی',
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+            SizedBox(height: 32),
             ElevatedButton(
-              onPressed: () => provider.retry(),
-              child: Text('تلاش دوباره'),
+              onPressed: () {},
+              child: Text('شروع کنید'),
             ),
           ],
         ),
-      );
-    }
-    return ListView.builder(
-      itemCount: provider.projects.length,
-      itemBuilder: (context, index) {
-        final project = provider.projects[index];
-        return ListTile(
-          title: Text(project.name),
-          subtitle: Text('${project.client} - ${project.status}'),
-          trailing: Text('${project.estimatedBudget} تومان'),
-        );
-      },
+      ),
     );
-  },
-)
+  }
+}
