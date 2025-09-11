@@ -1,18 +1,16 @@
-// lib/providers/project_provider.dart
 import 'package:flutter/foundation.dart';
 import '../models/project.dart';
-import '../services/api_service.dart';
+import '../core/network/api_service.dart';
+import '../core/config/api_endpoints.dart';
 
 class ProjectProvider with ChangeNotifier {
   List<Project> _projects = [];
   bool _isLoading = false;
   String _error = '';
-  bool _isConnected = true;
 
   List<Project> get projects => _projects;
   bool get isLoading => _isLoading;
   String get error => _error;
-  bool get isConnected => _isConnected;
 
   Future<void> loadProjects() async {
     _isLoading = true;
@@ -20,12 +18,11 @@ class ProjectProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final data = await ApiService.getProjects();
-      _projects = (data as List).map((json) => Project.fromJson(json)).toList();
-      _isConnected = true;
+      final response = await ApiService.getList(ApiEndpoints.projects);
+      _projects = response.map((json) => Project.fromJson(json)).toList();
+      _error = '';
     } catch (e) {
       _error = e.toString();
-      _isConnected = false;
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -34,32 +31,15 @@ class ProjectProvider with ChangeNotifier {
 
   Future<void> addProject(Project project) async {
     try {
-      final data = await ApiService.createProject(project.toJson());
-      _projects.add(Project.fromJson(data));
-      _isConnected = true;
+      final response = await ApiService.postData(
+        ApiEndpoints.projects,
+        project.toJson(),
+      );
+      final newProject = Project.fromJson(response);
+      _projects.add(newProject);
       notifyListeners();
     } catch (e) {
-      _error = e.toString();
-      _isConnected = false;
-      notifyListeners();
-      throw e;
-    }
-  }
-
-  // اضافه کردن متد retry
-  void retry() {
-    if (_error.isNotEmpty) {
-      loadProjects();
-    }
-  }
-
-  void checkConnection() async {
-    try {
-      _isConnected = await ApiService.checkConnection();
-      notifyListeners();
-    } catch (e) {
-      _isConnected = false;
-      notifyListeners();
+      throw Exception('خطا در ایجاد پروژه: $e');
     }
   }
 }

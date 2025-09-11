@@ -3,46 +3,49 @@ import '../widgets/sidebar.dart';
 import 'materials_screen.dart';
 import 'boq_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class _HomeScreenState extends State<HomeScreen> {
+  // ... کدهای قبلی
+
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Row(
+  void initState() {
+    super.initState();
+    // بارگیری اولیه برنامه
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<MainProvider>(context, listen: false).initializeApp();
+    });
+  }
+
+  Widget _buildDashboardContent() {
+    final mainProvider = Provider.of<MainProvider>(context);
+    final projectProvider = mainProvider.projectProvider;
+
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SideBar(),
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.all(16),
-              child: Column(
+          // نشانگر خطای全局
+          if (mainProvider.globalError.isNotEmpty)
+            Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.red[100],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
                 children: [
-                  Text('Dashboard',
-                      style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.greenAccent)),
-                  SizedBox(height: 16),
-                  Expanded(
-                    child: ListView(
-                      children: [
-                        MaterialCard(title: 'Materials', onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => MaterialsScreen())
-                          );
-                        }),
-                        MaterialCard(title: 'BOQ', onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => BOQScreen())
-                          );
-                        }),
-                      ],
-                    ),
+                  Icon(Icons.error, color: Colors.red),
+                  SizedBox(width: 8),
+                  Expanded(child: Text(mainProvider.globalError)),
+                  IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () => mainProvider.clearGlobalError(),
                   ),
                 ],
               ),
             ),
-          ),
+
+          // بقیه محتوا...
         ],
       ),
     );

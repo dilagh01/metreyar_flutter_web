@@ -1,23 +1,22 @@
-// در lib/models/project.dart
 class Project {
   final int id;
   final String name;
   final String client;
+  final String location;
   final DateTime startDate;
-  final DateTime? endDate;
   final String status;
   final double estimatedBudget;
-  final String lastUpdate; // تغییر به String
+  final String? lastUpdate;
 
   Project({
     required this.id,
     required this.name,
     required this.client,
+    required this.location,
     required this.startDate,
-    this.endDate,
     required this.status,
     required this.estimatedBudget,
-    required this.lastUpdate, // تغییر به String
+    this.lastUpdate,
   });
 
   factory Project.fromJson(Map<String, dynamic> json) {
@@ -25,23 +24,46 @@ class Project {
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
       client: json['client'] ?? '',
-      startDate: DateTime.parse(json['start_date'] ?? DateTime.now().toString()),
-      endDate: json['end_date'] != null ? DateTime.parse(json['end_date']) : null,
+      location: json['location'] ?? '',
+      startDate: DateTime.parse(json['start_date'] ?? DateTime.now().toIso8601String()),
       status: json['status'] ?? 'فعال',
-      estimatedBudget: (json['estimated_budget'] ?? 0).toDouble(),
-      lastUpdate: json['last_update'] ?? DateTime.now().toIso8601String(), // تغییر به String
+      estimatedBudget: (json['budget'] ?? json['estimatedBudget'] ?? 0).toDouble(),
+      lastUpdate: json['last_update'] ?? json['lastUpdate'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'name': name,
       'client': client,
+      'location': location,
       'start_date': startDate.toIso8601String(),
-      'end_date': endDate?.toIso8601String(),
       'status': status,
-      'estimated_budget': estimatedBudget,
-      'last_update': lastUpdate, // تغییر به String
+      'budget': estimatedBudget,
+      'last_update': lastUpdate ?? DateTime.now().toIso8601String(),
     };
+  }
+
+  Project copyWith({
+    int? id,
+    String? name,
+    String? client,
+    String? location,
+    DateTime? startDate,
+    String? status,
+    double? estimatedBudget,
+    String? lastUpdate,
+  }) {
+    return Project(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      client: client ?? this.client,
+      location: location ?? this.location,
+      startDate: startDate ?? this.startDate,
+      status: status ?? this.status,
+      estimatedBudget: estimatedBudget ?? this.estimatedBudget,
+      lastUpdate: lastUpdate ?? this.lastUpdate,
+    );
   }
 }
