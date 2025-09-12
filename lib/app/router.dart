@@ -1,16 +1,11 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 
-// Import صفحات خود را اینجا اضافه کنید
+// صفحات پایه
 import '../../features/dashboard/pages/dashboard_page.dart';
-import '../../features/auth/pages/login_page.dart';
 import '../../features/estimation/pages/estimation_list_page.dart';
-import '../../features/materials/pages/materials_page.dart';
-import '../../features/projects/pages/projects_page.dart';
-import '../../features/analysis/pages/analysis_page.dart';
-import '../../features/settings/pages/settings_page.dart';
 
-// صفحه خطا برای routing
+// صفحه خطا
 class ErrorPage extends StatelessWidget {
   const ErrorPage({super.key});
 
@@ -29,13 +24,6 @@ class ErrorPage extends StatelessWidget {
 final GoRouter appRouter = GoRouter(
   initialLocation: '/dashboard',
   routes: [
-    // 🔐 صفحه ورود
-    GoRoute(
-      path: '/login',
-      name: 'login',
-      builder: (context, state) => const LoginPage(),
-    ),
-
     // 🏠 صفحه اصلی
     GoRoute(
       path: '/dashboard',
@@ -50,32 +38,44 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const EstimationListPage(),
     ),
 
-    // 📦 مصالح
+    // 📦 مصالح (صفحه ساده)
     GoRoute(
       path: '/materials',
       name: 'materials',
-      builder: (context, state) => const MaterialsPage(),
+      builder: (context, state) => Scaffold(
+        appBar: AppBar(title: const Text('مدیریت مصالح')),
+        body: const Center(child: Text('صفحه مدیریت مصالح')),
+      ),
     ),
 
-    // 🏗️ پروژه‌ها
+    // 🏗️ پروژه‌ها (صفحه ساده)
     GoRoute(
       path: '/projects',
       name: 'projects',
-      builder: (context, state) => const ProjectsPage(),
+      builder: (context, state) => Scaffold(
+        appBar: AppBar(title: const Text('پروژه‌ها')),
+        body: const Center(child: Text('صفحه مدیریت پروژه‌ها')),
+      ),
     ),
 
-    // 📊 تحلیل
+    // 📊 تحلیل (صفحه ساده)
     GoRoute(
       path: '/analysis',
       name: 'analysis',
-      builder: (context, state) => const AnalysisPage(),
+      builder: (context, state) => Scaffold(
+        appBar: AppBar(title: const Text('تحلیل و گزارش')),
+        body: const Center(child: Text('صفحه تحلیل و گزارش')),
+      ),
     ),
 
-    // ⚙️ تنظیمات
+    // ⚙️ تنظیمات (صفحه ساده)
     GoRoute(
       path: '/settings',
       name: 'settings',
-      builder: (context, state) => const SettingsPage(),
+      builder: (context, state) => Scaffold(
+        appBar: AppBar(title: const Text('تنظیمات')),
+        body: const Center(child: Text('صفحه تنظیمات')),
+      ),
     ),
   ],
 

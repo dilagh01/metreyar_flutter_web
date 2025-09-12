@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'app/router.dart'; // Import صحیح
+import 'app/router.dart';
 
 void main() {
   runApp(MyApp());

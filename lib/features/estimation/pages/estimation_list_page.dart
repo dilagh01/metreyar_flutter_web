@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
+
 class EstimationListPage extends StatelessWidget {
-  const EstimationListPage({super.key});
+  const EstimationListPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -9,7 +11,7 @@ class EstimationListPage extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () => context.go('/estimations/create'),
+            onPressed: () {},
           ),
         ],
       ),
@@ -20,7 +22,7 @@ class EstimationListPage extends StatelessWidget {
             title: Text('پروژه ${index + 1}'),
             subtitle: Text('${index * 1000000} تومان'),
             trailing: const Icon(Icons.chevron_left),
-            onTap: () => context.go('/estimations/est-$index'),
+            onTap: () {},
           );
         },
       ),
