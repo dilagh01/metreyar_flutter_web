@@ -1,25 +1,18 @@
-cat > web/404.html << 'EOF'
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>متره یار - انتقال</title>
     <script>
+        // Redirect for GitHub Pages SPA routing
         var path = window.location.pathname;
-        var isGitHubPages = path.includes('metreyar_flutter_web');
-        
-        if (isGitHubPages) {
-            // Redirect to main app with hash routing
-            var newPath = path.replace('/metreyar_flutter_web', '') + window.location.search + window.location.hash;
+        if (path.startsWith('/metreyar_flutter_web')) {
+            var newPath = path.replace('/metreyar_flutter_web', '') + location.search + location.hash;
             window.location.href = '/metreyar_flutter_web/#' + newPath;
         } else {
-            // For direct domain access
-            window.location.href = '/#' + path;
+            window.location.href = '/metreyar_flutter_web/#' + path;
         }
     </script>
 </head>
 <body>
-    <p>در حال انتقال به متره یار...</p>
+    <p>در حال انتقال...</p>
 </body>
 </html>
-EOF

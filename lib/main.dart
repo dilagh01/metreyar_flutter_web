@@ -1,26 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'app/router.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
-
-  final GoRouter _router = appRouter;
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
+    return MaterialApp(
       title: 'متره یار',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         fontFamily: 'Vazirmatn',
       ),
-      routerConfig: _router,
-      debugShowCheckedModeBanner: false,
+      home: const Scaffold(
+        body: Center(
+          child: Text(
+            'به متره یار خوش آمدید! 🚀',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+        ),
+      ),
     );
   }
 }
