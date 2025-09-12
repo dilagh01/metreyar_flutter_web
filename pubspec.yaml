@@ -1,7 +1,6 @@
 name: metreyar
 description: A new Flutter project.
 publish_to: 'none'
-
 version: 1.0.0+1
 
 environment:
@@ -23,20 +22,21 @@ dependencies:
   printing: ^5.11.0
   pdf: ^3.10.4
   open_file: ^3.3.1
-  http: ^1.5.0  # به‌روزرسانی شده
+  http: ^1.5.0
   syncfusion_flutter_pdf: ^23.1.44
   syncfusion_flutter_datagrid: ^23.1.44
-  google_fonts: ^6.3.0  # نسخه جدید
+  google_fonts: ^6.3.0
   quran: ^1.3.1
   fl_chart: ^0.66.2
   connectivity_plus: ^5.0.0
-  mockito: ^5.4.0
-  shared_prefernces: ^2.2.2
+  shared_preferences: ^2.2.2  # ✅ تصحیح شده
   build_runner: ^2.4.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  mockito: ^5.4.0
 
 flutter:
   uses-material-design: true
