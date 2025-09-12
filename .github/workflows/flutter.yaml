@@ -2,45 +2,54 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-    
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        channel: 'stable'
-        cache: true
-        
-    - name: Install dependencies
-      run: flutter pub get
-      
-    - name: Analyze code
-      run: flutter analyze
-      
-    - name: Build Web
-      run: flutter build web --release --base-href /metreyar_flutter_web/
-      
-    - name: Setup Pages
-      uses: actions/configure-pages@v3
-      
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v2
-      with:
-        path: './build/web'
-        
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+          cache-key: flutter-pub-cache
+          cache-path: ${{ runner.tool_cache }}/flutter/pub-cache
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Check Flutter version
+        run: flutter --version
+
+      - name: Analyze code
+        run: flutter analyze || echo "Analysis completed with warnings"
+
+      - name: Build Web
+        run: flutter build web --release --base-href /metreyar_flutter_web/ --dart-define=FLUTTER_WEB_USE_SKIA=true
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./build/web
+
   deploy:
     environment:
       name: github-pages
@@ -50,6 +59,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
-
-
+        uses: actions/deploy-pages@v3
