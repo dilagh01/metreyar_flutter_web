@@ -1,27 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'screens/home_screen.dart'; // import صحیح
+import 'package:go_router/go_router.dart';
+import 'package:metreyar_flutter_web/app/router.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  MyApp({super.key});
+
+  final GoRouter _router = appRouter;
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'متره‌یار',
+    return MaterialApp.router(
+      title: 'متره یار',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        brightness: Brightness.light,
-        appBarTheme: AppBarTheme(
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
-          elevation: 0,
-          systemOverlayStyle: SystemUiOverlayStyle.dark,
-        ),
+        fontFamily: 'Vazirmatn',
       ),
-      home: HomeScreen(), // حالا باید کار کند
+      routerConfig: _router,
       debugShowCheckedModeBanner: false,
     );
   }
