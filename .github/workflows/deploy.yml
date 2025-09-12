@@ -10,10 +10,6 @@ permissions:
   pages: write
   id-token: write
 
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,17 +22,12 @@ jobs:
         with:
           channel: 'stable'
           cache: true
-          cache-key: flutter-pub-cache
-          cache-path: ${{ runner.tool_cache }}/flutter/pub-cache
 
       - name: Install dependencies
         run: flutter pub get
 
       - name: Build Web
         run: flutter build web --release --base-href /metreyar_flutter_web/
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -51,5 +42,7 @@ jobs:
     needs: build
     steps:
       - name: Deploy to GitHub Pages
-        id: deployment
         uses: actions/deploy-pages@v3
+
+
+
