@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:metreyar_flutter_web/app/router.dart';
+import 'app/router.dart'; // Import صحیح
 
 void main() {
   runApp(MyApp());

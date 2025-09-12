@@ -31,6 +31,7 @@ dependencies:
   fl_chart: ^0.66.2
   connectivity_plus: ^5.0.0
   mockito: ^5.4.0
+  shared_prefernces: ^2.2.2
   build_runner: ^2.4.0
 dev_dependencies:
   flutter_test:

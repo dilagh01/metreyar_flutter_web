@@ -3,17 +3,11 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
 
 permissions:
   contents: read
   pages: write
   id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
 
 jobs:
   build:
@@ -27,20 +21,12 @@ jobs:
         with:
           channel: 'stable'
           cache: true
-          cache-key: flutter-pub-cache
-          cache-path: ${{ runner.tool_cache }}/flutter/pub-cache
 
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Check Flutter version
-        run: flutter --version
-
-      - name: Analyze code
-        run: flutter analyze || echo "Analysis completed with warnings"
-
       - name: Build Web
-        run: flutter build web --release --base-href /metreyar_flutter_web/ --dart-define=FLUTTER_WEB_USE_SKIA=true
+        run: flutter build web --release --base-href /metreyar_flutter_web/
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
@@ -53,7 +39,7 @@ jobs:
   deploy:
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: \${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
     steps:

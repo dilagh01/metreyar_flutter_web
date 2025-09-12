@@ -1,108 +1,84 @@
 import 'package:go_router/go_router.dart';
-import 'package:metreyar_flutter_web/features/auth/pages/login_page.dart';
-import 'package:metreyar_flutter_web/features/dashboard/pages/dashboard_page.dart';
-import 'package:metreyar_flutter_web/features/estimation/pages/estimation_list_page.dart';
-import 'package:metreyar_flutter_web/features/estimation/pages/estimation_detail_page.dart';
-import 'package:metreyar_flutter_web/features/estimation/pages/create_estimation_page.dart';
-import 'package:metreyar_flutter_web/features/materials/pages/materials_page.dart';
-import 'package:metreyar_flutter_web/features/projects/pages/projects_page.dart';
-import 'package:metreyar_flutter_web/features/analysis/pages/analysis_page.dart';
-import 'package:metreyar_flutter_web/features/settings/pages/settings_page.dart';
+import 'package:flutter/material.dart';
 
+// Import صفحات خود را اینجا اضافه کنید
+import '../../features/dashboard/pages/dashboard_page.dart';
+import '../../features/auth/pages/login_page.dart';
+import '../../features/estimation/pages/estimation_list_page.dart';
+import '../../features/materials/pages/materials_page.dart';
+import '../../features/projects/pages/projects_page.dart';
+import '../../features/analysis/pages/analysis_page.dart';
+import '../../features/settings/pages/settings_page.dart';
+
+// صفحه خطا برای routing
+class ErrorPage extends StatelessWidget {
+  const ErrorPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('خطا')),
+      body: const Center(
+        child: Text('صفحه مورد نظر یافت نشد'),
+      ),
+    );
+  }
+}
+
+// تعریف router اصلی
 final GoRouter appRouter = GoRouter(
   initialLocation: '/dashboard',
   routes: [
-    // 🔐 Authentication
+    // 🔐 صفحه ورود
     GoRoute(
       path: '/login',
       name: 'login',
       builder: (context, state) => const LoginPage(),
     ),
 
-    // 🏠 Dashboard
+    // 🏠 صفحه اصلی
     GoRoute(
       path: '/dashboard',
       name: 'dashboard',
       builder: (context, state) => const DashboardPage(),
     ),
 
-    // 📋 Estimation Routes
+    // 📋 برآوردها
     GoRoute(
       path: '/estimations',
       name: 'estimations',
       builder: (context, state) => const EstimationListPage(),
-      routes: [
-        GoRoute(
-          path: 'create',
-          name: 'create_estimation',
-          builder: (context, state) => const CreateEstimationPage(),
-        ),
-        GoRoute(
-          path: ':id',
-          name: 'estimation_detail',
-          builder: (context, state) {
-            final id = state.pathParameters['id']!;
-            return EstimationDetailPage(estimationId: id);
-          },
-        ),
-      ],
     ),
 
-    // 📦 Materials
+    // 📦 مصالح
     GoRoute(
       path: '/materials',
       name: 'materials',
-      builder: (context, state) {
-        final query = state.uri.queryParameters['q'];
-        final category = state.uri.queryParameters['category'];
-        return MaterialsPage(
-          searchQuery: query,
-          categoryFilter: category,
-        );
-      },
+      builder: (context, state) => const MaterialsPage(),
     ),
 
-    // 🏗️ Projects
+    // 🏗️ پروژه‌ها
     GoRoute(
       path: '/projects',
       name: 'projects',
       builder: (context, state) => const ProjectsPage(),
     ),
 
-    // 📊 Analysis
+    // 📊 تحلیل
     GoRoute(
       path: '/analysis',
       name: 'analysis',
-      builder: (context, state) {
-        final projectId = state.uri.queryParameters['projectId'];
-        return AnalysisPage(projectId: projectId);
-      },
+      builder: (context, state) => const AnalysisPage(),
     ),
 
-    // ⚙️ Settings
+    // ⚙️ تنظیمات
     GoRoute(
       path: '/settings',
       name: 'settings',
       builder: (context, state) => const SettingsPage(),
-      routes: [
-        GoRoute(
-          path: 'profile',
-          name: 'profile_settings',
-          builder: (context, state) => const ProfileSettingsPage(),
-        ),
-        GoRoute(
-          path: 'notifications',
-          name: 'notification_settings',
-          builder: (context, state) => const NotificationSettingsPage(),
-        ),
-      ],
     ),
   ],
 
-  // 🔄 Error Handling
+  // 📍 مدیریت خطا
   errorBuilder: (context, state) => const ErrorPage(),
-  redirect: (context, state) {
-    // TODO: Add authentication redirect logic
-    return null;
-  },
 );
