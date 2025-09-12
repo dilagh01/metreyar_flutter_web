@@ -10,12 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4   # آخرین نسخه پایدار
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.0'  # نسخه Flutter که نیاز داری
+          flutter-version: '3.19.0'   # نسخه‌ی Flutter موردنیاز
 
       - name: Install dependencies
         run: flutter pub get
@@ -23,8 +23,8 @@ jobs:
       - name: Build Flutter web
         run: flutter build web --release
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2   # ✅ این مخصوص GitHub Pages هست
+      - name: Upload build as artifact
+        uses: actions/upload-pages-artifact@v2   # ✅ درست برای GitHub Pages
         with:
           path: build/web
 
@@ -40,4 +40,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4   # ✅ جدیدترین نسخه
+        uses: actions/deploy-pages@v4   # ✅ نسخه جدید
