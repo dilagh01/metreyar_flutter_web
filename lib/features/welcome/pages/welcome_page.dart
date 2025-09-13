@@ -19,7 +19,6 @@ class WelcomePage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // آیکون و عنوان
               const Icon(
                 Icons.construction,
                 size: 80,
@@ -33,7 +32,6 @@ class WelcomePage extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
-                textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
               const Text(
@@ -42,52 +40,16 @@ class WelcomePage extends StatelessWidget {
                   fontSize: 16,
                   color: Colors.white70,
                 ),
-                textAlign: TextAlign.center,
               ),
-              
               const SizedBox(height: 50),
-              
-              // دکمه شروع
               ElevatedButton(
                 onPressed: () => context.go('/estimation'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: const Color(0xFF006A4E),
                   padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
                 ),
-                child: const Text(
-                  'شروع کنید',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              
-              const SizedBox(height: 20),
-              
-              // لینک‌های سریع
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextButton(
-                    onPressed: () => context.go('/materials'),
-                    child: const Text(
-                      'مدیریت مصالح',
-                      style: TextStyle(color: Colors.white70),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () => context.go('/projects'),
-                    child: const Text(
-                      'پروژه‌ها',
-                      style: TextStyle(color: Colors.white70),
-                    ),
-                  ),
-                ],
+                child: const Text('شروع کنید'),
               ),
             ],
           ),

@@ -15,7 +15,6 @@ class MetreyarApp extends StatelessWidget {
       title: 'متره یار',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        fontFamily: 'Vazirmatn',
         useMaterial3: true,
       ),
       routerConfig: appRouter,
