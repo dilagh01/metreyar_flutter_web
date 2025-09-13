@@ -1,9 +1,11 @@
-import '../../data/models/estimation_model.dart';
-
 class EstimationCalculator {
   // محاسبه جمع کل
-  static double calculateTotal(List<EstimationItem> items) {
-    return items.fold(0.0, (sum, item) => sum + (item.quantity * item.unitPrice));
+  static double calculateTotal(List<dynamic> items) {
+    return items.fold(0.0, (sum, item) {
+      final quantity = item.quantity ?? 0.0;
+      final unitPrice = item.unitPrice ?? 0.0;
+      return sum + (quantity * unitPrice);
+    });
   }
 
   // محاسبه مالیات (9%)
@@ -17,12 +19,14 @@ class EstimationCalculator {
   }
 
   // گروه‌بندی بر اساس دسته‌بندی
-  static Map<String, double> calculateByCategory(List<EstimationItem> items) {
+  static Map<String, double> calculateByCategory(List<dynamic> items) {
     final Map<String, double> categoryTotals = {};
     
     for (final item in items) {
-      final category = item.material.category;
-      final total = item.quantity * item.unitPrice;
+      final category = item.material?.category ?? 'دسته‌بندی نشده';
+      final quantity = item.quantity ?? 0.0;
+      final unitPrice = item.unitPrice ?? 0.0;
+      final total = quantity * unitPrice;
       
       categoryTotals.update(
         category,
@@ -32,16 +36,5 @@ class EstimationCalculator {
     }
     
     return categoryTotals;
-  }
-
-  // محاسبه درصد هر دسته‌بندی
-  static Map<String, double> calculateCategoryPercentages(Map<String, double> categoryTotals, double grandTotal) {
-    final Map<String, double> percentages = {};
-    
-    categoryTotals.forEach((category, total) {
-      percentages[category] = (total / grandTotal) * 100;
-    });
-    
-    return percentages;
   }
 }
