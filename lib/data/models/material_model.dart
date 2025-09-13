@@ -1,7 +1,5 @@
-// lib/data/models/material_model.dart
 class MaterialModel {
   final String id;
-  final String code;
   final String name;
   final String unit;
   final String category;
@@ -10,7 +8,6 @@ class MaterialModel {
 
   MaterialModel({
     required this.id,
-    required this.code,
     required this.name,
     required this.unit,
     required this.category,
@@ -21,12 +18,21 @@ class MaterialModel {
   factory MaterialModel.fromJson(Map<String, dynamic> json) {
     return MaterialModel(
       id: json['_id'] ?? json['id'],
-      code: json['code'],
       name: json['name'],
       unit: json['unit'],
       category: json['category'],
       unitPrice: (json['unitPrice'] ?? 0).toDouble(),
       description: json['description'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'unit': unit,
+      'category': category,
+      'unitPrice': unitPrice,
+      'description': description,
+    };
   }
 }
