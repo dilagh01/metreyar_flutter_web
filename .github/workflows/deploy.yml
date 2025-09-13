@@ -3,12 +3,18 @@ name: 🚀 Deploy Flutter Web to GitHub Pages
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -22,15 +28,16 @@ jobs:
         with:
           channel: stable
           cache: true
+          cache-key: flutter-packages
+          cache-path: ${{ runner.tool_cache }}/flutter
 
       - name: 🔧 Install dependencies
         run: flutter pub get
 
       - name: 🏗️ Build Web Release
-        # ⚠ Base-href روی / قرار گرفت تا با دامنه اختصاصی سازگار شود
-        run: flutter build web --release --base-href /
+        run: flutter build web --release --base-href /metreyar_flutter_web/ --no-wasm-dry-run
 
-      - name: 📁 List build files
+      - name: 📁 Verify build files
         run: ls -la build/web/
 
       - name: ⬆️ Upload to GitHub Pages
