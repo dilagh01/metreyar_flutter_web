@@ -1,3 +1,5 @@
+import 'material_model.dart';
+
 class EstimationItem {
   final MaterialModel material;
   final double quantity;

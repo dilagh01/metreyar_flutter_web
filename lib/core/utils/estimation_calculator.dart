@@ -1,3 +1,5 @@
+import '../../data/models/estimation_model.dart';
+
 class EstimationCalculator {
   // محاسبه جمع کل
   static double calculateTotal(List<EstimationItem> items) {
