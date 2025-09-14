@@ -1,28 +1,34 @@
-name: 🚀 Deploy Flutter Web to GitHub Pages
+name: 🚀 Build & Deploy Flutter Web to gh-pages
 
 on:
   push:
-    branches: [main]
-  workflow_dispatch:
+    branches: [main]       # وقتی main push شود اجرا شود
+  workflow_dispatch:        # امکان اجرای دستی workflow
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
+      # 1️⃣ checkout کد
       - name: ⬇️ Checkout code
         uses: actions/checkout@v4
 
+      # 2️⃣ نصب Flutter
       - name: 📦 Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
 
+      # 3️⃣ نصب dependencies
       - name: 🔧 Install dependencies
         run: flutter pub get
 
-      - name: 🏗️ Build Web Release
+      # 4️⃣ ساخت نسخه web
+      - name: 🏗️ Build Flutter Web
         run: flutter build web --release --base-href /metreyar_flutter_web/
 
+      # 5️⃣ دپلوی روی gh-pages
       - name: 🚀 Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
