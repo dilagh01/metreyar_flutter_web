@@ -32,7 +32,7 @@ jobs:
       - name: 🏗️ Build Web Release
         run: flutter build web --release --base-href /metreyar_flutter_web/
 
-      - name: ⬆️ Upload build as artifact
+      - name: 📁 Upload build as artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: build/web
@@ -42,7 +42,7 @@ jobs:
     needs: build
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: \${{ steps.deployment.outputs.page_url }}
     steps:
       - name: 🚀 Deploy to GitHub Pages
         id: deployment
