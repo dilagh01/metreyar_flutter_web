@@ -29,3 +29,16 @@ class MetreyarApp extends StatelessWidget {
     );
   }
 }
+import 'package:http/http.dart' as http;
+import 'core/network/api_service.dart';
+
+void main() async {
+  final api = ApiService(
+    baseUrl: 'https://metreyar.onrender.com',
+    client: http.Client(),
+  );
+
+  final response = await api.get('/estimations');
+  print('status: ${response.statusCode}');
+  print('body: ${response.body}');
+}
