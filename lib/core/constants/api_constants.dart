@@ -1,5 +1,5 @@
 class ApiConstants {
-  static const String baseUrl = 'https://metreyar-api.onrender.com';
+  static const String baseUrl = 'https://metreyar.onrender.com';
   
   // Endpoints
   static const String materials = '/api/materials';
