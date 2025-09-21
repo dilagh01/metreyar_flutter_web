@@ -1,5 +1,4 @@
-name: metreyar
-description: A new Flutter project.
+name: metreyar_flutter_web
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -15,12 +14,15 @@ dependencies:
   flutter_riverpod: ^2.4.9
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-  path_provider: ^2.0.15
+  # ❌ فقط موبایل/دسکتاپ - روی Web پشتیبانی نمی‌شه
+  # path_provider: ^2.0.15
   excel: ^2.0.1
   file_picker: ^10.3.2
-  printing: ^5.11.0
+  # ❌ فقط موبایل/دسکتاپ - روی Web پشتیبانی نمی‌شه
+  # printing: ^5.11.0
   pdf: ^3.10.4
-  open_file: ^3.3.1
+  # ❌ فقط موبایل/دسکتاپ - روی Web پشتیبانی نمی‌شه
+  # open_file: ^3.3.1
   http: ^1.5.0
   syncfusion_flutter_pdf: ^23.1.44
   syncfusion_flutter_datagrid: ^23.1.44
@@ -28,12 +30,13 @@ dependencies:
   quran: ^1.3.1
   fl_chart: ^0.66.2
   connectivity_plus: ^5.0.0
-  shared_preferences: ^2.2.2  # ✅ تصحیح شده
+  shared_preferences: ^2.2.2
   build_runner: ^2.4.0
   go_router: ^13.0.0
   equatable: ^2.0.5
   flutter_bloc: ^8.1.3
   bloc: ^8.1.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
