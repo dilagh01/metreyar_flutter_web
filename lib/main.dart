@@ -1,97 +1,87 @@
+import 'dart:convert';
+import 'dart:html'; // برای فایل انتخاب کردن
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'dart:html' as html;
 
-class GenericTablePage extends StatefulWidget {
+class DataPage extends StatefulWidget {
+  const DataPage({super.key});
+
   @override
-  _GenericTablePageState createState() => _GenericTablePageState();
+  State<DataPage> createState() => _DataPageState();
 }
 
-class _GenericTablePageState extends State<GenericTablePage> {
-  List<Map<String, dynamic>> rows = [];
-  List<String> columns = [];
+class _DataPageState extends State<DataPage> {
+  List<Map<String, dynamic>> tableData = [];
 
-  @override
-  void initState() {
-    super.initState();
-    _loadData();
-  }
+  Future<void> uploadExcel(File file) async {
+    final request = http.MultipartRequest(
+      "POST",
+      Uri.parse("http://localhost:8000/upload_excel/"),
+    );
+    request.files.add(await http.MultipartFile.fromBytes(
+      'file',
+      await file.slice().arrayBuffer().then((b) => b.asUint8List()),
+      filename: file.name,
+    ));
 
-  Future<void> _loadData() async {
-    final response = await http.get(Uri.parse("http://127.0.0.1:8000/data/"));
-    if (response.statusCode == 200) {
-      final List<dynamic> rawData = jsonDecode(response.body);
-      setState(() {
-        rows = List<Map<String, dynamic>>.from(rawData);
-        if (rows.isNotEmpty) columns = rows[0].keys.toList();
-      });
-    }
-  }
+    final response = await request.send();
+    final res = await http.Response.fromStream(response);
 
-  void _editCell(int rowIndex, String column, String value) {
     setState(() {
-      rows[rowIndex][column] = value;
+      tableData = List<Map<String, dynamic>>.from(jsonDecode(res.body));
     });
   }
 
-  Future<void> _saveData() async {
-    await http.post(
-      Uri.parse("http://127.0.0.1:8000/data/"),
+  Future<void> sendUpdated() async {
+    final response = await http.post(
+      Uri.parse("http://localhost:8000/update_data/"),
       headers: {"Content-Type": "application/json"},
-      body: jsonEncode(rows),
+      body: jsonEncode(tableData),
     );
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("✅ ذخیره شد")));
-  }
-
-  Future<void> _generateReport() async {
-    final response = await http.get(Uri.parse("http://127.0.0.1:8000/generate-report/"));
-    if (response.statusCode == 200) {
-      final blob = html.Blob([response.bodyBytes], 'application/pdf');
-      final url = html.Url.createObjectUrlFromBlob(blob);
-      html.AnchorElement(href: url)
-        ..setAttribute('download', 'report.pdf')
-        ..click();
-      html.Url.revokeObjectUrl(url);
-    }
+    final res = jsonDecode(response.body);
+    print("📊 Summary: ${res['summary']}");
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("جدول داده‌ها")),
+      appBar: AppBar(title: const Text("Data Editor")),
       body: Column(
         children: [
+          ElevatedButton(
+            onPressed: () async {
+              FileUploadInputElement upload = FileUploadInputElement();
+              upload.accept = ".xlsx";
+              upload.click();
+              upload.onChange.listen((event) {
+                final file = upload.files?.first;
+                if (file != null) {
+                  uploadExcel(file);
+                }
+              });
+            },
+            child: const Text("Upload Excel"),
+          ),
           Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: rows.isEmpty
-                  ? Center(child: Text("داده‌ای موجود نیست"))
-                  : DataTable(
-                      columns: columns.map((c) => DataColumn(label: Text(c))).toList(),
-                      rows: List.generate(rows.length, (i) {
-                        return DataRow(
-                          cells: columns.map((col) {
-                            return DataCell(
-                              TextFormField(
-                                initialValue: rows[i][col].toString(),
-                                onFieldSubmitted: (val) => _editCell(i, col, val),
-                              ),
-                            );
-                          }).toList(),
-                        );
-                      }),
-                    ),
+            child: ListView.builder(
+              itemCount: tableData.length,
+              itemBuilder: (context, index) {
+                final row = tableData[index];
+                return ListTile(
+                  title: Text(row.toString()),
+                  onTap: () {
+                    setState(() {
+                      row.updateAll((k, v) => v.toString() + "✅");
+                    });
+                  },
+                );
+              },
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(onPressed: _saveData, child: Text("💾 ذخیره تغییرات")),
-              SizedBox(width: 20),
-              ElevatedButton(onPressed: _generateReport, child: Text("📥 تولید گزارش")),
-            ],
-          ),
+          ElevatedButton(
+            onPressed: sendUpdated,
+            child: const Text("Send Updated"),
+          )
         ],
       ),
     );
