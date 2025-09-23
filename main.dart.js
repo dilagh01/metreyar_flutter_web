@@ -67208,7 +67208,7 @@ return A.a1($async$uI,r)},
 qq(){var s=0,r=A.a2(t.H),q=this,p,o,n,m
 var $async$qq=A.Y(function(a,b){if(a===1)return A.a_(b,r)
 while(true)switch(s){case 0:q.aV(new A.aaL(q))
-p=A.hf("http://localhost:8000/upload_excel")
+p=A.hf("http://metreyar.onrender.com")
 o=t.N
 n=A.aJ(["Content-Type","application/json"],o,o)
 m=A
