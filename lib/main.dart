@@ -25,7 +25,7 @@ class _ExcelUploaderState extends State<ExcelUploader> {
 
       List<Map<String, dynamic>> rows = [];
 
-      // فرض: فقط شیت اول
+      // فقط شیت اول
       final sheet = excel.tables.keys.first;
       for (var row in excel.tables[sheet]!.rows) {
         rows.add({
@@ -40,73 +40,91 @@ class _ExcelUploaderState extends State<ExcelUploader> {
       });
 
       print("📂 Excel data: $excelData");
-
-      // ارسال به بک‌اند
-      await sendToBackend(rows);
     }
   }
 
-  Future<void> sendToBackend(List<Map<String, dynamic>> data) async {
+  Future<void> sendToBackend() async {
     final url = Uri.parse("http://localhost:8000/upload_excel"); // آدرس API
     final response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},
-      body: jsonEncode({"data": data}),
+      body: jsonEncode({"data": excelData}),
     );
 
     if (response.statusCode == 200) {
-      print("✅ پاسخ بک‌اند: ${response.body}");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("✅ داده‌ها با موفقیت ارسال شدند")),
+      );
     } else {
-      print("❌ خطا در ارسال: ${response.statusCode}");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("❌ خطا در ارسال: ${response.statusCode}")),
+      );
     }
+  }
+
+  void resetData() {
+    setState(() {
+      excelData = [];
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("📊 آپلود اکسل")),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
               onPressed: pickAndReadExcel,
               child: Text("📂 انتخاب فایل اکسل"),
             ),
             SizedBox(height: 20),
+
+            // نمایش داده‌ها
             excelData.isNotEmpty
                 ? Expanded(
-                    child: ListView.builder(
-                      itemCount: excelData.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(excelData[index].toString()),
-                        );
-                      },
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: excelData.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                title: Text(excelData[index].toString()),
+                              );
+                            },
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ElevatedButton.icon(
+                              onPressed: sendToBackend,
+                              icon: Icon(Icons.cloud_upload),
+                              label: Text("ارسال به بک‌اند"),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.green,
+                              ),
+                            ),
+                            ElevatedButton.icon(
+                              onPressed: resetData,
+                              icon: Icon(Icons.refresh),
+                              label: Text("بازگشت/پاک کردن"),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
                     ),
                   )
                 : Text("هیچ داده‌ای بارگذاری نشده"),
           ],
         ),
       ),
-    );
-  }
-}
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Metreyar Excel Uploader',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: ExcelUploader(),
     );
   }
 }
