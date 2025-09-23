@@ -1,9 +1,29 @@
 import 'dart:typed_data';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:excel/excel.dart';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Metreyar Flutter Web',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: ExcelUploader(), // صفحه اصلی
+    );
+  }
+}
 
 class ExcelUploader extends StatefulWidget {
   @override
@@ -12,6 +32,8 @@ class ExcelUploader extends StatefulWidget {
 
 class _ExcelUploaderState extends State<ExcelUploader> {
   List<Map<String, dynamic>> excelData = [];
+  bool loading = false;
+  String? backendResponse;
 
   Future<void> pickAndReadExcel() async {
     final result = await FilePicker.platform.pickFiles(
@@ -37,13 +59,14 @@ class _ExcelUploaderState extends State<ExcelUploader> {
 
       setState(() {
         excelData = rows;
+        backendResponse = null; // وقتی فایل جدید انتخاب میشه، نتیجه قبلی پاک بشه
       });
-
-      print("📂 Excel data: $excelData");
     }
   }
 
   Future<void> sendToBackend() async {
+    setState(() => loading = true);
+
     final url = Uri.parse("http://localhost:8000/upload_excel"); // آدرس API
     final response = await http.post(
       url,
@@ -51,77 +74,58 @@ class _ExcelUploaderState extends State<ExcelUploader> {
       body: jsonEncode({"data": excelData}),
     );
 
-    if (response.statusCode == 200) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("✅ داده‌ها با موفقیت ارسال شدند")),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("❌ خطا در ارسال: ${response.statusCode}")),
-      );
-    }
-  }
-
-  void resetData() {
     setState(() {
-      excelData = [];
+      loading = false;
+      backendResponse = response.statusCode == 200
+          ? response.body
+          : "❌ خطا در ارسال: ${response.statusCode}";
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("📊 آپلود اکسل")),
+      appBar: AppBar(title: const Text("📊 آپلود اکسل")),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            ElevatedButton(
+            ElevatedButton.icon(
               onPressed: pickAndReadExcel,
-              child: Text("📂 انتخاب فایل اکسل"),
+              icon: const Icon(Icons.upload_file),
+              label: const Text("📂 انتخاب فایل اکسل"),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
-            // نمایش داده‌ها
+            // نمایش داده‌های اکسل
             excelData.isNotEmpty
                 ? Expanded(
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: excelData.length,
-                            itemBuilder: (context, index) {
-                              return ListTile(
-                                title: Text(excelData[index].toString()),
-                              );
-                            },
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            ElevatedButton.icon(
-                              onPressed: sendToBackend,
-                              icon: Icon(Icons.cloud_upload),
-                              label: Text("ارسال به بک‌اند"),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.green,
-                              ),
-                            ),
-                            ElevatedButton.icon(
-                              onPressed: resetData,
-                              icon: Icon(Icons.refresh),
-                              label: Text("بازگشت/پاک کردن"),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.red,
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
+                    child: ListView.builder(
+                      itemCount: excelData.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(excelData[index].toString()),
+                        );
+                      },
                     ),
                   )
-                : Text("هیچ داده‌ای بارگذاری نشده"),
+                : const Text("هیچ داده‌ای بارگذاری نشده"),
+
+            const SizedBox(height: 20),
+
+            if (excelData.isNotEmpty)
+              ElevatedButton.icon(
+                onPressed: loading ? null : sendToBackend,
+                icon: const Icon(Icons.send),
+                label: loading
+                    ? const Text("⏳ در حال ارسال...")
+                    : const Text("📤 ارسال به بک‌اند"),
+              ),
+
+            const SizedBox(height: 20),
+
+            if (backendResponse != null)
+              Text("✅ پاسخ بک‌اند: $backendResponse"),
           ],
         ),
       ),
