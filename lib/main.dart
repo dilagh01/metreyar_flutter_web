@@ -67,7 +67,7 @@ class _ExcelUploaderState extends State<ExcelUploader> {
   Future<void> sendToBackend() async {
     setState(() => loading = true);
 
-    final url = Uri.parse("http://localhost:8000/upload_excel"); // آدرس API
+    final url = Uri.parse("http://metreyar.onrender.com"); // آدرس API
     final response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},
