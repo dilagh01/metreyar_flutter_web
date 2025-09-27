@@ -47,39 +47,58 @@ class _ExcelUploaderState extends State<ExcelUploader> {
 
       List<Map<String, dynamic>> rows = [];
 
-      // فقط شیت اول
       final sheet = excel.tables.keys.first;
       for (var row in excel.tables[sheet]!.rows) {
         rows.add({
-          "col1": row[0]?.value,
-          "col2": row[1]?.value,
-          "col3": row[2]?.value,
+          "col1": row[0]?.value?.toString() ?? "",
+          "col2": row[1]?.value?.toString() ?? "",
+          "col3": row[2]?.value?.toString() ?? "",
         });
       }
 
       setState(() {
         excelData = rows;
-        backendResponse = null; // وقتی فایل جدید انتخاب میشه، نتیجه قبلی پاک بشه
+        backendResponse = null;
       });
     }
   }
 
   Future<void> sendToBackend() async {
+    if (excelData.isEmpty) {
+      setState(() {
+        backendResponse = "❌ هیچ داده‌ای برای ارسال وجود ندارد.";
+      });
+      return;
+    }
+
     setState(() => loading = true);
 
-    final url = Uri.parse("http://metreyar.onrender.com"); // آدرس API
-    final response = await http.post(
-      url,
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode({"data": excelData}),
-    );
+    final url = Uri.parse("http://metreyar_api.onrender.com");
+    final cleanedData = excelData.map((row) => {
+      "col1": row["col1"]?.toString() ?? "",
+      "col2": row["col2"]?.toString() ?? "",
+      "col3": row["col3"]?.toString() ?? "",
+    }).toList();
 
-    setState(() {
-      loading = false;
-      backendResponse = response.statusCode == 200
-          ? response.body
-          : "❌ خطا در ارسال: ${response.statusCode}";
-    });
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"data": cleanedData}),
+      );
+
+      setState(() {
+        loading = false;
+        backendResponse = response.statusCode == 200
+            ? response.body
+            : "❌ خطا در ارسال: ${response.statusCode}";
+      });
+    } catch (e) {
+      setState(() {
+        loading = false;
+        backendResponse = "❌ خطا: $e";
+      });
+    }
   }
 
   @override
