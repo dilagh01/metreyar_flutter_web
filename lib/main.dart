@@ -73,7 +73,7 @@ class _ExcelUploaderState extends State<ExcelUploader> {
 
     setState(() => loading = true);
 
-    final url = Uri.parse("https://metreyar_api.onrender.com");
+ Â   final url = Uri.parse("https://metreyar-api.onrender.com");
     final cleanedData = excelData.map((row) => {
       "col1": row["col1"]?.toString() ?? "",
       "col2": row["col2"]?.toString() ?? "",
