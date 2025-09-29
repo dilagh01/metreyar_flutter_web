@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: ExcelUploader(), // صفحه اصلی
+      home: ExcelUploader(),
     );
   }
 }
@@ -73,7 +73,7 @@ class _ExcelUploaderState extends State<ExcelUploader> {
 
     setState(() => loading = true);
 
- �   final url = Uri.parse("https://metreyar_api.onrender.com");
+    final url = Uri.parse("https://metreyar_api.onrender.com");
     final cleanedData = excelData.map((row) => {
       "col1": row["col1"]?.toString() ?? "",
       "col2": row["col2"]?.toString() ?? "",
@@ -116,7 +116,6 @@ class _ExcelUploaderState extends State<ExcelUploader> {
             ),
             const SizedBox(height: 20),
 
-            // نمایش داده‌های اکسل
             excelData.isNotEmpty
                 ? Expanded(
                     child: ListView.builder(
