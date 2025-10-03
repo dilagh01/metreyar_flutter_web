@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:excel/excel.dart';
 import 'package:http/http.dart' as http;
+import 'dart:io';
 
 void main() {
   runApp(const MyApp());
@@ -34,6 +35,7 @@ class _ExcelUploaderState extends State<ExcelUploader> {
   List<Map<String, dynamic>> excelData = [];
   bool loading = false;
   String? backendResponse;
+  File? selectedFile; // برای ذخیره فایل انتخاب‌شده
 
   Future<void> pickAndReadExcel() async {
     final result = await FilePicker.platform.pickFiles(
@@ -59,39 +61,41 @@ class _ExcelUploaderState extends State<ExcelUploader> {
       setState(() {
         excelData = rows;
         backendResponse = null;
+        selectedFile = File(result.files.single.path!); // ذخیره فایل
       });
     }
   }
 
   Future<void> sendToBackend() async {
-    if (excelData.isEmpty) {
+    if (excelData.isEmpty || selectedFile == null) {
       setState(() {
-        backendResponse = "❌ هیچ داده‌ای برای ارسال وجود ندارد.";
+        backendResponse = "❌ هیچ داده‌ای یا فایلی برای ارسال وجود ندارد.";
       });
       return;
     }
 
     setState(() => loading = true);
 
-    final url = Uri.parse("https://metreyar-api.onrender.com/api/v1/upload_excel"); // خط 76 اصلاح‌شده
-    final cleanedData = excelData.map((row) => {
-      "col1": row["col1"]?.toString() ?? "",
-      "col2": row["col2"]?.toString() ?? "",
-      "col3": row["col3"]?.toString() ?? "",
-    }).toList();
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse('https://metreyar-api.onrenderer.com/api/v1/upload-excel/'),
+    );
+
+    // اضافه کردن فایل اکسل
+    request.files.add(await http.MultipartFile.fromPath(
+      'file', // نام فیلد باید با backend (file=File(...)) مطابقت داشته باشه
+      selectedFile!.path,
+    ));
 
     try {
-      final response = await http.post(
-        url,
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"data": cleanedData}),
-      );
+      final response = await request.send();
+      final responseBody = await response.stream.bytesToString();
 
       setState(() {
         loading = false;
         backendResponse = response.statusCode == 200
-            ? response.body
-            : "❌ خطا در ارسال: ${response.statusCode}";
+            ? "✅ موفقیت: $responseBody"
+            : "❌ خطا در ارسال: ${response.statusCode} - $responseBody";
       });
     } catch (e) {
       setState(() {
