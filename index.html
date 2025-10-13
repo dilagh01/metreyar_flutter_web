@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base href="/metreyar_flutter_web/">
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="متره یار - نرم افزار برآورد پروژه های ساختمانی">
+  
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="metreyar_flutter_web">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>متره یار</title>
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* Loading styles */
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      font-family: 'Vazirmatn', sans-serif;
+    }
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #006A4E;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="loading">
+    <div class="spinner"></div>
+    <p>در حال بارگذاری متره یار...</p>
+  </div>
+  
+  <script>
+    // Service worker registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('flutter_service_worker.js?v=4008102498');
+      });
+    }
+    
+    // Base href handling for GitHub Pages
+    window.addEventListener('load', function() {
+      const base = document.querySelector('base');
+      const baseHref = base.getAttribute('href');
+      
+      if (baseHref === '/') {
+        // For GitHub Pages deployment
+        base.setAttribute('href', '/metreyar_flutter_web/');
+      }
+    });
+  </script>
+  
+  <script src="main.dart.js" type="application/javascript"></script>
+</body>
+</html>

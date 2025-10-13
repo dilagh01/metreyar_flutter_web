@@ -1,0 +1,9 @@
+{
+  "name": "Metreyar Flutter Web",
+  "short_name": "Metreyar",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "description": "Flutter Web Application"
+}
