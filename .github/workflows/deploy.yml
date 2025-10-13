@@ -1,39 +1,33 @@
-name: 🚀 Build & Deploy Flutter Web to gh-pages
+name: Build and Deploy Flutter Web
 
 on:
   push:
-    branches: [main]       # وقتی main push شود اجرا شود
-  workflow_dispatch:        # امکان اجرای دستی workflow
+    branches: [ main ]
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ checkout کد
-      - name: ⬇️ Checkout code
-        uses: actions/checkout@v4
+    - name: 🛎 Checkout code
+      uses: actions/checkout@v4
 
-      # 2️⃣ نصب Flutter
-      - name: 📦 Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
+    - name: 📦 Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.16.0'  # ✅ نسخه پایدار
+        channel: 'stable'
 
-      # 3️⃣ نصب dependencies
-      - name: 🔧 Install dependencies
-        run: flutter pub get
+    - name: 🔧 Install dependencies
+      run: |
+        flutter pub get
 
-      # 4️⃣ ساخت نسخه web
-      - name: 🏗️ Build Flutter Web
-        run: flutter build web --release --base-href /metreyar_flutter_web/
+    - name: 🏗️ Build Flutter Web
+      run: |
+        flutter build web --release
 
-      # 5️⃣ دپلوی روی gh-pages
-      - name: 🚀 Deploy to gh-pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/web
-          publish_branch: gh-pages
-          user_name: "GitHub Actions"
-          user_email: "actions@github.com"
+    - name: 🚀 Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./build/web

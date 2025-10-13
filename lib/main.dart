@@ -1,10 +1,10 @@
-import 'package:file_picker_web/file_picker_web.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
 
 Future<void> uploadExcelToServer() async {
   try {
-    // انتخاب فایل توسط کاربر
-    FilePickerResult? result = await FilePickerWeb.platform.pickFiles(
+    // انتخاب فایل - در وب و موبایل کار می‌کند
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['xlsx', 'xls'],
       allowMultiple: false,
@@ -15,35 +15,28 @@ Future<void> uploadExcelToServer() async {
       
       print('📁 فایل انتخاب شده: ${file.name}');
       
-      // ایجاد درخواست آپلود به سرور
-      var url = Uri.parse('https://metreyar-api.onrender.com/api/v1/upload-excel/');
-      var request = http.MultipartRequest('POST', url);
-      
-      // اضافه کردن فایل به درخواست
-      request.files.add(http.MultipartFile.fromBytes(
-        'file', // ✅ همین نام دقیقاً
-        file.bytes!,
-        filename: file.name,
-      ));
-
-      // ارسال درخواست
-      var response = await request.send();
-      
-      // دریافت پاسخ
-      String responseBody = await response.stream.bytesToString();
-      
-      if (response.statusCode == 200) {
-        print('✅ فایل با موفقیت آپلود شد');
-        print('📊 پاسخ سرور: $responseBody');
+      // برای محیط وب
+      if (file.bytes != null) {
+        var url = Uri.parse('https://metreyar-api.onrender.com/api/v1/upload-excel/');
+        var request = http.MultipartRequest('POST', url);
         
-        // اینجا می‌تونید پاسخ رو به کاربر نمایش بدید
-        // showSuccessDialog(responseBody);
-      } else {
-        print('❌ خطا در آپلود: کد ${response.statusCode}');
-        print('📄 پاسخ: $responseBody');
+        request.files.add(http.MultipartFile.fromBytes(
+          'file',
+          file.bytes!,
+          filename: file.name,
+        ));
+
+        var response = await request.send();
+        String responseBody = await response.stream.bytesToString();
+        
+        if (response.statusCode == 200) {
+          print('✅ فایل با موفقیت آپلود شد');
+          print('📊 پاسخ سرور: $responseBody');
+        } else {
+          print('❌ خطا در آپلود: ${response.statusCode}');
+          print('📄 پاسخ: $responseBody');
+        }
       }
-    } else {
-      print('⚠️ کاربر هیچ فایلی انتخاب نکرد');
     }
   } catch (error) {
     print('❌ خطای سیستمی: $error');
