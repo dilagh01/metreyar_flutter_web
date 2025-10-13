@@ -1,44 +1,73 @@
-import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-Future<void> uploadExcelToServer() async {
-  try {
-    // انتخاب فایل - در وب و موبایل کار می‌کند
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['xlsx', 'xls'],
-      allowMultiple: false,
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Metreyar Web',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: HomePage(),
     );
+  }
+}
 
-    if (result != null && result.files.isNotEmpty) {
-      PlatformFile file = result.files.first;
+class HomePage extends StatelessWidget {
+  Future<void> _uploadExcel() async {
+    try {
+      // تست ساده سلامت سرور
+      var response = await http.get(
+        Uri.parse('https://metreyar-api.onrender.com/api/v1/health')
+      );
       
-      print('📁 فایل انتخاب شده: ${file.name}');
+      print('✅ سلامت سرور: ${response.statusCode}');
+      print('📄 پاسخ: ${response.body}');
       
-      // برای محیط وب
-      if (file.bytes != null) {
-        var url = Uri.parse('https://metreyar-api.onrender.com/api/v1/upload-excel/');
-        var request = http.MultipartRequest('POST', url);
-        
-        request.files.add(http.MultipartFile.fromBytes(
-          'file',
-          file.bytes!,
-          filename: file.name,
-        ));
-
-        var response = await request.send();
-        String responseBody = await response.stream.bytesToString();
-        
-        if (response.statusCode == 200) {
-          print('✅ فایل با موفقیت آپلود شد');
-          print('📊 پاسخ سرور: $responseBody');
-        } else {
-          print('❌ خطا در آپلود: ${response.statusCode}');
-          print('📄 پاسخ: $responseBody');
-        }
-      }
+      // نمایش دیالوگ
+      // _showDialog(context, 'سرور فعال', 'پاسخ: ${response.body}');
+      
+    } catch (error) {
+      print('❌ خطا: $error');
+      // _showDialog(context, 'خطا', 'خطا: $error');
     }
-  } catch (error) {
-    print('❌ خطای سیستمی: $error');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Metreyar - آپلود اکسل'),
+        backgroundColor: Colors.green,
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'سامانه آپلود فایل اکسل',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 30),
+            ElevatedButton.icon(
+              icon: Icon(Icons.upload_file),
+              label: Text('تست اتصال به سرور'),
+              onPressed: _uploadExcel,
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+              ),
+            ),
+            SizedBox(height: 20),
+            Text(
+              'نسخه تست - بدون آپلود فایل',
+              style: TextStyle(color: Colors.grey),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
