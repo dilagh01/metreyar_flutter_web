@@ -71,3 +71,34 @@ class HomePage extends StatelessWidget {
     );
   }
 }
+// بعد از اینکه build ساده کار کرد، این را اضافه کنید
+void _uploadExcelWeb() {
+  import('dart:html').then((html) {
+    html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
+    uploadInput.accept = '.xlsx,.xls';
+    uploadInput.click();
+
+    uploadInput.onChange.listen((e) async {
+      final files = uploadInput.files;
+      if (files != null && files.length == 1) {
+        final file = files[0];
+        final reader = html.FileReader();
+        
+        reader.readAsArrayBuffer(file);
+        reader.onLoadEnd.listen((e) async {
+          var url = Uri.parse('https://metreyar-api.onrender.com/api/v1/upload-excel/');
+          var request = http.MultipartRequest('POST', url);
+          
+          request.files.add(http.MultipartFile.fromBytes(
+            'file',
+            reader.result as List<int>,
+            filename: file.name,
+          ));
+
+          var response = await request.send();
+          print('📤 آپلود کامل: ${response.statusCode}');
+        });
+      }
+    });
+  });
+}
